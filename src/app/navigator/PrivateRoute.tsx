@@ -11,10 +11,11 @@ export const PrivateRoute: React.FC<{
   redirectAuthRoute,
   component: Component,
 }) => {
-  if (isAuthenticated) {
-    return <Component />;
-  } else {
-    navigation.navigate(redirectAuthRoute);
-    return null;
-  }
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      navigation.navigate(redirectAuthRoute);
+    }
+  }, [isAuthenticated, navigation, redirectAuthRoute]);
+
+  return isAuthenticated ? <Component /> : null;
 };
