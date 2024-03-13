@@ -3,7 +3,6 @@ import {
   ViewStyle,
   NativeSyntheticEvent,
   TextInputFocusEventData,
-  TextStyle,
 } from 'react-native';
 
 export enum KeyboardTypes {
@@ -34,21 +33,22 @@ export interface IInputProps {
   onChange: (option: string, value: string) => void;
   catchKey?: (key: string) => void;
   option?: string;
-  style?: StyleProp<ViewStyle>;
-  linkStyle?: StyleProp<ViewStyle>;
+  className?: string;
+  linkClassName?: string;
   iconEndStyle?: StyleProp<ViewStyle>;
   placeholderTextColor?: string;
   label?: string;
-  labelStyle?: {[key: string]: number | string};
   isSecure?: boolean;
-  inputStyle?: StyleProp<TextStyle>;
+  inputClassName?: string;
   icon?: any;
   iconEnd?: JSX.Element;
+  iconEndClassName?: string;
   placeholderIcon?: any;
   iconRight?: any;
   isError?: boolean;
   editable?: boolean;
-  labelWrapperStyle?: {[key: string]: number | string};
+  labelWrapperClassName?: string;
+  labelClassName?: string;
   classStyles?: string;
   onBlur?: () => void;
   onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;

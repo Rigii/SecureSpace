@@ -7,8 +7,10 @@ import {strings} from '../../constants/strings/login-signup.strings';
 import {Input, KeyboardTypes} from '../../components/input';
 import {ThemedButton} from '../../components/themed-button';
 import {GoogleIcon, OutlookIcon} from '../../assets/icons';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, View} from 'react-native';
 import SetEmailPassword from './set-email-password';
+import {Title1, Title2} from '../../components/title';
+import {TextBold, TextButton} from '../../components/text-styled';
 
 export const LoginSignUpUser: React.FC = () => {
   const {
@@ -45,16 +47,10 @@ export const LoginSignUpUser: React.FC = () => {
   }
 
   return (
-    <View className="flex flex-col content-center items-center justify-center flex-1 gap-10">
-      <Text className="mb-3 dark:text-white text-center gap-10">
-        {currentStrings.head}
-      </Text>
-      {currentStrings.sub && (
-        <Text className="text-title-gray font-extrabold text-s mt-2 inline-flex justify-center items-center gap-10">
-          {currentStrings.sub}
-        </Text>
-      )}
-      <View className="flex flex-col justify-center items-center gap-3 mb-20 flex-wrap pt-14 gap-10">
+    <View className="flex flex-col content-center items-center justify-center flex-1 w-full p-5">
+      <Title1>{currentStrings.head}</Title1>
+      {currentStrings.sub && <Title2>{currentStrings.sub}</Title2>}
+      <View className="flex flex-col justify-center items-center gap-3 mb-20 flex-wrap pt-14 w-full">
         <Input
           value={email}
           onChange={setEmail}
@@ -69,26 +65,24 @@ export const LoginSignUpUser: React.FC = () => {
           onPress={setStep}
           classCustomBody="w-80 h-12 rounded-sm"
         />
-        <Text className="text-title-gray font-extrabold text-s mt-2 w-80 inline-flex justify-center items-center gap-10">
+        <Title2 className="text-title-gray font-extrabold text-s mt-2 w-80 inline-flex justify-center items-center">
           {currentStrings.alt1}
-        </Text>
-        <TouchableOpacity
-          onPress={onChangeMode}
-          className={
-            'text-light-blue flex w-max font-extrabold text-s width-content pl-2'
-          }>
-          <Text>{currentStrings.alt2}</Text>
-        </TouchableOpacity>
+        </Title2>
+        <TextButton
+          className={'flex w-max width-content'}
+          onPress={onChangeMode}>
+          {currentStrings.alt2}
+        </TextButton>
       </View>
       <View>
-        <Text
+        <TextBold
           className="text-title-gray font-extrabold text-s w-80
             inline-flex justify-center items-center mt-4 mb-2
           before:height-2 before:border before:w-full before:mr-2
           after:height-2 after:border after:w-full after:ml-2
           ">
           {strings.or}
-        </Text>
+        </TextBold>
       </View>
       <ThemedButton
         classCustomBody="bg-soft-blue w-80 h-12 rounded-sm"
@@ -98,7 +92,7 @@ export const LoginSignUpUser: React.FC = () => {
         onPress={onGoogleSignUp}
       />
       <ThemedButton
-        classCustomBody="bg-dark-blue pl-[1.3rem] w-80 h-12 rounded-sm gap-10"
+        classCustomBody="bg-dark-blue pl-[1.3rem] w-80 h-12 rounded-sm"
         text={strings.enterWithOutlook}
         theme="lightBordered"
         // rightContent={<OutlookIcon />}

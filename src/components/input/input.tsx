@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
   TextInput,
-  StyleSheet,
   View,
   Text,
   TouchableOpacity,
@@ -9,7 +8,7 @@ import {
   TextInputFocusEventData,
   TextInputKeyPressEventData,
 } from 'react-native';
-import {COLORS, FONTS, FONT_SIZE, HIT_SLOP} from '../../constants/themes';
+import {COLORS, HIT_SLOP} from '../../constants/themes';
 import {IInputProps, EAutoCapitalize} from './input.typings';
 
 export const Input = (props: IInputProps) => {
@@ -53,29 +52,29 @@ export const Input = (props: IInputProps) => {
   };
 
   return (
-    <View style={[styles.wrapper, props.style]}>
+    <View
+      className={`w-full relative flex justify-center border-b-dark-blue border-b-2 ${props.className}`}>
       {!(
         (isFocused && props.hideLabelOnFocus) ||
         (props.hideLabelOnFocus && !!props.value) ||
         props.multiline
       ) && (
-        <View style={[styles.labelWrapper, props.labelWrapperStyle]}>
-          {props.icon && <View style={styles.labelIcon}>{props.icon}</View>}
+        <View
+          className={`absolute pl-1 flex-row justify-center items-center ${props.labelWrapperClassName}`}>
+          {props.icon && <View className="ml-1">{props.icon}</View>}
           <Text
-            style={
-              (!props.isError && [styles.label, props.labelStyle]) || [
-                props.labelStyle,
-                styles.labelError,
-              ]
-            }>
+            className={`ml-2 text-base ${props.labelClassName} ${
+              !props.isError && 'text-red-900'
+            }`}>
             {props.label}
           </Text>
-          <View style={styles.labelIcon}>{props.iconRight}</View>
+          <View className="ml-1">{props.iconRight}</View>
         </View>
       )}
       {props.hideLabelOnFocus && props.icon && (
-        <View style={[styles.labelWrapper, props.labelWrapperStyle]}>
-          <View style={styles.labelIcon}>{props.icon}</View>
+        <View
+          className={`absolute pl-1 flex-row justify-center items-center ${props.labelWrapperClassName}`}>
+          <View className="ml-1">{props.icon}</View>
         </View>
       )}
 
@@ -83,25 +82,22 @@ export const Input = (props: IInputProps) => {
         <View pointerEvents="none">
           <TextInput
             ref={inputRef}
-            placeholderTextColor={
-              props.placeholderTextColor || COLORS.lightGreen
-            }
+            // placeholderTextColor={props.placeholderTextColor || '#0072C5'}
             maxLength={props.maxLength}
             placeholder={props.placeholder}
             keyboardType={props.keyboardType}
             value={props.value}
             onChangeText={onChange}
             onKeyPress={catchKey}
-            style={[
-              styles.input,
-              styles.inputOffset,
-              props.multiline && styles.multilineInput,
-              props.hideLabelOnFocus && styles.inputWithoutLabel,
-              !isFocused && props.hideLabelOnFocus && props.labelStyle,
-              props.isError && props.hideLabelOnFocus && styles.labelError,
-              props.icon && styles.iconOffset,
-              props.inputStyle,
-            ]}
+            className={`flex flex-row relative text-base p-8 self-end	text-dark-blue text-right h-8 ${
+              props.hideLabelOnFocus && 'text-left pr-10 w-full'
+            }${!isFocused && props.hideLabelOnFocus && props.labelClassName} ${
+              props.isError &&
+              props.hideLabelOnFocus &&
+              'text-red-900 ml-2 text-base'
+            } ${props.icon && 'pl-5'}
+            ${props.inputClassName}
+            `}
             secureTextEntry={props.isSecure}
             onFocus={onFocus}
             onBlur={onBlur}
@@ -119,114 +115,26 @@ export const Input = (props: IInputProps) => {
       </TouchableOpacity>
 
       {props.value?.length === 0 && !isFocused && (
-        <View style={styles.placeholderIcon}>{props.placeholderIcon}</View>
+        <View className="self-end right-5 z-50 absolute">
+          {props.placeholderIcon}
+        </View>
       )}
 
       {props.iconEnd && (
         <TouchableOpacity
           hitSlop={HIT_SLOP}
-          style={[styles.iconEnd, props.iconEndStyle]}
+          className={`flex z-50 flex-auto self-end absolute justify-center items-center text-center	w-5 right-0 ${props.iconEndClassName}`}
           onPress={props.onIconEndPress}>
-          <View style={{flex: 1, margin: 0, padding: 0, zIndex: 9999}}>
-            {props.iconEnd}
-          </View>
+          <View className="flex flex-auto m-0 p-0 z-50">{props.iconEnd}</View>
         </TouchableOpacity>
       )}
 
       <TouchableOpacity
         hitSlop={HIT_SLOP}
         onPress={onLinkPress}
-        style={[styles.linkWrapper, props.linkStyle]}>
-        <Text style={styles.link}>{props.linkText}</Text>
+        className={`absolute flex flex-row justify-center right-0 ${props.linkClassName}`}>
+        <Text className="text-dark-blue text-base">{props.linkText}</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  wrapper: {
-    width: '100%',
-    position: 'relative',
-    display: 'flex',
-    justifyContent: 'center',
-    borderBottomColor: COLORS.borderGray,
-    borderBottomWidth: 1,
-  },
-  iconOffset: {
-    paddingLeft: 40,
-  },
-  multilineInput: {
-    textAlignVertical: 'top',
-    textAlign: 'left',
-    paddingHorizontal: 20,
-  },
-  inputWithoutLabel: {
-    textAlign: 'left',
-    paddingRight: 60,
-    width: '100%',
-  },
-  inputOffset: {
-    height: 50,
-  },
-  input: {
-    position: 'relative',
-    fontFamily: FONTS.medium,
-    fontSize: FONT_SIZE.small,
-    paddingHorizontal: 20,
-    display: 'flex',
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    color: COLORS.lightGreen,
-    textAlign: 'right',
-  },
-  labelWrapper: {
-    position: 'absolute',
-    paddingLeft: 15,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  label: {
-    marginLeft: 9,
-    fontFamily: FONTS.medium,
-  },
-  labelError: {
-    marginLeft: 9,
-    fontFamily: FONTS.medium,
-    color: COLORS.red,
-  },
-  labelIcon: {
-    marginLeft: 9,
-  },
-  placeholderIcon: {
-    alignSelf: 'flex-end',
-    right: 20,
-    zIndex: 9999,
-    position: 'absolute',
-  },
-  iconEnd: {
-    zIndex: 9999,
-    display: 'flex',
-    flex: 1,
-    alignSelf: 'flex-end',
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    width: 20,
-    right: 0,
-  },
-  linkWrapper: {
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    right: 0,
-  },
-  link: {
-    color: COLORS.lightGreen,
-    fontFamily: FONTS.medium,
-  },
-  unfocused: {
-    color: COLORS.black,
-  },
-});
