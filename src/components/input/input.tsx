@@ -8,7 +8,7 @@ import {
   TextInputFocusEventData,
   TextInputKeyPressEventData,
 } from 'react-native';
-import {COLORS, HIT_SLOP} from '../../constants/themes';
+import {HIT_SLOP} from '../../constants/themes';
 import {IInputProps, EAutoCapitalize} from './input.typings';
 
 export const Input = (props: IInputProps) => {
@@ -53,7 +53,8 @@ export const Input = (props: IInputProps) => {
 
   return (
     <View
-      className={`w-full relative flex justify-center border-b-dark-blue border-b-2 ${props.className}`}>
+      style={props.style}
+      className={`flex w-full relative justify-center border-b-title-gray border-b-[1px] ${props.className}`}>
       {!(
         (isFocused && props.hideLabelOnFocus) ||
         (props.hideLabelOnFocus && !!props.value) ||
@@ -89,7 +90,7 @@ export const Input = (props: IInputProps) => {
             value={props.value}
             onChangeText={onChange}
             onKeyPress={catchKey}
-            className={`flex flex-row relative text-base p-8 self-end	text-dark-blue text-right h-8 ${
+            className={`flex flex-row relative text-base p-6 self-end	dark-gray text-right h-5 ${
               props.hideLabelOnFocus && 'text-left pr-10 w-full'
             }${!isFocused && props.hideLabelOnFocus && props.labelClassName} ${
               props.isError &&
@@ -133,7 +134,7 @@ export const Input = (props: IInputProps) => {
         hitSlop={HIT_SLOP}
         onPress={onLinkPress}
         className={`absolute flex flex-row justify-center right-0 ${props.linkClassName}`}>
-        <Text className="text-dark-blue text-base">{props.linkText}</Text>
+        <Text className="dark-gray text-base">{props.linkText}</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,12 +1,5 @@
 import * as React from 'react';
-import {
-  Text,
-  View,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleProp, ViewStyle, TouchableOpacity} from 'react-native';
 
 import {styles} from './themed-button.style';
 import {globalStyles} from '../../constants/global-styles';
@@ -25,31 +18,25 @@ export interface IButtonProps {
   classCustomBody?: string;
   classCustomText?: string;
   classCustomContainer?: string;
-  style?: {
-    body?: StyleProp<ViewStyle>;
-    text?: StyleProp<TextStyle>;
-    container?: StyleProp<ViewStyle>;
-  };
+  style?: StyleProp<ViewStyle>;
   hasShadow?: boolean;
 }
 
 const getButtonStyle = (key: IButtonTheme, hasShadow?: boolean) => {
   const themes = {
     light: {
-      body: [styles.defaultButtonStyle, styles.light],
-      text: [styles.defaultButtonText],
+      body: `${styles.defaultButtonStyle} ${styles.light}`,
+      text: styles.defaultButtonText,
     },
     filled: {
-      body: [
-        styles.defaultButtonStyle,
-        hasShadow && globalStyles.shadow,
-        styles.filled,
-      ],
-      text: [styles.lightButtonText],
+      body: `${styles.defaultButtonStyle} ${
+        (hasShadow && globalStyles.shadow) || ''
+      } ${styles.filled}`,
+      text: styles.lightButtonText,
     },
     lightBordered: {
-      body: [styles.defaultButtonStyle, styles.lightBordered],
-      text: [styles.defaultButtonText],
+      body: `${styles.defaultButtonStyle} ${styles.lightBordered}`,
+      text: styles.defaultButtonText,
     },
   };
 
@@ -77,23 +64,17 @@ export const ThemedButton = (props: IButtonProps) => {
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className={classCustomContainer}
-      style={[styles.buttonContainer, props.style?.container]}>
-      <View
-        className={classCustomBody}
-        style={[btnStyle.body, props.style && props.style.body]}>
+      className={`items-center ${classCustomContainer}`}
+      style={props.style}>
+      <View className={`${btnStyle.body} ${classCustomBody}`}>
         {leftContent}
         {text && (
-          <Text style={[btnStyle.text, props.style && props.style.text]}>
-            {text}
-          </Text>
+          <Text className={`${btnStyle.text} ${classCustomText}`}>{text}</Text>
         )}
         {rightContent}
         {children}
         {textRight && (
-          <Text
-            style={[btnStyle.text, props.style && props.style.text]}
-            className={classCustomText}>
+          <Text className={`${btnStyle.text} ${classCustomText}`}>
             {textRight}
           </Text>
         )}

@@ -26,6 +26,8 @@ export type TAutoCapitalize = EAutoCapitalize;
 export type TKeyboardType = KeyboardTypes;
 
 export interface IInputProps {
+  style?: StyleProp<ViewStyle>;
+  props?: any;
   maxLength?: number;
   placeholder?: string;
   keyboardType: TKeyboardType;
@@ -49,7 +51,6 @@ export interface IInputProps {
   editable?: boolean;
   labelWrapperClassName?: string;
   labelClassName?: string;
-  classStyles?: string;
   onBlur?: () => void;
   onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   linkText?: string;

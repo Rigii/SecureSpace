@@ -1,52 +1,10 @@
-import { StyleSheet } from 'react-native';
-
-import { COLORS, FONTS, FONT_SIZE } from '../../constants/themes';
-
-export const styles = StyleSheet.create({
-  defaultButtonStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: 311,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    borderRadius: 20,
-    height: 46,
-  },
-  defaultButtonText: {
-    alignSelf: 'center',
-    fontFamily: FONTS.medium,
-    fontSize: FONT_SIZE.small,
-    color: COLORS.gray,
-    margin: 5,
-  },
-  lightButtonText: {
-    alignSelf: 'center',
-    fontFamily: FONTS.medium,
-    fontSize: FONT_SIZE.small,
-    color: COLORS.white,
-    margin: 5,
-  },
-
-  filled: {
-    marginRight: 0,
-    color: COLORS.white,
-    backgroundColor: COLORS.lightGreen,
-  },
-  light: {
-    marginRight: 0,
-    color: COLORS.gray,
-    backgroundColor: COLORS.white,
-  },
-  lightBordered: {
-    marginRight: 0,
-    color: COLORS.gray,
-    backgroundColor: COLORS.white,
-    borderWidth: 2,
-    borderColor: COLORS.fonGray
-  },
-  buttonContainer: {
-    alignItems: 'center',
-  },
-});
+export const styles = {
+  defaultButtonStyle:
+    'flex flex-row w-80 justify-center content-center items-center text-center rounded-full h-12',
+  defaultButtonText: 'self-center font-medium text-base text-gray-500',
+  lightButtonText: 'self-center font-medium text-base text-white',
+  filled: 'mr-0 text-white bg-light-blue',
+  light: 'mr-0 text-gray-500 bg-white',
+  lightBordered: 'mr-0 text-gray-500 bg-white border-2 border-fonGray',
+  buttonContainer: 'items-center',
+};
