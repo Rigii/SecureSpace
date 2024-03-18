@@ -203,3 +203,8 @@ export enum EAuthMode {
   logIn = 'log-in',
   register = 'register',
 }
+
+export interface ILoginFormValues {
+  email: string;
+  password: string;
+}

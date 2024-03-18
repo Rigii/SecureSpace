@@ -16,7 +16,8 @@ export const Input = (props: IInputProps) => {
   const inputRef = React.createRef<TextInput>();
 
   const onChange = (value: string) => {
-    props.onChange(props.option || '', value);
+    console.log(333333, value);
+    props.onChange(value);
   };
 
   const catchKey = ({
@@ -54,7 +55,7 @@ export const Input = (props: IInputProps) => {
   return (
     <View
       style={props.style}
-      className={`flex w-full relative justify-center border-b-title-gray border-b-[1px] ${props.className}`}>
+      className={`flex w-full relative justify-center border-b-opacity-gray border-b-[1px] ${props.className}`}>
       {!(
         (isFocused && props.hideLabelOnFocus) ||
         (props.hideLabelOnFocus && !!props.value) ||
@@ -83,14 +84,14 @@ export const Input = (props: IInputProps) => {
         <View pointerEvents="none">
           <TextInput
             ref={inputRef}
-            // placeholderTextColor={props.placeholderTextColor || '#0072C5'}
+            placeholderTextColor={props.placeholderTextColor || '#35353580'}
             maxLength={props.maxLength}
             placeholder={props.placeholder}
             keyboardType={props.keyboardType}
             value={props.value}
             onChangeText={onChange}
             onKeyPress={catchKey}
-            className={`flex flex-row relative text-base p-6 self-end	dark-gray text-right h-5 ${
+            className={`flex flex-row relative text-base  self-end text-dark-gray text-right h-14 ${
               props.hideLabelOnFocus && 'text-left pr-10 w-full'
             }${!isFocused && props.hideLabelOnFocus && props.labelClassName} ${
               props.isError &&

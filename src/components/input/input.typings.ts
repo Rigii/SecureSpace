@@ -32,7 +32,7 @@ export interface IInputProps {
   placeholder?: string;
   keyboardType: TKeyboardType;
   value: string;
-  onChange: (option: string, value: string) => void;
+  onChange: (value: string) => void;
   catchKey?: (key: string) => void;
   option?: string;
   className?: string;

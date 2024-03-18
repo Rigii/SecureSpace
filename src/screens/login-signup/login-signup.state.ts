@@ -1,38 +1,10 @@
-import {useEffect, useMemo, useState} from 'react';
-import {strings} from '../../constants/strings/login-signup.strings';
-import {validateEmail} from '../../services/custom-services';
-import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
+import {useEffect, useState} from 'react';
 import {EAuthMode} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-storage/async-storage-service';
 
-const signUpLoginStrings = {
-  [EAuthMode.register]: {
-    head: strings.createYourAccount,
-    sub: strings.useYourEmail,
-    alt1: strings.alreadyHaveAccount,
-    alt2: strings.login,
-  },
-  [EAuthMode.logIn]: {
-    head: strings.welcomeBack,
-    sub: '',
-    alt1: strings.dontHaveAccount,
-    alt2: strings.register,
-  },
-};
-
 export const useLoginSignUpUserState = () => {
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailPasswordStep, setEmailPasswordStep] = useState(false);
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
   const [isLoading, setLoading] = useState(false);
-
-  const validateCurrentEmail = (emailCurrent: string) => {
-    if (!emailCurrent) return;
-    const isValid = validateEmail(emailCurrent);
-    setIsEmailValid(!!isValid);
-  };
 
   const onForgotPassword = () => setMode(EAuthMode.resetPassword);
 
@@ -41,36 +13,13 @@ export const useLoginSignUpUserState = () => {
       currentMode === EAuthMode.register ? EAuthMode.logIn : EAuthMode.register,
     );
 
-  const emailSignUp = async () => {
-    try {
-      await onSignUp(email, password);
-    } catch (error) {
-      const currentError = error as {code: string; message: string};
-      console.error('Email login / sign up error', currentError.message);
-    }
-  };
-
   const getEmailLocally = async () => {
-    const currentEmail = await locallyEmailForSignIn.get();
-
-    setEmail(currentEmail);
+    return await locallyEmailForSignIn.get();
   };
 
   const onSignUp = async (authEmail: string, authPassword: string) => {
     try {
       console.log('Check Sign Up Email and Password', authEmail, authPassword);
-      // setLoading(true);
-      // window.localStorage.setItem('emailLoginToDashboard', 'true');
-      // const result = await createUserWithEmailAndPassword(
-      //   authInstance,
-      //   authEmail,
-      //   authPassword,
-      // );
-      // await sendEmailVerification(
-      //   result.user,
-      //   manualEncryptionActionCodeSettings,
-      // );
-      // setEmailSent(EmailSendStatus.Sent);
     } catch (error) {
       const currentError = error as Error;
       console.error('Sign Up Error', currentError);
@@ -136,52 +85,43 @@ export const useLoginSignUpUserState = () => {
     // }
   };
 
-  const setStep = async () => {
-    const isEmailSignedUp = await checkEmail(email);
-    if (isEmailSignedUp && mode === EAuthMode.register) {
-      ErrorNotificationHandler({
-        message: 'Email already registered. Log in instead',
-      });
-      return;
+  const onLogIn = async (authEmail: string, authPassword: string) => {
+    try {
+      console.log('Check Sign Up Email and Password', authEmail, authPassword);
+    } catch (error) {
+      const currentError = error as Error;
+      console.error('Login Error', currentError);
+    } finally {
+      setLoading(false);
     }
-    if (!isEmailSignedUp && mode === EAuthMode.logIn) {
-      ErrorNotificationHandler({
-        message: 'Email not registered. Please sign up instead',
-      });
-      return;
-    }
+  };
 
-    setEmailPasswordStep((currentStep: boolean) => !currentStep);
+  const loginSignUp = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
+    const isEmailSignedUp = await checkEmail(email);
+    if (isEmailSignedUp) {
+      onSignUp(email, password);
+      return;
+    }
+    onLogIn(email, password);
   };
 
   useEffect(() => {
     getEmailLocally();
   }, []);
 
-  useEffect(() => {
-    validateCurrentEmail(email);
-  }, [email]);
-
-  const currentStrings = useMemo(
-    () => signUpLoginStrings[mode as keyof typeof signUpLoginStrings],
-    [mode],
-  );
-
   return {
-    currentStrings,
-    isEmailValid,
-    email,
-    password,
-    emailPasswordStep,
     mode,
     isLoading,
+    loginSignUp,
     onMicrosoftSignUp,
     onGoogleSignUp,
-    setStep,
-    setPassword,
-    emailSignUp,
     onChangeMode,
     onForgotPassword,
-    setEmail,
   };
 };
