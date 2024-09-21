@@ -26,13 +26,15 @@ export type TAutoCapitalize = EAutoCapitalize;
 export type TKeyboardType = KeyboardTypes;
 
 export interface IInputProps {
+  key?: string | number;
+  name?: string;
   style?: StyleProp<ViewStyle>;
   props?: any;
   maxLength?: number;
   placeholder?: string;
   keyboardType: TKeyboardType;
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string, name?: string) => void;
   catchKey?: (key: string) => void;
   option?: string;
   className?: string;

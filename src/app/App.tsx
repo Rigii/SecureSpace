@@ -9,7 +9,6 @@ function App(): React.JSX.Element {
   useEffect(() => {
     SplashScreen.hide();
   }, []);
-
   const store = setupStore();
 
   return (

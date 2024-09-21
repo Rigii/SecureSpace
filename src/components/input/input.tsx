@@ -16,8 +16,7 @@ export const Input = (props: IInputProps) => {
   const inputRef = React.createRef<TextInput>();
 
   const onChange = (value: string) => {
-    console.log(333333, value);
-    props.onChange(value);
+    props.onChange(value, props.name);
   };
 
   const catchKey = ({
@@ -55,7 +54,10 @@ export const Input = (props: IInputProps) => {
   return (
     <View
       style={props.style}
-      className={`flex w-full relative justify-center border-b-opacity-gray border-b-[1px] ${props.className}`}>
+      key={props.key}
+      className={`flex w-full relative justify-center border-b-[1px] ${
+        props.className
+      } ${props.isError ? 'border-b-red-500' : 'border-b-opacity-gray'}`}>
       {!(
         (isFocused && props.hideLabelOnFocus) ||
         (props.hideLabelOnFocus && !!props.value) ||
@@ -66,7 +68,7 @@ export const Input = (props: IInputProps) => {
           {props.icon && <View className="ml-1">{props.icon}</View>}
           <Text
             className={`ml-2 text-base ${props.labelClassName} ${
-              !props.isError && 'text-red-900'
+              !!props.isError && 'text-red-500'
             }`}>
             {props.label}
           </Text>
@@ -94,9 +96,7 @@ export const Input = (props: IInputProps) => {
             className={`flex flex-row relative text-base  self-end text-dark-gray text-right h-14 ${
               props.hideLabelOnFocus && 'text-left pr-10 w-full'
             }${!isFocused && props.hideLabelOnFocus && props.labelClassName} ${
-              props.isError &&
-              props.hideLabelOnFocus &&
-              'text-red-900 ml-2 text-base'
+              props.isError && 'text-red-500'
             } ${props.icon && 'pl-5'}
             ${props.inputClassName}
             `}

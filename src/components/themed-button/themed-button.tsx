@@ -22,20 +22,28 @@ export interface IButtonProps {
   hasShadow?: boolean;
 }
 
-const getButtonStyle = (key: IButtonTheme, hasShadow?: boolean) => {
+const getButtonStyle = (
+  key: IButtonTheme,
+  hasShadow?: boolean,
+  disabled?: boolean,
+) => {
   const themes = {
     light: {
-      body: `${styles.defaultButtonStyle} ${styles.light}`,
+      body: `${styles.defaultButtonStyle} ${styles.light} ${
+        disabled && 'bg-disabled-gray'
+      }`,
       text: styles.defaultButtonText,
     },
     filled: {
       body: `${styles.defaultButtonStyle} ${
         (hasShadow && globalStyles.shadow) || ''
-      } ${styles.filled}`,
+      } ${styles.filled} ${disabled && 'bg-disabled-gray'}`,
       text: styles.lightButtonText,
     },
     lightBordered: {
-      body: `${styles.defaultButtonStyle} ${styles.lightBordered}`,
+      body: `${styles.defaultButtonStyle} ${styles.lightBordered} ${
+        disabled && 'border-disabled-gray'
+      }`,
       text: styles.defaultButtonText,
     },
   };
@@ -59,7 +67,7 @@ export const ThemedButton = (props: IButtonProps) => {
     hasShadow = true,
   } = props;
 
-  const btnStyle = getButtonStyle(theme, hasShadow);
+  const btnStyle = getButtonStyle(theme, hasShadow, disabled);
   return (
     <TouchableOpacity
       onPress={onPress}

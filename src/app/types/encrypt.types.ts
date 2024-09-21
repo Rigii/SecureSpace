@@ -27,6 +27,17 @@ export interface IEncryptionUser {
     activated: false;
     startDate?: Date;
   };
+  additional: {
+    optionalEmail: {
+      email: string;
+      email1: string;
+    };
+    optionalPassword: {
+      password1: string;
+      password2: string;
+    };
+    safePlaces: {name: string; location: string}[];
+  };
 }
 
 export interface IPaymentCustomer {

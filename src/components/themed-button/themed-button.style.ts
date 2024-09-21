@@ -5,6 +5,6 @@ export const styles = {
   lightButtonText: 'self-center font-medium text-base text-white',
   filled: 'mr-0 text-white bg-light-blue',
   light: 'mr-0 text-gray-500 bg-white',
-  lightBordered: 'mr-0 text-gray-500 bg-white border-2 border-opacity-gray',
+  lightBordered: 'mr-0 text-gray-500 bg-white border-[1px] border-opacity-gray',
   buttonContainer: 'items-center',
 };

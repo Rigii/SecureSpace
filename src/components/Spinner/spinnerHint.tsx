@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
-import {strings} from '../../constants/strings/spinner-strings';
+import {strings} from '../../constants/strings/spinner.strings';
 
 const randomHints = [
   strings.ransomwareAttacks,
