@@ -67,17 +67,22 @@ export const ImergencyPasswords = ({
       keyboardType={KeyboardTypes.default}
       className="w-80"
       key={index}
+      isSecure={true}
     />
   );
 
   return (
-    <View>
+    <View className="flex flex-col items-center flex-1 p-3 w-screen	">
       <Title1>{strings.accountData}</Title1>
-      <FlatList
-        data={passwordArray} // Provide the password array as the data source
-        renderItem={renderPasswordInput} // The render function
-        keyExtractor={(item, index) => index.toString()}
-      />
+      <View className="block flex-1 m-auto items-center justify-center gap-y-5 overflow-scroll">
+        <Title1>{strings.imergencyPasswords}</Title1>
+        <FlatList
+          data={passwordArray}
+          renderItem={renderPasswordInput}
+          keyExtractor={(item, index) => index.toString()}
+          className="grow-0"
+        />
+      </View>
       <ThemedButton
         text={strings.savePasswords}
         disabled={passwordArray[0].length > 3}

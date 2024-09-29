@@ -21,3 +21,7 @@ export const isDarkMode = () => {
 
   return colorScheme === 'dark';
 };
+
+export const developmentLog = (name: string, value: any) => {
+  console.log(name, value);
+};

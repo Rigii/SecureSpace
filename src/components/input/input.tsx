@@ -16,6 +16,11 @@ export const Input = (props: IInputProps) => {
   const inputRef = React.createRef<TextInput>();
 
   const onChange = (value: string) => {
+    if (props.isNumeric) {
+      const numericValue = value.replace(/[^0-9]/g, '');
+      props.onChange(numericValue, props.name);
+      return;
+    }
     props.onChange(value, props.name);
   };
 

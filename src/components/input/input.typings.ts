@@ -26,6 +26,7 @@ export type TAutoCapitalize = EAutoCapitalize;
 export type TKeyboardType = KeyboardTypes;
 
 export interface IInputProps {
+  isNumeric?: boolean;
   key?: string | number;
   name?: string;
   style?: StyleProp<ViewStyle>;

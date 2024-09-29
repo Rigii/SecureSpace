@@ -6,6 +6,7 @@ import {AppTestComponent} from '../AppTestComponent';
 import {PrivateRoute} from './PrivateRoute';
 import {manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
+import {OnboardingFlow} from '../../screens/onboarding/onboarding-flow';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -41,7 +42,7 @@ export const AppNavigationContainer = () => {
         />
         <Stack.Screen
           name={manualEncryptionScreenRoutes.registerLoginRoute}
-          component={LoginSignUpUser}
+          component={OnboardingFlow} //{LoginSignUpUser}
         />
         <Stack.Screen name="Auth_Loading" component={AppTestComponent} />
       </Stack.Navigator>

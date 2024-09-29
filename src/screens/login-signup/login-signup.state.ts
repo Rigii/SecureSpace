@@ -101,7 +101,6 @@ export const useLoginSignUpUserState = () => {
     try {
       const responce = registerSignInUserApi(signInData);
 
-      console.log(333333, responce);
     } catch (error) {
       const currentError = error as keyof typeof Error;
       console.error('Login, Sign Up Error:', currentError);

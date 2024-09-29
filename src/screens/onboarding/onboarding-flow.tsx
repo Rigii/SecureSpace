@@ -1,14 +1,17 @@
-import React, {useState} from 'react';
-import {strings} from '../../constants/strings/login-signup.strings';
-import {ScrollView, View} from 'react-native';
-import {Title1} from '../../components/title';
+import React from 'react';
+import {ScrollView} from 'react-native';
 import {UserInitialData} from './onboarding-cases/user-initial-data';
 import {Formik} from 'formik';
-import * as Yup from 'yup';
-import {ImergencyPasswords} from './onboarding-cases/imergencyPasswords';
+import {ImergencyPasswords} from './onboarding-cases/imergency-passwords';
+import {SecurePlaces} from './onboarding-cases/secure-places';
+import {WelcomeAboard} from './onboarding-cases/welcome-aboard';
+import {developmentLog} from '../../services/custom-services';
+import {validationOnboardingSchema} from './onboarding.validation';
 
 export interface ISecurePlace {
+  id: string;
   name: string;
+  address: string;
   coordinates: {
     lat: string;
     long: string;
@@ -26,55 +29,41 @@ export interface IOnboardingFormValues {
 }
 
 export const OnboardingFlow: React.FC = () => {
-  // const [currentIndex, setCurrentIndex] = useState(0);
-
-  // const {width} = useWindowDimensions();
-  // const SignUpSchema = Yup.object().shape({
-  //   password: Yup.string()
-  //     .min(2, 'Too Short!')
-  //     .max(50, 'Too Long!')
-  //     .required('Required'),
-  //   email: Yup.string().email('Invalid email').required('Required'),
-  // });
+  const onSubmit = (values: IOnboardingFormValues) => {
+    developmentLog('USER ONBOARDING DATA', values);
+    /* Post data */
+    /* Navigate to the main screen here (if data correct and posted) */
+  };
 
   return (
-    <View className="flex flex-col content-center items-center justify-center flex-1 w-full gap-y-5">
-      <Title1>{strings.secureSpace}</Title1>
-      <Formik
-        initialValues={{
-          nik: '',
-          sex: '',
-          imergencyPasswords: [''],
-          securePlaces: {},
-        }}
-        onSubmit={values => console.log(values)}>
-        {({handleChange, setFieldValue, handleSubmit, values}) => (
-          <ScrollView
-            horizontal={true}
-            // contentContainerStyle={styles.pickerContainer}
-            keyboardShouldPersistTaps={'handled'}>
-            <UserInitialData
-              nikValue={values.nik}
-              sexValue={values.sex}
-              handleChange={handleChange}
-              setFieldValue={setFieldValue}
-            />
-            ,
-            <ImergencyPasswords
-              imergencyPasswords={values.imergencyPasswords}
-              setFieldValue={setFieldValue}
-            />
-            , <Places />, <Congrads />
-            {/* <ThemedButton
-        text={strings.login}
-        disabled={false}
-        theme="filled"
-        onPress={handleSubmit}
-        classCustomBody="w-80"
-      /> */}
-          </ScrollView>
-        )}
-      </Formik>
-    </View>
+    <Formik
+      initialValues={{
+        nik: '',
+        sex: '',
+        imergencyPasswords: [''],
+        securePlaces: {},
+        validationSchema: validationOnboardingSchema,
+      }}
+      onSubmit={onSubmit}>
+      {({handleChange, setFieldValue, handleSubmit, values}) => (
+        <ScrollView horizontal={true} keyboardShouldPersistTaps={'handled'}>
+          <UserInitialData
+            nikValue={values.nik}
+            sexValue={values.sex}
+            handleChange={handleChange}
+            setFieldValue={setFieldValue}
+          />
+          <ImergencyPasswords
+            imergencyPasswords={values.imergencyPasswords}
+            setFieldValue={setFieldValue}
+          />
+          <SecurePlaces
+            securePlaces={values.securePlaces}
+            setFieldValue={setFieldValue}
+          />
+          <WelcomeAboard navigateToMain={handleSubmit} />
+        </ScrollView>
+      )}
+    </Formik>
   );
 };

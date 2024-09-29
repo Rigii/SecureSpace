@@ -6,6 +6,7 @@ import {Input, KeyboardTypes} from '../../../components/input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import {FormikHandlers, FormikActions} from 'formik';
 import {IOnboardingFormValues} from '../onboarding-flow';
+import {ThemedButton} from '../../../components/themed-button';
 
 const radioButtonsData = [
   {id: '1', label: 'Male', value: 'male'},
@@ -26,32 +27,48 @@ export const UserInitialData = ({
 }) => {
   const onRadioButtonPress = (selectedId: string) => {
     const selectedRadioButton = radioButtonsData.find(
-      rb => rb.id === selectedId,
+      rb => rb.id === `${selectedId}`,
     );
-    if (selectedRadioButton) {
-      setFieldValue('sex', selectedRadioButton.value);
+    if (!selectedRadioButton) {
+      return;
     }
+
+    console.log(222, selectedRadioButton.value);
+    setFieldValue('sex', selectedRadioButton.id);
   };
 
   return (
-    <View className="flex flex-col content-center items-center justify-center flex-1 w-full gap-y-5">
-      <Title1>{strings.accountData}</Title1>
-      <Input
-        // isError={!!errors.email && touched.email}
-        value={nikValue}
-        onChange={handleChange('nik')}
-        name="nik"
-        placeholder={strings.nikPlaceholder}
-        keyboardType={KeyboardTypes.default}
-        className="w-80"
-      />
-
-      <RadioGroup
-        radioButtons={radioButtonsData.map(rb => ({
-          ...rb,
-          selected: rb.value === sexValue,
-        }))}
-        onPress={onRadioButtonPress}
+    <View className="flex flex-col items-center flex-1 p-3 w-screen	relative">
+      <Title1 className="break-words">{strings.accountData}</Title1>
+      <View className="block flex-1 m-auto items-center justify-center gap-y-5">
+        <Title1 className="break-words">{strings.nikSex}</Title1>
+        <Input
+          // isError={!!errors.email && touched.email}
+          value={nikValue}
+          onChange={handleChange('nik')}
+          name="nik"
+          placeholder={strings.nikPlaceholder}
+          keyboardType={KeyboardTypes.default}
+          className="w-80"
+        />
+        <View className="flex flex-row">
+          <RadioGroup
+            layout="row"
+            radioButtons={radioButtonsData.map(rb => ({
+              ...rb,
+              selected: rb.value === sexValue,
+            }))}
+            selectedId={sexValue}
+            onPress={onRadioButtonPress}
+          />
+        </View>
+      </View>
+      <ThemedButton
+        text={strings.savePasswords}
+        // disabled={passwordArray[0].length > 3}
+        theme="filled"
+        onPress={() => null}
+        classCustomBody="w-80"
       />
     </View>
   );
