@@ -1,5 +1,4 @@
-import React from 'react';
-import {ScrollView} from 'react-native';
+import React, {useRef, useState} from 'react';
 import {UserInitialData} from './onboarding-cases/user-initial-data';
 import {Formik} from 'formik';
 import {ImergencyPasswords} from './onboarding-cases/imergency-passwords';
@@ -7,32 +6,19 @@ import {SecurePlaces} from './onboarding-cases/secure-places';
 import {WelcomeAboard} from './onboarding-cases/welcome-aboard';
 import {developmentLog} from '../../services/custom-services';
 import {validationOnboardingSchema} from './onboarding.validation';
-
-export interface ISecurePlace {
-  id: string;
-  name: string;
-  address: string;
-  coordinates: {
-    lat: string;
-    long: string;
-  };
-  areaRadiusMeters: string;
-}
-
-export type TSecurePlaces = Record<string, ISecurePlace>; //{[key: string]: ISecurePlaces};
-
-export interface IOnboardingFormValues {
-  nik: string;
-  sex: string;
-  imergencyPasswords: string[];
-  securePlaces: TSecurePlaces;
-}
+import Swiper from 'react-native-swiper';
+import {IOnboardingFormValues, SwiperRef} from './onboarding.types';
 
 export const OnboardingFlow: React.FC = () => {
+  const swiperRef = useRef<SwiperRef>(null);
   const onSubmit = (values: IOnboardingFormValues) => {
     developmentLog('USER ONBOARDING DATA', values);
     /* Post data */
     /* Navigate to the main screen here (if data correct and posted) */
+  };
+
+  const onNextPage = () => {
+    swiperRef?.current?.scrollBy(1, true);
   };
 
   return (
@@ -42,27 +28,48 @@ export const OnboardingFlow: React.FC = () => {
         sex: '',
         imergencyPasswords: [''],
         securePlaces: {},
-        validationSchema: validationOnboardingSchema,
       }}
+      validationSchema={validationOnboardingSchema}
+      isInitialValid={false}
       onSubmit={onSubmit}>
-      {({handleChange, setFieldValue, handleSubmit, values}) => (
-        <ScrollView horizontal={true} keyboardShouldPersistTaps={'handled'}>
+      {({
+        handleChange,
+        setFieldValue,
+        handleSubmit,
+        handleBlur,
+        validateForm,
+        values,
+        errors,
+        touched,
+      }) => (
+        <Swiper showsPagination={false} ref={swiperRef} loop={false}>
           <UserInitialData
             nikValue={values.nik}
             sexValue={values.sex}
             handleChange={handleChange}
             setFieldValue={setFieldValue}
+            onNextPage={onNextPage}
+            handleBlur={handleBlur}
+            validateForm={validateForm}
+            errors={errors}
+            touched={touched}
           />
           <ImergencyPasswords
             imergencyPasswords={values.imergencyPasswords}
             setFieldValue={setFieldValue}
+            onNextPage={onNextPage}
+            handleBlur={handleBlur}
+            validateForm={validateForm}
+            handleChange={handleChange}
+            errors={errors}
           />
           <SecurePlaces
             securePlaces={values.securePlaces}
             setFieldValue={setFieldValue}
+            onNextPage={onNextPage}
           />
           <WelcomeAboard navigateToMain={handleSubmit} />
-        </ScrollView>
+        </Swiper>
       )}
     </Formik>
   );

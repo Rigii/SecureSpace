@@ -98,8 +98,8 @@ export const Input = (props: IInputProps) => {
             value={props.value}
             onChangeText={onChange}
             onKeyPress={catchKey}
-            className={`flex flex-row relative text-base  self-end text-dark-gray text-right h-14 ${
-              props.hideLabelOnFocus && 'text-left pr-10 w-full'
+            className={`flex-row relative text-base self-end text-dark-gray text-right h-14 w-full ${
+              props.hideLabelOnFocus && 'text-left pr-10'
             }${!isFocused && props.hideLabelOnFocus && props.labelClassName} ${
               props.isError && 'text-red-500'
             } ${props.icon && 'pl-5'}

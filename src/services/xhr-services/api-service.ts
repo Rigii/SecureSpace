@@ -60,7 +60,6 @@ export const putData = (token: string, requestUrl: string, payload: any) => {
 };
 
 export const postData = (token: string, requestUrl: string, payload: any) => {
-  console.log(7777777, `${BASE_URL_LOCAL}${requestUrl}`);
   return getInstance(token).post(`${BASE_URL_LOCAL}${requestUrl}`, payload);
 };
 

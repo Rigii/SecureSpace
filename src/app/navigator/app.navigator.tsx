@@ -6,7 +6,7 @@ import {AppTestComponent} from '../AppTestComponent';
 import {PrivateRoute} from './PrivateRoute';
 import {manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
-import {OnboardingFlow} from '../../screens/onboarding/onboarding-flow';
+import {OnboardingFlow} from '../../screens/onboarding/onboarding';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

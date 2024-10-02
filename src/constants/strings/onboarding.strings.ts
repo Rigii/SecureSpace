@@ -16,6 +16,8 @@ export const strings = {
   welcomeAboard: 'Welcome aboard!',
   nowYouCanStart: 'Now you can start saving your confidential content!',
   toTheMainScreen: 'To the main screen',
+  saveNikname: 'Save nikname',
+  nikIncorrect: 'Nik value is incorrect',
   // phoneHolder: '+xxxxxxxxxxxx',
   // youRegistered: 'You registered!',
   // protectYourShelter: 'Protect Your Shelter, add secure settings',

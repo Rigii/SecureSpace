@@ -11,7 +11,6 @@ export const WelcomeAboard = ({
 }) => {
   return (
     <View className="flex flex-col items-center flex-1 p-3 w-screen">
-      <Title1>{strings.accountData}</Title1>
       <View className="block flex-1 m-auto items-center justify-center gap-y-5 overflow-scroll">
         <Title1>{strings.welcomeAboard}</Title1>
         <Title2>{strings.nowYouCanStart}</Title2>
