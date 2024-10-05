@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {UserInitialData} from './onboarding-cases/user-initial-data';
 import {Formik} from 'formik';
 import {ImergencyPasswords} from './onboarding-cases/imergency-passwords';
@@ -24,9 +24,9 @@ export const OnboardingFlow: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        nik: '',
-        sex: '',
-        imergencyPasswords: [''],
+        name: '',
+        titleForm: '',
+        imergencyPasswordsEmails: [{email: '', password: ''}],
         securePlaces: {},
       }}
       validationSchema={validationOnboardingSchema}
@@ -44,8 +44,8 @@ export const OnboardingFlow: React.FC = () => {
       }) => (
         <Swiper showsPagination={false} ref={swiperRef} loop={false}>
           <UserInitialData
-            nikValue={values.nik}
-            sexValue={values.sex}
+            nikValue={values.name}
+            sexValue={values.titleForm}
             handleChange={handleChange}
             setFieldValue={setFieldValue}
             onNextPage={onNextPage}
@@ -55,7 +55,7 @@ export const OnboardingFlow: React.FC = () => {
             touched={touched}
           />
           <ImergencyPasswords
-            imergencyPasswords={values.imergencyPasswords}
+            imergencyPasswordsEmails={values.imergencyPasswordsEmails}
             setFieldValue={setFieldValue}
             onNextPage={onNextPage}
             handleBlur={handleBlur}

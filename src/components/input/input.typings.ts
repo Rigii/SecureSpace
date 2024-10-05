@@ -26,6 +26,7 @@ export type TAutoCapitalize = EAutoCapitalize;
 export type TKeyboardType = KeyboardTypes;
 
 export interface IInputProps {
+  inputIndex?: number;
   isNumeric?: boolean;
   key?: string | number;
   name?: string;
@@ -35,7 +36,7 @@ export interface IInputProps {
   placeholder?: string;
   keyboardType: TKeyboardType;
   value: string;
-  onChange: (value: string, name?: string) => void;
+  onChange: (value: string, name?: string, inputIndex?: number) => void;
   catchKey?: (key: string) => void;
   option?: string;
   className?: string;

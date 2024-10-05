@@ -1,12 +1,48 @@
+export enum ETitleForm {
+  mister = 'mr',
+  missis = 'ms',
+  other = 'other',
+}
+
+export interface ITitleForm {
+  id: string;
+  label: string;
+  value: ETitleForm.mister;
+}
+
 export interface IManualEncryptionUserLimits {
   views: string[] | [];
   phoneVerification: string[] | [];
   locationLocked: string[] | [];
 }
 
+export interface ISecurePlace {
+  id: string;
+  name: string;
+  address: string;
+  coordinates: {
+    lat: string;
+    long: string;
+  };
+  areaRadiusMeters: string;
+}
+
+export type TSecurePlaces = Record<string, ISecurePlace> | {};
+
+export interface ISecureOptions {
+  imergencyEmailsPasswords: {email: string, password: string}[];
+  securePlaces: TSecurePlaces;
+}
+
+export interface IOnboarding {
+  secureOptions: ISecureOptions;
+  displayName: string;
+}
+
 export interface IEncryptionUser {
   accountId: string;
   displayName: string;
+  titleForm: ITitleForm;
   email: string;
   isPayed: boolean;
   isPlanInfoPublished?: boolean;
@@ -16,28 +52,18 @@ export interface IEncryptionUser {
         date: Date;
       }[]
     | null;
+  isCookiesAllowed: boolean;
   limits: IManualEncryptionUserLimits;
   trialPeriodData?: {
     date: string;
-    isActivated: boolean;
+    isTrialActive: boolean;
   };
-  isTrialActive?: boolean;
   referralInvitationData?: {referralId: string; referralSenderId: string};
   referralBonusPremium?: {
     activated: false;
     startDate?: Date;
   };
-  additional: {
-    optionalEmail: {
-      email: string;
-      email1: string;
-    };
-    optionalPassword: {
-      password1: string;
-      password2: string;
-    };
-    safePlaces: {name: string; location: string}[];
-  };
+  secureOptions: ISecureOptions;
 }
 
 export interface IPaymentCustomer {

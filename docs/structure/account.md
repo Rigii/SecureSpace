@@ -8,7 +8,7 @@
 
 ## Onboarding Flow
 
-3. Add your data (sex, nik).
+3. Add your data (titleForm, name).
 4. Add your first, second and third password for the imergency case. 
 5. Add your "Safe Places"
 6. Greatings + Info

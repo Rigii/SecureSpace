@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
 
 export const validationOnboardingSchema = Yup.object().shape({
-  nik: Yup.string()
+  name: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Let us know how to call you'),
-  sex: Yup.string().required('Add your sex'),
+  titleForm: Yup.string().required('Add your titleForm'),
   imergencyPasswords: Yup.array()
     .of(Yup.string())
     .min(3, 'At least 3 emergency passwords are required')

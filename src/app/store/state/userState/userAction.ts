@@ -1,7 +1,9 @@
-import {createAsyncThunk, createAction} from '@reduxjs/toolkit';
-import {IEncryptionUser, IPaymentCustomer} from '../../../types/encrypt.types';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createAction} from '@reduxjs/toolkit';
+import {
+  IEncryptionUser,
+  IOnboarding,
+  IPaymentCustomer,
+} from '../../../types/encrypt.types';
 
 export const setIsActiveSubscription = createAction<boolean>(
   'anonymousUser/setIsActiveSubscription',
@@ -27,43 +29,8 @@ export const setAnonymousUser = createAction<Partial<IEncryptionUser> | null>(
   'anonymousUser/setAnonymousUser',
 );
 
-export const saveActualAnonymousUserData = createAsyncThunk(
-  'anonymousUser/saveActualAnonymousUserData',
-  async (
-    {
-      user,
-      isCookiesAllowed,
-    }: {
-      user: Partial<IEncryptionUser> | null;
-      isCookiesAllowed?: boolean;
-    },
-    {dispatch},
-  ) => {
-    try {
-      const currentCookieStateJSON = await AsyncStorage.getItem(
-        'manual-encryption-decryption-user',
-      );
-
-      const newCookieState = currentCookieStateJSON
-        ? {...JSON.parse(currentCookieStateJSON), ...user}
-        : user;
-
-      if (isCookiesAllowed) {
-        await AsyncStorage.setItem(
-          'manual-encryption-decryption-user',
-          JSON.stringify(newCookieState),
-        );
-      }
-
-      // Dispatch the regular action creator to update the state
-      dispatch(setAnonymousUser(user));
-    } catch (error) {
-      // Handle errors here
-      console.error('Error saving user data:', error);
-      // You can throw the error to handle it in the rejected case
-      throw error;
-    }
-  },
+export const setOnboardingData = createAction<Partial<IOnboarding> | null>(
+  'anonymousUser/setOnboardingData',
 );
 
 export const savePaymentCustomer = createAction(
@@ -79,3 +46,42 @@ export const savePaymentCustomerError = createAction(
     payload: errorString,
   }),
 );
+
+// export const saveActualAnonymousUserData = createAsyncThunk(
+//   'anonymousUser/saveActualAnonymousUserData',
+//   async (
+//     {
+//       user,
+//       isCookiesAllowed,
+//     }: {
+//       user: Partial<IEncryptionUser> | null;
+//       isCookiesAllowed?: boolean;
+//     },
+//     {dispatch},
+//   ) => {
+//     try {
+//       const currentCookieStateJSON = await AsyncStorage.getItem(
+//         'manual-encryption-decryption-user',
+//       );
+
+//       const newCookieState = currentCookieStateJSON
+//         ? {...JSON.parse(currentCookieStateJSON), ...user}
+//         : user;
+
+//       if (isCookiesAllowed) {
+//         await AsyncStorage.setItem(
+//           'manual-encryption-decryption-user',
+//           JSON.stringify(newCookieState),
+//         );
+//       }
+
+//       // Dispatch the regular action creator to update the state
+//       dispatch(setAnonymousUser(user));
+//     } catch (error) {
+//       // Handle errors here
+//       console.error('Error saving user data:', error);
+//       // You can throw the error to handle it in the rejected case
+//       throw error;
+//     }
+//   },
+// );

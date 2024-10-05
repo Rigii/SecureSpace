@@ -1,23 +1,16 @@
 import Swiper from 'react-native-swiper';
-
-export interface ISecurePlace {
-  id: string;
-  name: string;
-  address: string;
-  coordinates: {
-    lat: string;
-    long: string;
-  };
-  areaRadiusMeters: string;
-}
-
-export type TSecurePlaces = Record<string, ISecurePlace> | {}; //{[key: string]: ISecurePlaces};
+import {TSecurePlaces} from '../../app/types/encrypt.types';
 
 export interface IOnboardingFormValues {
-  nik: string;
-  sex: string;
-  imergencyPasswords: string[];
+  name: string;
+  titleForm: string;
+  imergencyPasswordsEmails: {email: string; password: string}[];
   securePlaces: TSecurePlaces;
+}
+
+export interface IUserData {
+  email: string;
+  password: string;
 }
 
 export type SwiperRef = React.ElementRef<typeof Swiper>;

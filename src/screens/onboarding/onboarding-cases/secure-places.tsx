@@ -11,11 +11,8 @@ import {
   GooglePlaceDetail,
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
-import {
-  IOnboardingFormValues,
-  ISecurePlace,
-  TSecurePlaces,
-} from '../onboarding.types';
+import {IOnboardingFormValues} from '../onboarding.types';
+import {ISecurePlace, TSecurePlaces} from '../../../app/types/encrypt.types';
 
 export const SecurePlaces = ({
   // securePlaces,
@@ -63,7 +60,6 @@ export const SecurePlaces = ({
   const onAddPlaceValue = () => {
     const currentPlaceId = place.coordinates.lat + place.coordinates.long;
     setFieldValue('securePlaces', {...place, id: currentPlaceId});
-    console.log(3333);
 
     onNextPage();
   };

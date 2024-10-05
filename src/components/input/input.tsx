@@ -21,7 +21,7 @@ export const Input = (props: IInputProps) => {
       props.onChange(numericValue, props.name);
       return;
     }
-    props.onChange(value, props.name);
+    props.onChange(value, props.name, props.inputIndex);
   };
 
   const catchKey = ({

@@ -6,8 +6,9 @@ import {
   setIsTrialPeriodExpired,
   setIsActiveSubscription,
   setShowPlanPage,
+  setOnboardingData,
 } from './userAction';
-import {IEncryptionUser} from '../../../types/encrypt.types';
+import {IEncryptionUser, IOnboarding} from '../../../types/encrypt.types';
 
 interface UserState {
   anonymousUser: IEncryptionUser | null;
@@ -37,6 +38,18 @@ export const anonymousUserSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
+      .addCase(
+        setOnboardingData,
+        (state, action: PayloadAction<Partial<IOnboarding> | null>) => {
+          const currentState = {
+            ...state.anonymousUser,
+            displayName: action.payload?.displayName,
+            secureOptions: action.payload?.secureOptions,
+          };
+
+          state.anonymousUser = currentState as IEncryptionUser;
+        },
+      )
       .addCase(
         setAnonymousUser,
         (state, action: PayloadAction<Partial<IEncryptionUser> | null>) => {

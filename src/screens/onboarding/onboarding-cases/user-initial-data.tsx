@@ -42,11 +42,11 @@ export const UserInitialData = ({
       return;
     }
 
-    setFieldValue('sex', selectedRadioButton.id);
+    setFieldValue('titleForm', selectedRadioButton.id);
   };
 
   const onHandleBlur = () => {
-    handleBlur('nik');
+    handleBlur('name');
   };
 
   const handleScreenPress = () => {
@@ -61,13 +61,13 @@ export const UserInitialData = ({
     <TouchableWithoutFeedback onPress={handleScreenPress}>
       <View className="flex flex-col items-center flex-1 p-3 w-screen	relative">
         <View className="block flex-1 m-auto items-center justify-center gap-y-5">
-          <Title1 className="break-words">{strings.nikSex}</Title1>
+          <Title1 className="break-words">{strings.nik}</Title1>
           <Input
-            isError={touched.nik && !!errors.nik}
+            isError={touched.name && !!errors.name}
             value={nikValue}
             onBlur={onHandleBlur}
-            onChange={handleChange('nik')}
-            name="nik"
+            onChange={handleChange('name')}
+            name="name"
             placeholder={strings.nikPlaceholder}
             keyboardType={KeyboardTypes.default}
             className="w-80"
@@ -86,7 +86,7 @@ export const UserInitialData = ({
         </View>
         <ThemedButton
           text={strings.saveNikname}
-          disabled={!!errors.nik || !!errors.sex}
+          disabled={!!errors.name || !!errors.titleForm}
           theme="filled"
           onPress={onNextPage}
           classCustomBody="w-80"
