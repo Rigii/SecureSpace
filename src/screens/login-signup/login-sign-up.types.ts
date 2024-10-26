@@ -201,7 +201,7 @@ export interface IRegisterAnonymousUserState {
 export enum EAuthMode {
   resetPassword = 'resetPassword',
   logIn = 'log-in',
-  register = 'register',
+  signUp = 'signUp',
 }
 
 export interface ILoginFormValues {

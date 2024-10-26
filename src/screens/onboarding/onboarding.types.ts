@@ -1,11 +1,19 @@
 import Swiper from 'react-native-swiper';
-import {TSecurePlaces} from '../../app/types/encrypt.types';
 
 export interface IOnboardingFormValues {
   name: string;
   titleForm: string;
   imergencyPasswordsEmails: {email: string; password: string}[];
-  securePlaces: TSecurePlaces;
+  securePlaceName: string;
+  securePlaceData: {
+    id: string;
+    address: string;
+    coordinates: {
+      lat: string;
+      long: string;
+    };
+  };
+  securePlaceRadius: string;
 }
 
 export interface IUserData {

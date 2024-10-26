@@ -2,6 +2,11 @@ import {useEffect, useState} from 'react';
 import {EAuthMode} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-storage/async-storage-service';
 import {registerSignInUserApi} from '../../services/api/user.api';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../services/ErrorNotificationHandler';
+import { strings } from '../../constants/strings/login-signup.strings';
 
 export const useLoginSignUpUserState = () => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
@@ -11,7 +16,7 @@ export const useLoginSignUpUserState = () => {
 
   const onChangeMode = () =>
     setMode((currentMode: EAuthMode) =>
-      currentMode === EAuthMode.register ? EAuthMode.logIn : EAuthMode.register,
+      currentMode === EAuthMode.signUp ? EAuthMode.logIn : EAuthMode.signUp,
     );
 
   const getEmailLocally = async () => {
@@ -99,11 +104,17 @@ export const useLoginSignUpUserState = () => {
 
   const loginSignUp = async (signInData: {email: string; password: string}) => {
     try {
-      const responce = registerSignInUserApi(signInData);
-
+      const isSignUp = mode === EAuthMode.signUp;
+      const responce = await registerSignInUserApi(signInData, isSignUp);
+      const responseObject = JSON.parse(responce.data);
     } catch (error) {
       const currentError = error as keyof typeof Error;
-      console.error('Login, Sign Up Error:', currentError);
+      if (currentError.response.data.message === 'Not exist') {
+        ErrorNotificationHandler({
+          text1: strings.dontHaveAccount,
+          text2: strings.pleaseSignUp
+        });
+      }
     }
   };
 

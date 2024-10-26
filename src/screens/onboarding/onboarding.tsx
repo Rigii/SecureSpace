@@ -1,25 +1,52 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {UserInitialData} from './onboarding-cases/user-initial-data';
 import {Formik} from 'formik';
 import {ImergencyPasswords} from './onboarding-cases/imergency-passwords';
 import {SecurePlaces} from './onboarding-cases/secure-places';
 import {WelcomeAboard} from './onboarding-cases/welcome-aboard';
-import {developmentLog} from '../../services/custom-services';
 import {validationOnboardingSchema} from './onboarding.validation';
 import Swiper from 'react-native-swiper';
 import {IOnboardingFormValues, SwiperRef} from './onboarding.types';
+import {useDispatch} from 'react-redux';
+import {setOnboardingData} from '../../app/store/state/userState/userAction';
 
 export const OnboardingFlow: React.FC = () => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const swiperRef = useRef<SwiperRef>(null);
+
+  const dispatch = useDispatch();
+
   const onSubmit = (values: IOnboardingFormValues) => {
-    developmentLog('USER ONBOARDING DATA', values);
+    const secureOption = {
+      imergencyPasswordsEmails: values.imergencyPasswordsEmails,
+      securePlaces: {
+        [values.securePlaceName]: {
+          ...values.securePlaceData,
+          name: values.securePlaceName,
+          securePlaceRadius: values.securePlaceRadius,
+        },
+      },
+    };
+
+    dispatch(
+      setOnboardingData({
+        secureOptions: secureOption,
+        displayName: values.name,
+      }),
+    );
+
     /* Post data */
-    /* Navigate to the main screen here (if data correct and posted) */
+    setIsSubmitted(true);
   };
 
   const onNextPage = () => {
     swiperRef?.current?.scrollBy(1, true);
   };
+
+  if (isSubmitted) {
+    return <WelcomeAboard navigateToMain={() => null} />;
+  }
 
   return (
     <Formik
@@ -27,7 +54,16 @@ export const OnboardingFlow: React.FC = () => {
         name: '',
         titleForm: '',
         imergencyPasswordsEmails: [{email: '', password: ''}],
-        securePlaces: {},
+        securePlaceName: '',
+        securePlaceData: {
+          id: '',
+          address: '',
+          coordinates: {
+            lat: '',
+            long: '',
+          },
+        },
+        securePlaceRadius: '',
       }}
       validationSchema={validationOnboardingSchema}
       isInitialValid={false}
@@ -64,11 +100,16 @@ export const OnboardingFlow: React.FC = () => {
             errors={errors}
           />
           <SecurePlaces
-            securePlaces={values.securePlaces}
+            securePlaceNameValue={values.securePlaceName}
+            errors={errors}
+            touched={touched}
+            securePlaceRadiusValue={values.securePlaceRadius}
+            handleChange={handleChange}
+            validateForm={validateForm}
+            handleSubmit={handleSubmit}
             setFieldValue={setFieldValue}
             onNextPage={onNextPage}
           />
-          <WelcomeAboard navigateToMain={handleSubmit} />
         </Swiper>
       )}
     </Formik>

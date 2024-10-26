@@ -1,9 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {strings} from '../../../constants/strings/onboarding.strings';
 import {Keyboard, TouchableWithoutFeedback, View} from 'react-native';
 import {Title1} from '../../../components/title';
 import {Input, KeyboardTypes} from '../../../components/input';
-import {FormikActions} from 'formik';
+import {
+  FormikActions,
+  FormikHandlers,
+  FormikErrors,
+  FormikTouched,
+} from 'formik';
 
 import {ThemedButton} from '../../../components/themed-button';
 import {
@@ -12,55 +17,59 @@ import {
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
 import {IOnboardingFormValues} from '../onboarding.types';
-import {ISecurePlace, TSecurePlaces} from '../../../app/types/encrypt.types';
 
 export const SecurePlaces = ({
-  // securePlaces,
+  securePlaceNameValue,
+  securePlaceRadiusValue,
+  errors,
+  touched,
+  validateForm,
+  handleChange,
   setFieldValue,
   onNextPage,
+  handleSubmit,
 }: {
-  securePlaces: TSecurePlaces;
+  securePlaceNameValue: string;
+  securePlaceRadiusValue: string;
+  errors: FormikErrors<IOnboardingFormValues>;
+  touched: FormikTouched<IOnboardingFormValues>;
+  validateForm: (values?: any) => Promise<FormikErrors<IOnboardingFormValues>>;
+  handleSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
+  handleChange: FormikHandlers['handleChange'];
   setFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'];
   onNextPage: () => void;
 }) => {
-  const [place, updatePlace] = useState<ISecurePlace>({
-    id: '',
-    name: '',
-    address: '',
-    coordinates: {
-      lat: '',
-      long: '',
-    },
-    areaRadiusMeters: '',
-  });
-
-  // const placesArray = Object.values(securePlaces);
-  const onUpdatePlaceName = (value: string) => {
-    updatePlace(state => ({...state, name: value}));
-  };
-
   const onUpdatePlaceCoordinates = async (
     value: GooglePlaceData,
     detail: GooglePlaceDetail | null,
   ) => {
-    updatePlace(state => ({
-      ...state,
+    if (!detail?.geometry?.location.lat || !detail?.geometry?.location.lng) {
+      return setFieldValue('securePlaceData', {
+        id: '',
+        address: '',
+        coordinates: {
+          lat: '',
+          long: '',
+        },
+      });
+    }
+
+    setFieldValue('securePlaceData', {
+      id: detail?.geometry?.location.lat + detail?.geometry?.location.lng,
       address: value.description,
       coordinates: {
         lat: `${detail?.geometry?.location.lat}` || '',
         long: `${detail?.geometry?.location.lng}` || '',
       },
-    }));
+    });
   };
 
-  const onSetRadius = (areaRadiusMeters: string) => {
-    updatePlace(state => ({...state, areaRadiusMeters}));
-  };
-
-  const onAddPlaceValue = () => {
-    const currentPlaceId = place.coordinates.lat + place.coordinates.long;
-    setFieldValue('securePlaces', {...place, id: currentPlaceId});
-
+  const onAddPlaceValue = async () => {
+    const errors = await validateForm();
+    if (Object.keys(errors).length > 0) {
+      console.log(22222, errors);
+    }
+    handleSubmit();
     onNextPage();
   };
 
@@ -75,23 +84,22 @@ export const SecurePlaces = ({
           <Title1>{strings.securePlace}</Title1>
           <View>
             <AddressInput
+              isError={!!errors.securePlaceData}
               placeholder={strings.address}
               onUpdatePlaceCoordinates={onUpdatePlaceCoordinates}
             />
             <Input
-              // isError={!!errors.email && touched.email}
-              value={place.name}
-              onChange={onUpdatePlaceName}
-              name="name"
+              isError={!!errors.securePlaceName}
+              value={securePlaceNameValue}
+              onChange={handleChange('securePlaceName')}
               placeholder={strings.placeName}
               keyboardType={KeyboardTypes.default}
               className="w-80"
             />
             <Input
-              // isError={!!errors.email && touched.email}
-              value={place.areaRadiusMeters}
-              onChange={onSetRadius}
-              name="radius"
+              isError={touched.securePlaceRadius && !!errors.securePlaceRadius}
+              value={securePlaceRadiusValue}
+              onChange={handleChange('securePlaceRadius')}
               placeholder={strings.radius}
               keyboardType={KeyboardTypes.default}
               className="w-80"
@@ -101,7 +109,7 @@ export const SecurePlaces = ({
         </View>
         <ThemedButton
           text={strings.savePlace}
-          disabled={!place.name || !place.coordinates.lat}
+          // disabled={!place.name || !place.coordinates.lat}
           theme="filled"
           onPress={onAddPlaceValue}
           classCustomBody="w-80"

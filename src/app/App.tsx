@@ -4,6 +4,7 @@ import {AppNavigationContainer} from './navigator/app.navigator';
 import SplashScreen from 'react-native-splash-screen';
 import {setupStore} from './store/store';
 import {Provider} from 'react-redux';
+import Toast from 'react-native-toast-message';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -15,6 +16,7 @@ function App(): React.JSX.Element {
     <>
       <Provider store={store}>
         <AppNavigationContainer />
+        <Toast />
       </Provider>
     </>
   );

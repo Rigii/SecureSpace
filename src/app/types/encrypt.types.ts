@@ -24,13 +24,13 @@ export interface ISecurePlace {
     lat: string;
     long: string;
   };
-  areaRadiusMeters: string;
+  securePlaceRadius: string;
 }
 
 export type TSecurePlaces = Record<string, ISecurePlace> | {};
 
 export interface ISecureOptions {
-  imergencyEmailsPasswords: {email: string, password: string}[];
+  imergencyPasswordsEmails: {email: string; password: string}[];
   securePlaces: TSecurePlaces;
 }
 

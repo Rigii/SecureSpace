@@ -1,5 +1,6 @@
-import {Toast} from 'toastify-react-native';
 // import {isDarkMode} from 'constants/constantsGlobal';
+
+import Toast from 'react-native-toast-message';
 
 export enum EPopupType {
   DEFAULT = 'DEFAULT',
@@ -9,17 +10,18 @@ export enum EPopupType {
 }
 
 export const ErrorNotificationHandler = ({
-  message,
-  position,
-}: // type,
-// position,
-// customClassName,
-// onclose,
-{
-  message: string; // | React.ReactNode;
-  position?: string;
-
-  // type: EPopupType;
-  // customClassName?: string;
-  // onclose?: () => void;
-}) => Toast.info(message, position || 'top-center');
+  text1,
+  text2,
+  type,
+}: {
+  text1: string; // | React.ReactNode;
+  text2?: string;
+  type?: string;
+}) => {
+  console.log(7777777, text1);
+  Toast.show({
+    type: 'info',
+    text1: text1,
+    text2: text2 || '',
+  });
+};

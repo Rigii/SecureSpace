@@ -4,7 +4,7 @@ import {Input, KeyboardTypes} from '../../components/input';
 import {ThemedButton} from '../../components/themed-button';
 import {View} from 'react-native';
 import {Formik} from 'formik';
-import {ILoginFormValues} from './login-sign-up.types';
+import {EAuthMode, ILoginFormValues} from './login-sign-up.types';
 import * as Yup from 'yup';
 
 export const EmailPasswordForm: React.FC<{
@@ -15,7 +15,8 @@ export const EmailPasswordForm: React.FC<{
     email: string;
     password: string;
   }) => Promise<void>;
-}> = ({loginSignUp}) => {
+  mode: EAuthMode;
+}> = ({loginSignUp, mode}) => {
   const SignUpSchema = Yup.object().shape({
     password: Yup.string()
       .min(2, 'Too Short!')
@@ -59,7 +60,7 @@ export const EmailPasswordForm: React.FC<{
             />
           </View>
           <ThemedButton
-            text={strings.login}
+            text={mode === EAuthMode.logIn ? strings.logIn : strings.signUp}
             disabled={
               (!!errors.email && touched.email) ||
               (!!errors.password && touched.password)

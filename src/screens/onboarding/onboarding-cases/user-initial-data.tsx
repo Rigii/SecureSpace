@@ -21,10 +21,11 @@ export const UserInitialData = ({
   onNextPage,
   validateForm,
 }: {
-  nikValue: string;
-  sexValue: string;
   errors: FormikErrors<IOnboardingFormValues>;
   touched: FormikTouched<IOnboardingFormValues>;
+  nikValue: string;
+  sexValue: string;
+
   handleBlur: {
     (e: React.FocusEvent<any, Element>): void;
     <T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;

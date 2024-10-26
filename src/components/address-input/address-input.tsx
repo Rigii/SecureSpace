@@ -10,43 +10,42 @@ import {
 export const AddressInput = ({
   placeholder,
   classNameWrapper,
+  isError,
   onUpdatePlaceCoordinates,
 }: {
   classNameWrapper?: string;
   placeholder: string;
+  isError?: boolean;
   onUpdatePlaceCoordinates: (
     value: GooglePlaceData,
     detail: GooglePlaceDetail | null,
   ) => Promise<void>;
-}) => {
-  return (
-    <View className={`w-80 ${classNameWrapper}`}>
-      <GooglePlacesAutocomplete
-        placeholder={placeholder}
-        onPress={onUpdatePlaceCoordinates}
-        fetchDetails={true}
-        query={{
-          key: 'AIzaSyCCu1qafrPaTNoBlUreX1o2F0xkpqqP_pE',
-          language: 'en',
-        }}
-        textInputProps={{
-          placeholderTextColor: '#717170',
-          padding: 0,
-          paddingLeft: 0,
-        }}
-        styles={addressInputStyles}
-      />
-    </View>
-  );
-};
+}) => (
+  <View className={`w-80 ${classNameWrapper}`}>
+    <GooglePlacesAutocomplete
+      placeholder={placeholder}
+      onPress={onUpdatePlaceCoordinates}
+      fetchDetails={true}
+      query={{
+        key: 'AIzaSyCCu1qafrPaTNoBlUreX1o2F0xkpqqP_pE',
+        language: 'en',
+      }}
+      textInputProps={{
+        placeholderTextColor: isError ? '#FF0000' : '#717170',
+        padding: 0,
+        paddingLeft: 0,
+      }}
+      styles={addressInputStyles(isError)}
+    />
+  </View>
+);
 
-const addressInputStyles = {
+const addressInputStyles = (isError?: boolean) => ({
   container: {
     flex: 0,
     zIndex: 1,
     background: 'inherit',
     backgroundColor: 'transparent',
-    borderBottomColor: '#717170',
   },
   textInputContainer: {
     width: '100%',
@@ -54,7 +53,7 @@ const addressInputStyles = {
     borderBottomWidth: 1,
     borderLeftWidth: 0,
     borderRightWidth: 0,
-    borderBottomColor: '#717170',
+    borderBottomColor: isError ? '#FF0000' : '#717170',
     background: 'inherit',
     backgroundColor: 'transparent',
   },
@@ -69,4 +68,4 @@ const addressInputStyles = {
   description: {
     color: '#717170',
   },
-};
+});
