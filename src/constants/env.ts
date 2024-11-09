@@ -5,7 +5,7 @@ export const CLIENT_ID = Config.CLIENT_ID || 'test-e0ff-4c2f-a897-test';
 export const CLIENT_SECRET = Config.CLIENT_SECRET || 'test';
 export const SCOPE = Config.SCOPE || '*';
 export const MAPBOX_ACCESS_TOKEN = 'pk.test';
-export const BASE_URL = 'https://test-api.code23.com';
+export const BASE_URL = 'https://test-api.code333.com';
 export const BASE_URL_LOCAL = 'http://localhost:5001';
 export const PUSHER_ENV = {
   app_id: 1212121,

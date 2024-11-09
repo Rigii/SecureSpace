@@ -208,3 +208,16 @@ export interface ILoginFormValues {
   email: string;
   password: string;
 }
+
+export interface IUserAuthData {
+  password: string;
+  id: string;
+  created: Date;
+  updated: Date;
+  role: string;
+  email: string;
+  provider: string;
+  externalAuthProviderId: string;
+  emailVerified: boolean;
+  userInfo: Record<string, string | string[]> | null;
+}

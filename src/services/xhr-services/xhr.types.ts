@@ -157,3 +157,9 @@ export interface IStripeProduct {
   updated: number;
   url: null | string;
 }
+
+export interface IHttpExceptionResponse {
+  statusCode: number;
+  message: string | string[];
+  error: string;
+}

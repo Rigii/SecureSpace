@@ -42,7 +42,11 @@ export const AppNavigationContainer = () => {
         />
         <Stack.Screen
           name={manualEncryptionScreenRoutes.registerLoginRoute}
-          component={LoginSignUpUser} //{LoginSignUpUser}
+          component={LoginSignUpUser}
+        />
+        <Stack.Screen
+          name={manualEncryptionScreenRoutes.onboarding}
+          component={OnboardingFlow}
         />
         <Stack.Screen name="Auth_Loading" component={AppTestComponent} />
       </Stack.Navigator>

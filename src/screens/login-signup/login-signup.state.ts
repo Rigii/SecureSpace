@@ -1,14 +1,14 @@
 import {useEffect, useState} from 'react';
-import {EAuthMode} from './login-sign-up.types';
+import {EAuthMode, IUserAuthData} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-storage/async-storage-service';
 import {registerSignInUserApi} from '../../services/api/user.api';
-import {
-  EPopupType,
-  ErrorNotificationHandler,
-} from '../../services/ErrorNotificationHandler';
-import { strings } from '../../constants/strings/login-signup.strings';
+import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
+import {strings} from '../../constants/strings/login-signup.strings';
+import {IHttpExceptionResponse} from '../../services/xhr-services/xhr.types';
+import {AxiosError} from 'axios';
+import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
 
-export const useLoginSignUpUserState = () => {
+export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
   const [isLoading, setLoading] = useState(false);
 
@@ -102,17 +102,34 @@ export const useLoginSignUpUserState = () => {
   //   }
   // };
 
+  const proceedUserAuthData = (user: IUserAuthData) => {
+    if (!user.userInfo) {
+      navigation.navigate(manualEncryptionScreenRoutes.onboarding);
+
+      // Redirect here
+    }
+  };
+
   const loginSignUp = async (signInData: {email: string; password: string}) => {
     try {
       const isSignUp = mode === EAuthMode.signUp;
       const responce = await registerSignInUserApi(signInData, isSignUp);
-      const responseObject = JSON.parse(responce.data);
+      if (isSignUp) {
+        ErrorNotificationHandler({
+          text1: strings.confirmYourEmail,
+          text2: strings.emailLinkSent,
+        });
+      }
+
+      const user = responce.data.user as IUserAuthData;
+      console.log(2222222, responce.data.user.userInfo);
+      proceedUserAuthData(user);
     } catch (error) {
-      const currentError = error as keyof typeof Error;
-      if (currentError.response.data.message === 'Not exist') {
+      const currentError = error as AxiosError<IHttpExceptionResponse>;
+      if (currentError.response?.data.message === 'Not exist') {
         ErrorNotificationHandler({
           text1: strings.dontHaveAccount,
-          text2: strings.pleaseSignUp
+          text2: strings.pleaseSignUp,
         });
       }
     }

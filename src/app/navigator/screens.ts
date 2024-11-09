@@ -8,6 +8,7 @@ export const manualEncryptionScreenRoutes = {
   networkError: 'network-error',
   messageAccessRequest: 'access-request',
   invitation: 'invitation',
+  onboarding: 'onboarding',
   root: '/',
   notFound: '*',
 };

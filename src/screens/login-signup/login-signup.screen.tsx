@@ -9,7 +9,7 @@ import {TextButton} from '../../components/text-styled';
 import {EmailPasswordForm} from './email-password-form';
 import {EAuthMode} from './login-sign-up.types';
 
-export const LoginSignUpUser: React.FC = () => {
+export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
   const {
     onMicrosoftSignUp,
     onGoogleSignUp,
@@ -17,7 +17,7 @@ export const LoginSignUpUser: React.FC = () => {
     onForgotPassword,
     onChangeMode,
     mode,
-  } = useLoginSignUpUserState();
+  } = useLoginSignUpUserState({navigation});
 
   return (
     <View className="flex flex-col content-center items-center justify-center flex-1 w-full gap-y-5">

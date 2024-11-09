@@ -17,11 +17,9 @@ export const ErrorNotificationHandler = ({
   text1: string; // | React.ReactNode;
   text2?: string;
   type?: string;
-}) => {
-  console.log(7777777, text1);
+}) =>
   Toast.show({
-    type: 'info',
+    type: type || 'info',
     text1: text1,
     text2: text2 || '',
   });
-};

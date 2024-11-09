@@ -13,6 +13,8 @@ export const strings = {
   welcomeBack: 'Welcome back',
   dontHaveAccount: "You don't have an account yet!",
   pleaseSignUp: 'Please Sign Up',
+  confirmYourEmail: 'Confirm Your Email',
+  emailLinkSent: 'Confirmation email link, sent to your mailbox',
   continue: 'Continue',
   forgotYourPassword: 'Forgot Your Password?',
   signUp: 'Sign Up',
