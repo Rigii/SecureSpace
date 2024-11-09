@@ -4,11 +4,11 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {AppTestComponent} from '../AppTestComponent';
 import {PrivateRoute} from './PrivateRoute';
-import {manualEncryptionScreenRoutes} from './screens';
+import {RootStackParamList, manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
 import {OnboardingFlow} from '../../screens/onboarding/onboarding';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 export const Home = () => (
@@ -28,27 +28,28 @@ export const AppNavigationContainer = () => {
             <PrivateRoute
               {...props}
               isAuthenticated={isAuthenticated}
-              redirectAuthRoute={
-                manualEncryptionScreenRoutes.registerLoginRoute
-              }
+              redirectAuthRoute={manualEncryptionScreenRoutes.registerLogin}
               component={Home}
             />
           )}
         </Stack.Screen>
         <Stack.Screen
-          name={manualEncryptionScreenRoutes.homeRoute}
+          name={manualEncryptionScreenRoutes.home}
           component={Home}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name={manualEncryptionScreenRoutes.registerLoginRoute}
+          name={manualEncryptionScreenRoutes.registerLogin}
           component={LoginSignUpUser}
         />
         <Stack.Screen
           name={manualEncryptionScreenRoutes.onboarding}
           component={OnboardingFlow}
         />
-        <Stack.Screen name="Auth_Loading" component={AppTestComponent} />
+        {/* <Stack.Screen
+          name={manualEncryptionScreenRoutes.home}
+          component={AppTestComponent}
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -9,13 +9,19 @@ import Swiper from 'react-native-swiper';
 import {IOnboardingFormValues, SwiperRef} from './onboarding.types';
 import {useDispatch} from 'react-redux';
 import {setOnboardingData} from '../../app/store/state/userState/userAction';
+import {
+  RootStackParamList,
+  manualEncryptionScreenRoutes,
+} from '../../app/navigator/screens';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
-export const OnboardingFlow: React.FC = () => {
+export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const swiperRef = useRef<SwiperRef>(null);
 
   const dispatch = useDispatch();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const onSubmit = (values: IOnboardingFormValues) => {
     const secureOption = {
@@ -45,7 +51,13 @@ export const OnboardingFlow: React.FC = () => {
   };
 
   if (isSubmitted) {
-    return <WelcomeAboard navigateToMain={() => null} />;
+    return (
+      <WelcomeAboard
+        navigateToMain={() =>
+          navigation.navigate(manualEncryptionScreenRoutes.home)
+        }
+      />
+    );
   }
 
   return (
