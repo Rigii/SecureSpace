@@ -2,13 +2,13 @@ import {createSlice} from '@reduxjs/toolkit';
 import {fetchPaymentSettings} from './paymentSettingsAction';
 import {IAEncryptionPaymentSettings} from './payment-settings.types';
 
-interface UserState {
+export interface IPaymentSettings {
   paymentSettings: IAEncryptionPaymentSettings | null | {};
   isSettingsLoading: boolean;
   settingsError: string;
 }
 
-const initialState: UserState = {
+const initialState: IPaymentSettings = {
   paymentSettings: null,
   isSettingsLoading: false,
   settingsError: '',

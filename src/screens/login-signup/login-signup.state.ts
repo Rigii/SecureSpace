@@ -1,16 +1,19 @@
 import {useEffect, useState} from 'react';
 import {EAuthMode, IUserAuthData} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-storage/async-storage-service';
-import {registerSignInUserApi} from '../../services/api/user.api';
+import {registerSignInUserApi} from '../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
 import {strings} from '../../constants/strings/login-signup.strings';
 import {IHttpExceptionResponse} from '../../services/xhr-services/xhr.types';
 import {AxiosError} from 'axios';
 import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
+import {useDispatch} from 'react-redux';
+import {setUser} from '../../app/store/state/userState/userAction';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
   const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const onForgotPassword = () => setMode(EAuthMode.resetPassword);
 
@@ -23,20 +26,8 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     return await locallyEmailForSignIn.get();
   };
 
-  // const onSignUp = async (authEmail: string, authPassword: string) => {
-  //   try {
-  //     console.log('Check Sign Up Email and Password', authEmail, authPassword);
-  //   } catch (error) {
-  //     const currentError = error as Error;
-  //     console.error('Sign Up Error', currentError);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const onGoogleSignUp = async () => {
     console.log('Check Google Sign Up');
-
     // try {
     //   setLoading(true);
     //   await signInUser(userAdapter, false);
@@ -60,52 +51,9 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     // }
   };
 
-  // const checkEmail = async (email: string) => {
-  //   console.log('Check Email', email);
-  //   return true;
-  //   // try {
-  //   //   const result = await fetchSignInMethodsForEmail(authInstance, email);
-  //   //   if (result[0] === 'emailLink') {
-  //   //     await loginWithEmailLink(email);
-  //   //     return true;
-  //   //   }
-  //   //   if (result[0] === 'google.com') {
-  //   //     await onGoogleSignUp();
-  //   //     return true;
-  //   //   }
-  //   //   if (result[0] === 'microsoft.com') {
-  //   //     await onMicrosoftSignUp();
-  //   //     return true;
-  //   //   }
-  //   //   setEmail(email);
-  //   //   return result.length > 0;
-  //   // } catch (error) {
-  //   //   setLoading(true);
-  //   //   ErrorNotificationHandler({
-  //   //     type: EPopupType.DEFAULT,
-  //   //     message: 'Sign In Error',
-  //   //   });
-  //   //   throw error;
-  //   // } finally {
-  //   //   setLoading(false);
-  //   // }
-  // };
-
-  // const onLogIn = async (authEmail: string, authPassword: string) => {
-  //   try {
-  //     console.log('Check Sign Up Email and Password', authEmail, authPassword);
-  //   } catch (error) {
-  //     const currentError = error as Error;
-  //     console.error('Login Error', currentError);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const proceedUserAuthData = (user: IUserAuthData) => {
-    if (!user.userInfo) {
+    if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
-
       // Redirect here
     }
   };
@@ -122,7 +70,22 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       }
 
       const user = responce.data.user as IUserAuthData;
-      console.log(2222222, responce.data.user.userInfo);
+      const token = responce.data.token;
+
+      dispatch(
+        setUser({
+          id: user.id,
+          role: user.role,
+          created: user.created,
+          isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
+          email: user.email,
+          token,
+          portraitUri: user.user_info?.portrait_uri as string,
+          title: user.user_info?.title as string,
+          phoneNumber: user.user_info?.phone_number as string,
+        }),
+      );
+
       proceedUserAuthData(user);
     } catch (error) {
       const currentError = error as AxiosError<IHttpExceptionResponse>;

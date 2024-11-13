@@ -70,7 +70,7 @@ export const SecurePlaces = ({
       console.log(22222, errors);
     }
     handleSubmit();
-    onNextPage();
+    // onNextPage();
   };
 
   const handleScreenPress = () => {

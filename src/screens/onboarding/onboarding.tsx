@@ -8,42 +8,77 @@ import {validationOnboardingSchema} from './onboarding.validation';
 import Swiper from 'react-native-swiper';
 import {IOnboardingFormValues, SwiperRef} from './onboarding.types';
 import {useDispatch} from 'react-redux';
-import {setOnboardingData} from '../../app/store/state/userState/userAction';
+import {
+  setSecurityData,
+  setUser,
+} from '../../app/store/state/userState/userAction';
 import {
   RootStackParamList,
   manualEncryptionScreenRoutes,
 } from '../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {postOnboardingDataApi} from '../../services/api/user/user.api';
+import {useReduxSelector} from '../../app/store/store';
 
 export const OnboardingFlow = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted] = useState(false);
 
   const swiperRef = useRef<SwiperRef>(null);
+  const {userAccountData} = useReduxSelector(
+    state => state.anonymousUserReducer,
+  );
 
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const onSubmit = (values: IOnboardingFormValues) => {
-    const secureOption = {
-      imergencyPasswordsEmails: values.imergencyPasswordsEmails,
-      securePlaces: {
-        [values.securePlaceName]: {
-          ...values.securePlaceData,
-          name: values.securePlaceName,
-          securePlaceRadius: values.securePlaceRadius,
-        },
-      },
-    };
+  const onSubmit = async (values: IOnboardingFormValues) => {
+    console.log(3333333, userAccountData);
+    try {
+      await postOnboardingDataApi(userAccountData.token, {
+        role: 'user', // get from global constants
+        title: values.titleForm,
+        isOnboardingDone: true,
+        name: values.name,
+        accountSecret: '123',
+        destroyAccountSecret: '321',
+        accessCredentials: values.imergencyPasswordsEmails,
+        accountId: userAccountData.id,
+        securePlaces: [
+          {
+            name: values.securePlaceName,
+            securePlaceData: values.securePlaceData,
+            securePlaceRadius: values.securePlaceRadius,
+          },
+        ],
+      });
+
+      dispatch(
+        setUser({
+          isOnboardingDone: true,
+        }),
+      );
+    } catch (error) {
+      console.error(777777777, error);
+    }
 
     dispatch(
-      setOnboardingData({
-        secureOptions: secureOption,
-        displayName: values.name,
+      setUser({
+        title: values.titleForm,
+        name: values.name,
+      }),
+      setSecurityData({
+        accessCredentials: values.imergencyPasswordsEmails,
+        securePlaces: [
+          {
+            name: values.securePlaceName,
+            securePlaceData: values.securePlaceData,
+            securePlaceRadius: values.securePlaceRadius,
+          },
+        ],
       }),
     );
 
-    /* Post data */
-    setIsSubmitted(true);
+    // setIsSubmitted(true);
   };
 
   const onNextPage = () => {
@@ -54,7 +89,7 @@ export const OnboardingFlow = () => {
     return (
       <WelcomeAboard
         navigateToMain={() =>
-          navigation.navigate(manualEncryptionScreenRoutes.home)
+          navigation.navigate(manualEncryptionScreenRoutes.root)
         }
       />
     );

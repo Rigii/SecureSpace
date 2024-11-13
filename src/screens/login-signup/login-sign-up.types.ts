@@ -219,5 +219,6 @@ export interface IUserAuthData {
   provider: string;
   externalAuthProviderId: string;
   emailVerified: boolean;
-  userInfo: Record<string, string | string[]> | null;
+  user_info: Record<string, string | string[] | boolean> | null;
+  token: string;
 }
