@@ -21,6 +21,7 @@ export const strings = {
   mister: 'Mr.',
   missis: 'Ms.',
   other: 'Other',
+  addingPlaceError: 'Adding place error',
   // phoneHolder: '+xxxxxxxxxxxx',
   // youRegistered: 'You registered!',
   // protectYourShelter: 'Protect Your Shelter, add secure settings',

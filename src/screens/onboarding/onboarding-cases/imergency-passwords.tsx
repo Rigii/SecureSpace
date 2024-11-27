@@ -69,7 +69,7 @@ export const ImergencyPasswords = ({
     item: IUserData;
     index: number;
   }) => (
-    <View className="mb-6">
+    <View className="mb-6" key={index}>
       <Input
         isError={item.email.length > 0 && item.email.length < 6}
         value={item.email}
@@ -78,7 +78,6 @@ export const ImergencyPasswords = ({
         keyboardType={KeyboardTypes.default}
         name={EImergencyEmailPassword.email}
         className="w-80"
-        key={index}
         inputIndex={index}
       />
       <Input
@@ -89,7 +88,6 @@ export const ImergencyPasswords = ({
         placeholder={strings.imergencyPasswordPlaceholder}
         keyboardType={KeyboardTypes.default}
         className="w-80"
-        key={index}
         isSecure={true}
         inputIndex={index}
       />

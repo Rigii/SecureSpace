@@ -21,7 +21,7 @@ import {postOnboardingDataApi} from '../../services/api/user/user.api';
 import {useReduxSelector} from '../../app/store/store';
 
 export const OnboardingFlow = () => {
-  const [isSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const swiperRef = useRef<SwiperRef>(null);
   const {userAccountData} = useReduxSelector(
@@ -32,7 +32,6 @@ export const OnboardingFlow = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const onSubmit = async (values: IOnboardingFormValues) => {
-    console.log(3333333, userAccountData);
     try {
       await postOnboardingDataApi(userAccountData.token, {
         role: 'user', // get from global constants
