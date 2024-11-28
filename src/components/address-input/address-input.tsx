@@ -1,3 +1,4 @@
+import {GOOGLE_API_KEY} from '@env';
 import React, {useCallback, useState} from 'react';
 import {View} from 'react-native';
 
@@ -6,7 +7,6 @@ import {
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
 } from 'react-native-google-places-autocomplete';
-import {GOOGLE_API_KEY} from '../../constants/env';
 
 export const AddressInput = ({
   placeholder,
@@ -82,7 +82,6 @@ const addressInputStyles = (isError?: boolean) => ({
     height: 40,
     paddingHorizontal: 16,
     borderWidth: 0,
-    background: 'inherit',
     backgroundColor: 'transparent',
     color: '#717170',
   },

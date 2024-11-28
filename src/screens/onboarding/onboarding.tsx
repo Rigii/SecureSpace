@@ -19,6 +19,10 @@ import {
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {postOnboardingDataApi} from '../../services/api/user/user.api';
 import {useReduxSelector} from '../../app/store/store';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../services/ErrorNotificationHandler';
 
 export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -32,6 +36,8 @@ export const OnboardingFlow = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const onSubmit = async (values: IOnboardingFormValues) => {
+    console.log(8888888, values);
+
     try {
       await postOnboardingDataApi(userAccountData.token, {
         role: 'user', // get from global constants
@@ -57,7 +63,13 @@ export const OnboardingFlow = () => {
         }),
       );
     } catch (error) {
-      console.error(777777777, error);
+      const currentError = error as Error;
+
+      ErrorNotificationHandler({
+        type: EPopupType.WARNING,
+        text1: 'Onboarding data submit error',
+        text2: currentError.name || '',
+      });
     }
 
     dispatch(

@@ -54,7 +54,7 @@ export const ImergencyPasswords = ({
   };
 
   const onSavePasswords = () => {
-    setFieldValue('imergencyPasswords', passwordArray);
+    setFieldValue('imergencyPasswordsEmails', passwordArray);
     onNextPage();
   };
 
