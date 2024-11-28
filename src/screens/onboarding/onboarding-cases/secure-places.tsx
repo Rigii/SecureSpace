@@ -17,6 +17,10 @@ import {
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
 import {IOnboardingFormValues} from '../onboarding.types';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../../services/ErrorNotificationHandler';
 
 export const SecurePlaces = ({
   securePlaceNameValue,
@@ -40,10 +44,14 @@ export const SecurePlaces = ({
   onNextPage: () => void;
 }) => {
   const onUpdatePlaceCoordinates = async (
-    value: GooglePlaceData,
+    value: GooglePlaceData | null,
     detail: GooglePlaceDetail | null,
   ) => {
-    if (!detail?.geometry?.location.lat || !detail?.geometry?.location.lng) {
+    if (
+      value === null ||
+      !detail?.geometry?.location.lat ||
+      !detail?.geometry?.location.lng
+    ) {
       return setFieldValue('securePlaceData', {
         id: '',
         address: '',
@@ -53,7 +61,6 @@ export const SecurePlaces = ({
         },
       });
     }
-
     setFieldValue('securePlaceData', {
       id: detail?.geometry?.location.lat + detail?.geometry?.location.lng,
       address: value.description,
@@ -67,10 +74,14 @@ export const SecurePlaces = ({
   const onAddPlaceValue = async () => {
     const errors = await validateForm();
     if (Object.keys(errors).length > 0) {
-      console.log(22222, errors);
+      ErrorNotificationHandler({
+        type: EPopupType.DEFAULT,
+        text1: strings.addingPlaceError,
+        text2: errors.name,
+      });
     }
     handleSubmit();
-    onNextPage();
+    // onNextPage();
   };
 
   const handleScreenPress = () => {

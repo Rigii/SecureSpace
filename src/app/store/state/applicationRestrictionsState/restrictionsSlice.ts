@@ -2,13 +2,13 @@ import {createSlice} from '@reduxjs/toolkit';
 import {fetchApplicationRestrictions} from './restrictionAction';
 import {IAEncryptionLimits} from './application-restrictions.types';
 
-interface IUserState {
+export interface IRestrictionsState {
   applicationRestrictions: IAEncryptionLimits | null | void;
   isRestrictionsLoading: boolean;
   restrictionsError: string;
 }
 
-const initialState: IUserState = {
+const initialState: IRestrictionsState = {
   applicationRestrictions: null,
   isRestrictionsLoading: false,
   restrictionsError: '',

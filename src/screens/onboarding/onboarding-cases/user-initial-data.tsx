@@ -79,6 +79,7 @@ export const UserInitialData = ({
               radioButtons={radioButtonsData.map(rb => ({
                 ...rb,
                 selected: rb.value === sexValue,
+                key: rb.value,
               }))}
               selectedId={sexValue}
               onPress={onRadioButtonPress}

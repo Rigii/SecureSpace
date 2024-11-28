@@ -1,4 +1,5 @@
-import React from 'react';
+import {GOOGLE_API_KEY} from '@env';
+import React, {useCallback, useState} from 'react';
 import {View} from 'react-native';
 
 import {
@@ -17,28 +18,48 @@ export const AddressInput = ({
   placeholder: string;
   isError?: boolean;
   onUpdatePlaceCoordinates: (
-    value: GooglePlaceData,
+    value: GooglePlaceData | null,
     detail: GooglePlaceDetail | null,
   ) => Promise<void>;
-}) => (
-  <View className={`w-80 ${classNameWrapper}`}>
-    <GooglePlacesAutocomplete
-      placeholder={placeholder}
-      onPress={onUpdatePlaceCoordinates}
-      fetchDetails={true}
-      query={{
-        key: 'AIzaSyCCu1qafrPaTNoBlUreX1o2F0xkpqqP_pE',
-        language: 'en',
-      }}
-      textInputProps={{
-        placeholderTextColor: isError ? '#FF0000' : '#717170',
-        padding: 0,
-        paddingLeft: 0,
-      }}
-      styles={addressInputStyles(isError)}
-    />
-  </View>
-);
+}) => {
+  const [placeText, setPlaceText] = useState('');
+
+  const onChangeText = useCallback(
+    (text: string) => {
+      if (text.length < 1 && placeText.length > 0) {
+        setPlaceText('');
+        onUpdatePlaceCoordinates(null, null);
+        return;
+      }
+
+      setPlaceText(text);
+    },
+    [onUpdatePlaceCoordinates, placeText.length],
+  );
+
+  const isShowError = isError && placeText.length > 0;
+
+  return (
+    <View className={`w-80 ${classNameWrapper}`}>
+      <GooglePlacesAutocomplete
+        placeholder={placeholder}
+        onPress={onUpdatePlaceCoordinates}
+        fetchDetails={true}
+        query={{
+          key: GOOGLE_API_KEY,
+          language: 'en',
+        }}
+        textInputProps={{
+          onChangeText: onChangeText,
+          placeholderTextColor: isShowError ? '#FF0000' : '#717170',
+          padding: 0,
+          paddingLeft: 0,
+        }}
+        styles={addressInputStyles(isShowError)}
+      />
+    </View>
+  );
+};
 
 const addressInputStyles = (isError?: boolean) => ({
   container: {
@@ -61,7 +82,6 @@ const addressInputStyles = (isError?: boolean) => ({
     height: 40,
     paddingHorizontal: 16,
     borderWidth: 0,
-    background: 'inherit',
     backgroundColor: 'transparent',
     color: '#717170',
   },

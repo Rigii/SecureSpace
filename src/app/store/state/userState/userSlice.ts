@@ -1,35 +1,23 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {
-  setIsMinimalUserDataLoading,
-  setIsAdditionalUserDataLoading,
-  setAnonymousUser,
-  setIsTrialPeriodExpired,
-  setIsActiveSubscription,
-  setShowPlanPage,
-  setOnboardingData,
-} from './userAction';
-import {IEncryptionUser, IOnboarding} from '../../../types/encrypt.types';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {ISecurityData, IUserAccount, IUserState} from './userState.types';
+import {setUser, setSecurityData} from './userAction';
 
-interface UserState {
-  anonymousUser: IEncryptionUser | null;
-  isMinimalUserDataLoading: boolean;
-  isAdditionalDataLoading: boolean;
-  anonymousUserError: string;
-  paymentCustomerLoadingError: string;
-  isTrialPeriodExpired: boolean;
-  isActiveSubscription: boolean;
-  showPlanPage: boolean;
-}
-
-const initialState: UserState = {
-  anonymousUser: null,
-  isMinimalUserDataLoading: true,
-  isAdditionalDataLoading: false,
-  anonymousUserError: '',
-  paymentCustomerLoadingError: '',
-  isTrialPeriodExpired: false,
-  isActiveSubscription: false,
-  showPlanPage: false,
+const initialState: IUserState = {
+  userAccountData: {
+    id: '',
+    role: '',
+    created: null,
+    isOnboardingDone: false,
+    email: '',
+    token: '',
+    portraitUri: '',
+    title: '',
+    name: '',
+  },
+  securityData: {
+    accessCredentials: [],
+    securePlaces: [],
+  },
 };
 
 export const anonymousUserSlice = createSlice({
@@ -37,55 +25,37 @@ export const anonymousUserSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder
-      .addCase(
-        setOnboardingData,
-        (state, action: PayloadAction<Partial<IOnboarding> | null>) => {
-          const currentState = {
-            ...state.anonymousUser,
-            displayName: action.payload?.displayName,
-            secureOptions: action.payload?.secureOptions,
-          };
+    builder.addCase(
+      setUser,
+      (state, action: PayloadAction<Partial<IUserAccount> | null>) => {
+        const newUser = {
+          ...state.userAccountData,
+          ...action.payload,
+        };
 
-          state.anonymousUser = currentState as IEncryptionUser;
-        },
-      )
-      .addCase(
-        setAnonymousUser,
-        (state, action: PayloadAction<Partial<IEncryptionUser> | null>) => {
-          const currentState = state.anonymousUser?.accountId
-            ? {...state.anonymousUser, ...action.payload}
-            : action.payload;
-          state.anonymousUser = currentState as IEncryptionUser;
-        },
-      )
-      .addCase(
-        setIsMinimalUserDataLoading,
-        (state, action: PayloadAction<boolean>) => {
-          state.isMinimalUserDataLoading = action.payload;
-        },
-      )
-      .addCase(
-        setIsAdditionalUserDataLoading,
-        (state, action: PayloadAction<boolean>) => {
-          state.isAdditionalDataLoading = action.payload;
-        },
-      )
-      .addCase(
-        setIsTrialPeriodExpired,
-        (state, action: PayloadAction<boolean>) => {
-          state.isTrialPeriodExpired = action.payload;
-        },
-      )
-      .addCase(
-        setIsActiveSubscription,
-        (state, action: PayloadAction<boolean>) => {
-          state.isActiveSubscription = action.payload;
-        },
-      )
-      .addCase(setShowPlanPage, (state, action: PayloadAction<boolean>) => {
-        state.showPlanPage = action.payload;
-      });
+        state.userAccountData = newUser;
+      },
+    );
+
+    builder.addCase(
+      setSecurityData,
+      (state, action: PayloadAction<Partial<ISecurityData> | null>) => {
+        const newAccessCredentials = action.payload?.accessCredentials || [];
+        const newSecurePlaces = action.payload?.securePlaces || [];
+
+        const newSecurityData = {
+          accessCredentials: [
+            ...state.securityData.accessCredentials,
+            ...newAccessCredentials,
+          ],
+          securePlaces: [
+            ...state.securityData.securePlaces,
+            ...newSecurePlaces,
+          ],
+        };
+        state.securityData = newSecurityData;
+      },
+    );
   },
 });
 

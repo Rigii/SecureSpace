@@ -1,5 +1,5 @@
+import {BASE_URL, BASE_URL_LOCAL} from '@env';
 import axios, {AxiosPromise} from 'axios';
-import {BASE_URL, BASE_URL_LOCAL} from '../../constants/env';
 // import {store} from './redux/store';
 
 export type IResponse<T> = AxiosPromise<T>;
