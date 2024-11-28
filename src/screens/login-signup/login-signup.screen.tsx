@@ -8,6 +8,7 @@ import {Title1, Title2} from '../../components/title';
 import {TextButton} from '../../components/text-styled';
 import {EmailPasswordForm} from './email-password-form';
 import {EAuthMode} from './login-sign-up.types';
+import {CLIENT_ID} from '@env';
 
 export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
   const {
@@ -18,6 +19,7 @@ export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
     onChangeMode,
     mode,
   } = useLoginSignUpUserState({navigation});
+  console.log(888888888888888883333, CLIENT_ID);
 
   return (
     <View className="flex flex-col content-center items-center justify-center flex-1 w-full gap-y-5">

@@ -6,6 +6,7 @@ import {
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
 } from 'react-native-google-places-autocomplete';
+import {GOOGLE_API_KEY} from '../../constants/env';
 
 export const AddressInput = ({
   placeholder,
@@ -45,7 +46,7 @@ export const AddressInput = ({
         onPress={onUpdatePlaceCoordinates}
         fetchDetails={true}
         query={{
-          key: 'AIzaSyCCu1qafrPaTNoBlUreX1o2F0xkpqqP_pE', // TODO: KEY To secrets
+          key: GOOGLE_API_KEY,
           language: 'en',
         }}
         textInputProps={{
