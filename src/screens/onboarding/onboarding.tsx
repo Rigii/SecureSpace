@@ -23,6 +23,7 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../services/ErrorNotificationHandler';
+import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
 
 export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -37,6 +38,12 @@ export const OnboardingFlow = () => {
 
   const onSubmit = async (values: IOnboardingFormValues) => {
     console.log(8888888, values);
+
+    const userKeys = generatePGPKeyPair({
+      userIds: [{name: 'Bill', email: 'Geits'}],
+      numBits: 2048,
+      passphrase: '',
+    });
 
     try {
       await postOnboardingDataApi(userAccountData.token, {
