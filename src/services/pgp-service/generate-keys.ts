@@ -1,9 +1,4 @@
-import * as openpgp from 'react-native-openpgp';
-
-export interface IPGPKeys {
-  publicKeyArmored: string;
-  privateKeyArmored: string;
-}
+import OpenPGP from 'react-native-fast-openpgp';
 
 export interface IGeneratePGPKeyPair {
   userIds: [{name: string; email: string}];
@@ -11,9 +6,7 @@ export interface IGeneratePGPKeyPair {
   passphrase: string;
 }
 
-export const generatePGPKeyPair = async (
-  options: IGeneratePGPKeyPair,
-): Promise<IPGPKeys> => {
-  const pgpKeys = await openpgp.generateKey(options);
+export const generatePGPKeyPair = (options: IGeneratePGPKeyPair) => {
+  const pgpKeys = OpenPGP.generate(options);
   return pgpKeys;
 };

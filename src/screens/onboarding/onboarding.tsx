@@ -24,6 +24,9 @@ import {
   ErrorNotificationHandler,
 } from '../../services/ErrorNotificationHandler';
 import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
+import {getTime} from 'date-fns';
+import {v4 as uuidv4} from 'react-native-uuid';
+import {Platform} from 'react-native';
 
 export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -37,17 +40,35 @@ export const OnboardingFlow = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const onSubmit = async (values: IOnboardingFormValues) => {
+    const generatedId = uuidv4();
+
     console.log(8888888, values);
 
-    const userKeys = generatePGPKeyPair({
+    const userKeys = await generatePGPKeyPair({
       userIds: [{name: 'Bill', email: 'Geits'}],
       numBits: 2048,
       passphrase: '',
     });
 
+    const publicKeyData = {
+      publicKey: userKeys.publicKey,
+      os: Platform.OS,
+      date: getTime(new Date()),
+      deviceUuid: generatedId as string,
+      email: userAccountData.email,
+      approved: true,
+    };
+
+    const deviceKeyData = {
+      devicePrivateKey: userKeys.privateKey,
+      date: getTime(new Date()),
+      email: userAccountData.email,
+      approved: true,
+    };
+
     try {
       await postOnboardingDataApi(userAccountData.token, {
-        role: 'user', // get from global constants
+        role: 'user', // TODO: get from the global constants
         title: values.titleForm,
         isOnboardingDone: true,
         name: values.name,
@@ -55,6 +76,8 @@ export const OnboardingFlow = () => {
         destroyAccountSecret: '321',
         accessCredentials: values.imergencyPasswordsEmails,
         accountId: userAccountData.id,
+        pgpPublicKey: publicKeyData,
+        deviceIdentifyer: generatedId,
         securePlaces: [
           {
             name: values.securePlaceName,
@@ -66,9 +89,28 @@ export const OnboardingFlow = () => {
 
       dispatch(
         setUser({
-          isOnboardingDone: true,
+          title: values.titleForm,
+          name: values.name,
+        }),
+        setSecurityData({
+          accessCredentials: values.imergencyPasswordsEmails,
+          deviceIdentifyer: {
+            os: Platform.OS,
+            deviceUuid: generatedId as string,
+            date: getTime(new Date()),
+          },
+          pgpDeviceKeyData: deviceKeyData,
+          securePlaces: [
+            {
+              name: values.securePlaceName,
+              securePlaceData: values.securePlaceData,
+              securePlaceRadius: values.securePlaceRadius,
+            },
+          ],
         }),
       );
+
+      // setIsSubmitted(true);
     } catch (error) {
       const currentError = error as Error;
 
@@ -78,25 +120,6 @@ export const OnboardingFlow = () => {
         text2: currentError.name || '',
       });
     }
-
-    dispatch(
-      setUser({
-        title: values.titleForm,
-        name: values.name,
-      }),
-      setSecurityData({
-        accessCredentials: values.imergencyPasswordsEmails,
-        securePlaces: [
-          {
-            name: values.securePlaceName,
-            securePlaceData: values.securePlaceData,
-            securePlaceRadius: values.securePlaceRadius,
-          },
-        ],
-      }),
-    );
-
-    // setIsSubmitted(true);
   };
 
   const onNextPage = () => {

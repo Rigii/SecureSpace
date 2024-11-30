@@ -17,6 +17,17 @@ const initialState: IUserState = {
   securityData: {
     accessCredentials: [],
     securePlaces: [],
+    deviceIdentifyer: {
+      os: '',
+      deviceUuid: '',
+      date: null,
+    },
+    pgpDeviceKeyData: {
+      devicePrivateKey: '',
+      date: null,
+      email: '',
+      approved: false,
+    },
   },
 };
 
@@ -42,6 +53,8 @@ export const anonymousUserSlice = createSlice({
       (state, action: PayloadAction<Partial<ISecurityData> | null>) => {
         const newAccessCredentials = action.payload?.accessCredentials || [];
         const newSecurePlaces = action.payload?.securePlaces || [];
+        const newDeviceIdentifyer = action.payload?.deviceIdentifyer || {};
+        const newPgpKeysData = action.payload?.pgpDeviceKeyData || {};
 
         const newSecurityData = {
           accessCredentials: [
@@ -52,6 +65,14 @@ export const anonymousUserSlice = createSlice({
             ...state.securityData.securePlaces,
             ...newSecurePlaces,
           ],
+          deviceIdentifyer: {
+            ...state.securityData.deviceIdentifyer,
+            ...newDeviceIdentifyer,
+          },
+          pgpDeviceKeyData: {
+            ...state.securityData.pgpDeviceKeyData,
+            ...newPgpKeysData,
+          },
         };
         state.securityData = newSecurityData;
       },

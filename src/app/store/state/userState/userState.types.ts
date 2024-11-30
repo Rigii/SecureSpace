@@ -1,3 +1,5 @@
+import {Timestamp} from 'react-native-reanimated/lib/typescript/reanimated2/commonTypes';
+
 export interface IUserAccount {
   id: string;
   role: string;
@@ -26,6 +28,17 @@ export interface ISecurityData {
         };
         securePlaceRadius: string;
       }[];
+  pgpDeviceKeyData: {
+    devicePrivateKey: string;
+    date: Timestamp | null;
+    email: string;
+    approved: boolean;
+  };
+  deviceIdentifyer: {
+    os: string;
+    deviceUuid: string;
+    date: Timestamp | null;
+  };
 }
 
 export interface IUserState {

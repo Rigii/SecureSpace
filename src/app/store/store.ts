@@ -10,6 +10,8 @@ import manualEncryptionDataReducer from './state/manualEncryptionState/manualEnc
 import {IManualEncryptionState} from './state/manualEncryptionState/types';
 import {TypedUseSelectorHook, useSelector} from 'react-redux';
 import {IUserState} from './state/userState/userState.types';
+import {loadAnonymousUserData} from './asyncStorageHelpers';
+import persistMiddleware from './middleware/persistMiddleware';
 
 const rootReducer = combineReducers({
   anonymousUserReducer,
@@ -18,11 +20,19 @@ const rootReducer = combineReducers({
   manualEncryptionDataReducer,
 });
 
-export const setupStore = () =>
-  configureStore({
+export const setupStore = async () => {
+  const anonymousUserData = await loadAnonymousUserData();
+
+  return configureStore({
     reducer: rootReducer,
+    preloadedState: {
+      anonymousUserReducer: anonymousUserData || undefined, // Предзагрузка состояния
+    },
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware().concat(persistMiddleware.middleware),
     // middleware: getDefaultMiddleware => [...getDefaultMiddleware()],
   });
+};
 
 export interface IState {
   anonymousUserReducer: IUserState;
@@ -34,5 +44,13 @@ export interface IState {
 export const useReduxSelector: TypedUseSelectorHook<IState> = useSelector;
 
 export type RootState = ReturnType<typeof rootReducer>;
-export type AppStore = ReturnType<typeof setupStore>;
+export type AppStore = Awaited<ReturnType<typeof setupStore>>;
 export type AppDispatch = AppStore['dispatch'];
+
+// return configureStore({
+//   reducer: rootReducer,
+//   preloadedState: {
+//     anonymousUserReducer: anonymousUserData || undefined, // Предзагрузка состояния
+//   },
+//   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(persistMiddleware.middleware),
+// });
