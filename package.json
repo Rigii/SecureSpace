@@ -30,6 +30,7 @@
     "react-native-encrypted-storage": "^4.0.3",
     "react-native-fast-openpgp": "^2.7.4",
     "react-native-formik": "^1.7.8",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.15.0",
     "react-native-google-places-autocomplete": "^2.5.6",
     "react-native-radio-buttons-group": "^3.1.0",

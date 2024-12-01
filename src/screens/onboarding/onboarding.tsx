@@ -59,67 +59,71 @@ export const OnboardingFlow = () => {
       approved: true,
     };
 
-    const deviceKeyData = {
+    const pgpDeviceKeyData = {
       devicePrivateKey: userKeys.privateKey,
       date: getTime(new Date()),
       email: userAccountData.email,
       approved: true,
     };
 
-    try {
-      await postOnboardingDataApi(userAccountData.token, {
-        role: 'user', // TODO: get from the global constants
-        title: values.titleForm,
-        isOnboardingDone: true,
-        name: values.name,
-        accountSecret: '123',
-        destroyAccountSecret: '321',
-        accessCredentials: values.imergencyPasswordsEmails,
-        accountId: userAccountData.id,
-        pgpPublicKey: publicKeyData,
-        deviceIdentifyer: generatedId,
-        securePlaces: [
-          {
-            name: values.securePlaceName,
-            securePlaceData: values.securePlaceData,
-            securePlaceRadius: values.securePlaceRadius,
-          },
-        ],
-      });
+    const deviceIdentifyer = {
+      os: Platform.OS,
+      deviceUuid: generatedId as string,
+      date: getTime(new Date()),
+    };
 
-      dispatch(
-        setUser({
-          title: values.titleForm,
-          name: values.name,
-        }),
-        setSecurityData({
-          accessCredentials: values.imergencyPasswordsEmails,
-          deviceIdentifyer: {
-            os: Platform.OS,
-            deviceUuid: generatedId as string,
-            date: getTime(new Date()),
-          },
-          pgpDeviceKeyData: deviceKeyData,
-          securePlaces: [
-            {
-              name: values.securePlaceName,
-              securePlaceData: values.securePlaceData,
-              securePlaceRadius: values.securePlaceRadius,
-            },
-          ],
-        }),
-      );
+    console.log(8888888888, deviceIdentifyer);
 
-      // setIsSubmitted(true);
-    } catch (error) {
-      const currentError = error as Error;
+    // try {
+    //   await postOnboardingDataApi(userAccountData.token, {
+    //     role: 'user', // TODO: get from the global constants
+    //     title: values.titleForm,
+    //     isOnboardingDone: true,
+    //     name: values.name,
+    //     accountSecret: '123',
+    //     destroyAccountSecret: '321',
+    //     accessCredentials: values.imergencyPasswordsEmails,
+    //     accountId: userAccountData.id,
+    //     pgpPublicKey: publicKeyData,
+    //     deviceIdentifyer: generatedId,
+    //     securePlaces: [
+    //       {
+    //         name: values.securePlaceName,
+    //         securePlaceData: values.securePlaceData,
+    //         securePlaceRadius: values.securePlaceRadius,
+    //       },
+    //     ],
+    //   });
 
-      ErrorNotificationHandler({
-        type: EPopupType.WARNING,
-        text1: 'Onboarding data submit error',
-        text2: currentError.name || '',
-      });
-    }
+    //   dispatch(
+    //     setUser({
+    //       title: values.titleForm,
+    //       name: values.name,
+    //     }),
+    //     setSecurityData({
+    //       accessCredentials: values.imergencyPasswordsEmails,
+    //       deviceIdentifyer,
+    //       pgpDeviceKeyData,
+    //       securePlaces: [
+    //         {
+    //           name: values.securePlaceName,
+    //           securePlaceData: values.securePlaceData,
+    //           securePlaceRadius: values.securePlaceRadius,
+    //         },
+    //       ],
+    //     }),
+    //   );
+
+    //   // setIsSubmitted(true);
+    // } catch (error) {
+    //   const currentError = error as Error;
+
+    //   ErrorNotificationHandler({
+    //     type: EPopupType.WARNING,
+    //     text1: 'Onboarding data submit error',
+    //     text2: currentError.name || '',
+    //   });
+    // }
   };
 
   const onNextPage = () => {
