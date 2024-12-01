@@ -1,12 +1,17 @@
 import OpenPGP from 'react-native-fast-openpgp';
 import RNFS from 'react-native-fs';
 
-export const generateAndSaveCertificate = async (
-  email: string,
-  uuid: string,
-  privateKey: string,
-  sertificateDataPassword: string,
-) => {
+export const generateAndSaveCertificate = async ({
+  email,
+  uuid,
+  privateKey,
+  sertificateDataPassword,
+}: {
+  email: string;
+  uuid: string;
+  privateKey: string;
+  sertificateDataPassword: string;
+}) => {
   const certificate = `
   -----BEGIN CERTIFICATE-----
   Email: ${email}

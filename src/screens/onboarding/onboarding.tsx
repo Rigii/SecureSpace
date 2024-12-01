@@ -27,6 +27,7 @@ import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
 import {getTime} from 'date-fns';
 import uuidv4 from 'react-native-uuid';
 import {Platform} from 'react-native';
+import {generateAndSaveCertificate} from '../../services/pgp-service/create-sertificate';
 
 export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -73,6 +74,13 @@ export const OnboardingFlow = () => {
     };
 
     console.log(8888888888, deviceIdentifyer);
+
+    await generateAndSaveCertificate({
+      email: userAccountData.email,
+      uuid: generatedId,
+      privateKey: userKeys.privateKey,
+      sertificateDataPassword: '123456',
+    });
 
     // try {
     //   await postOnboardingDataApi(userAccountData.token, {
