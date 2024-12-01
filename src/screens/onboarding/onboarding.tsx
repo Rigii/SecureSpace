@@ -25,7 +25,7 @@ import {
 } from '../../services/ErrorNotificationHandler';
 import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
 import {getTime} from 'date-fns';
-import {v4 as uuidv4} from 'react-native-uuid';
+import uuidv4 from 'react-native-uuid';
 import {Platform} from 'react-native';
 
 export const OnboardingFlow = () => {
@@ -40,7 +40,7 @@ export const OnboardingFlow = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const onSubmit = async (values: IOnboardingFormValues) => {
-    const generatedId = uuidv4();
+    const generatedId = uuidv4.v4();
 
     console.log(8888888, values);
 
