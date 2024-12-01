@@ -1,7 +1,11 @@
 import {createListenerMiddleware} from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RootState} from '../store';
 import {setSecurityData} from '../state/userState/userAction';
+import {
+  ESecureStoredKeys,
+  saveSecureStorageData,
+} from '../../../services/async-secure-storage/secure-storage-services';
+import {IUserState} from '../state/userState/userState.types';
 
 const persistMiddleware = createListenerMiddleware();
 
@@ -12,10 +16,10 @@ persistMiddleware.startListening({
     const anonymousUserData = state.anonymousUserReducer;
 
     try {
-      await AsyncStorage.setItem(
-        'anonymousUser',
-        JSON.stringify(anonymousUserData),
-      );
+      await saveSecureStorageData<IUserState>({
+        key: ESecureStoredKeys.anonymousUser,
+        data: anonymousUserData,
+      });
     } catch (error) {
       console.error('Error saving anonymous user to AsyncStorage:', error);
     }

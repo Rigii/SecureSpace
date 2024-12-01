@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {EAuthMode, IUserAuthData} from './login-sign-up.types';
-import {locallyEmailForSignIn} from '../../services/async-storage/async-storage-service';
+import {locallyEmailForSignIn} from '../../services/async-secure-storage/async-storage-service';
 import {registerSignInUserApi} from '../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
 import {strings} from '../../constants/strings/login-signup.strings';

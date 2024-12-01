@@ -10,8 +10,11 @@ import manualEncryptionDataReducer from './state/manualEncryptionState/manualEnc
 import {IManualEncryptionState} from './state/manualEncryptionState/types';
 import {TypedUseSelectorHook, useSelector} from 'react-redux';
 import {IUserState} from './state/userState/userState.types';
-import {loadAnonymousUserData} from './asyncStorageHelpers';
 import persistMiddleware from './middleware/persistMiddleware';
+import {
+  ESecureStoredKeys,
+  getSecureStorageData,
+} from '../../services/async-secure-storage/secure-storage-services';
 
 const rootReducer = combineReducers({
   anonymousUserReducer,
@@ -21,7 +24,9 @@ const rootReducer = combineReducers({
 });
 
 export const setupStore = async () => {
-  const anonymousUserData = await loadAnonymousUserData();
+  const anonymousUserData = await getSecureStorageData(
+    ESecureStoredKeys.anonymousUser,
+  );
 
   return configureStore({
     reducer: rootReducer,
