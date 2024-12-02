@@ -19,11 +19,11 @@ const initialState: IUserState = {
     securePlaces: [],
     deviceIdentifyer: {
       os: '',
-      deviceUuid: '',
       date: null,
     },
     pgpDeviceKeyData: {
       devicePrivateKey: '',
+      keyUUID: '',
       date: null,
       email: '',
       approved: false,

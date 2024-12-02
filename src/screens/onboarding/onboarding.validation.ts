@@ -21,4 +21,13 @@ export const validationOnboardingSchema = Yup.object().shape({
       long: Yup.string(),
     }),
   }),
+  keyPassword: Yup.string()
+    .min(6, 'Too Short!')
+    .max(12, 'Too Long!')
+    .required('The passwod should have at least 6 symbols'),
+  confirmKeyPassword: Yup.string()
+    .min(6, 'Too Short!')
+    .max(12, 'Too Long!')
+    .required('The passwod should have at least 6 symbols')
+    .oneOf([Yup.ref('keyPassword')], 'Passwords must match'),
 });

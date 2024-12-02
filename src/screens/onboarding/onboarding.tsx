@@ -25,26 +25,41 @@ import {
 } from '../../services/ErrorNotificationHandler';
 import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
 import {getTime} from 'date-fns';
-import uuidv4 from 'react-native-uuid';
 import {Platform} from 'react-native';
-import {generateAndSaveCertificate} from '../../services/pgp-service/create-sertificate';
+import {generateDeviceDataKeyFile} from '../../services/pgp-service/create-key-file';
+import {DownloadKey} from './onboarding-cases/download-key';
 
 export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const swiperRef = useRef<SwiperRef>(null);
-  const {userAccountData} = useReduxSelector(
+  const {userAccountData, securityData} = useReduxSelector(
     state => state.anonymousUserReducer,
   );
 
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+  const saveKeyOnDevice = async ({
+    email,
+    password,
+    keyUUID,
+    devicePrivateKey,
+  }: {
+    email: string;
+    password: string;
+    keyUUID: string;
+    devicePrivateKey: string;
+  }) => {
+    await generateDeviceDataKeyFile({
+      email,
+      uuid: keyUUID,
+      privateKey: devicePrivateKey,
+      sertificateDataPassword: password,
+    });
+  };
+
   const onSubmit = async (values: IOnboardingFormValues) => {
-    const generatedId = uuidv4.v4();
-
-    console.log(8888888, values);
-
     const userKeys = await generatePGPKeyPair({
       userIds: [{name: 'Bill', email: 'Geits'}],
       numBits: 2048,
@@ -55,83 +70,83 @@ export const OnboardingFlow = () => {
       publicKey: userKeys.publicKey,
       os: Platform.OS,
       date: getTime(new Date()),
-      deviceUuid: generatedId as string,
       email: userAccountData.email,
       approved: true,
     };
 
-    const pgpDeviceKeyData = {
-      devicePrivateKey: userKeys.privateKey,
-      date: getTime(new Date()),
-      email: userAccountData.email,
-      approved: true,
-    };
+    try {
+      const response = await postOnboardingDataApi(userAccountData.token, {
+        role: 'user', // TODO: get from the global constants
+        title: values.titleForm,
+        isOnboardingDone: true,
+        name: values.name,
+        accessCredentials: values.imergencyPasswordsEmails,
+        accountId: userAccountData.id,
+        pgpPublicKey: publicKeyData,
+        securePlaces: [
+          {
+            name: values.securePlaceName,
+            securePlaceData: values.securePlaceData,
+            securePlaceRadius: values.securePlaceRadius,
+          },
+        ],
+      });
 
-    const deviceIdentifyer = {
-      os: Platform.OS,
-      deviceUuid: generatedId as string,
-      date: getTime(new Date()),
-    };
+      if (!response.data?.newPublicKeysData?.id) {
+        throw new Error('PGP Key id is not awailable');
+      }
 
-    console.log(8888888888, deviceIdentifyer);
+      console.log(77777777777, response.data?.newPublicKeysData?.id);
 
-    await generateAndSaveCertificate({
-      email: userAccountData.email,
-      uuid: generatedId,
-      privateKey: userKeys.privateKey,
-      sertificateDataPassword: '123456',
-    });
+      // await saveKeyOnDevice({
+      //   email: userAccountData.email,
+      //   password: values.keyPassword,
+      //   keyUUID: '333',
+      //   devicePrivateKey: userKeys.privateKey,
+      // });
 
-    // try {
-    //   await postOnboardingDataApi(userAccountData.token, {
-    //     role: 'user', // TODO: get from the global constants
-    //     title: values.titleForm,
-    //     isOnboardingDone: true,
-    //     name: values.name,
-    //     accountSecret: '123',
-    //     destroyAccountSecret: '321',
-    //     accessCredentials: values.imergencyPasswordsEmails,
-    //     accountId: userAccountData.id,
-    //     pgpPublicKey: publicKeyData,
-    //     deviceIdentifyer: generatedId,
-    //     securePlaces: [
-    //       {
-    //         name: values.securePlaceName,
-    //         securePlaceData: values.securePlaceData,
-    //         securePlaceRadius: values.securePlaceRadius,
-    //       },
-    //     ],
-    //   });
+      // const pgpDeviceKeyData = {
+      //   devicePrivateKey: userKeys.privateKey,
+      //   date: getTime(new Date()),
+      //   email: userAccountData.email,
+      //   keyUUID: response.newPublicKeysData.id,
+      //   approved: true,
+      // };
 
-    //   dispatch(
-    //     setUser({
-    //       title: values.titleForm,
-    //       name: values.name,
-    //     }),
-    //     setSecurityData({
-    //       accessCredentials: values.imergencyPasswordsEmails,
-    //       deviceIdentifyer,
-    //       pgpDeviceKeyData,
-    //       securePlaces: [
-    //         {
-    //           name: values.securePlaceName,
-    //           securePlaceData: values.securePlaceData,
-    //           securePlaceRadius: values.securePlaceRadius,
-    //         },
-    //       ],
-    //     }),
-    //   );
+      // const deviceIdentifyer = {
+      //   os: Platform.OS,
+      //   date: getTime(new Date()),
+      // };
 
-    //   // setIsSubmitted(true);
-    // } catch (error) {
-    //   const currentError = error as Error;
+      // dispatch(
+      //   setUser({
+      //     title: values.titleForm,
+      //     name: values.name,
+      //   }),
+      //   setSecurityData({
+      //     accessCredentials: values.imergencyPasswordsEmails,
+      //     deviceIdentifyer,
+      //     pgpDeviceKeyData,
+      //     securePlaces: [
+      //       {
+      //         name: values.securePlaceName,
+      //         securePlaceData: values.securePlaceData,
+      //         securePlaceRadius: values.securePlaceRadius,
+      //       },
+      //     ],
+      //   }),
+      // );
 
-    //   ErrorNotificationHandler({
-    //     type: EPopupType.WARNING,
-    //     text1: 'Onboarding data submit error',
-    //     text2: currentError.name || '',
-    //   });
-    // }
+      // setIsSubmitted(true);
+    } catch (error) {
+      const currentError = error as Error;
+
+      ErrorNotificationHandler({
+        type: EPopupType.ERROR,
+        text1: 'Onboarding data submit error',
+        text2: currentError.name || '',
+      });
+    }
   };
 
   const onNextPage = () => {
@@ -164,6 +179,8 @@ export const OnboardingFlow = () => {
           },
         },
         securePlaceRadius: '',
+        keyPassword: '',
+        confirmKeyPassword: '',
       }}
       validationSchema={validationOnboardingSchema}
       isInitialValid={false}
@@ -205,10 +222,17 @@ export const OnboardingFlow = () => {
             touched={touched}
             securePlaceRadiusValue={values.securePlaceRadius}
             handleChange={handleChange}
-            validateForm={validateForm}
-            handleSubmit={handleSubmit}
             setFieldValue={setFieldValue}
             onNextPage={onNextPage}
+          />
+          <DownloadKey
+            keyPassword={values.keyPassword}
+            confirmKeyPassword={values.confirmKeyPassword}
+            errors={errors}
+            touched={touched}
+            validateForm={validateForm}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
           />
         </Swiper>
       )}

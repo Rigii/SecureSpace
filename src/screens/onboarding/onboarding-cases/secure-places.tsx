@@ -17,28 +17,20 @@ import {
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
 import {IOnboardingFormValues} from '../onboarding.types';
-import {
-  EPopupType,
-  ErrorNotificationHandler,
-} from '../../../services/ErrorNotificationHandler';
 
 export const SecurePlaces = ({
   securePlaceNameValue,
   securePlaceRadiusValue,
   errors,
   touched,
-  validateForm,
   handleChange,
   setFieldValue,
   onNextPage,
-  handleSubmit,
 }: {
   securePlaceNameValue: string;
   securePlaceRadiusValue: string;
   errors: FormikErrors<IOnboardingFormValues>;
   touched: FormikTouched<IOnboardingFormValues>;
-  validateForm: (values?: any) => Promise<FormikErrors<IOnboardingFormValues>>;
-  handleSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
   handleChange: FormikHandlers['handleChange'];
   setFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'];
   onNextPage: () => void;
@@ -69,19 +61,6 @@ export const SecurePlaces = ({
         long: `${detail?.geometry?.location.lng}` || '',
       },
     });
-  };
-
-  const onAddPlaceValue = async () => {
-    const errors = await validateForm();
-    if (Object.keys(errors).length > 0) {
-      ErrorNotificationHandler({
-        type: EPopupType.DEFAULT,
-        text1: strings.addingPlaceError,
-        text2: errors.name,
-      });
-    }
-    handleSubmit();
-    // onNextPage();
   };
 
   const handleScreenPress = () => {
@@ -122,7 +101,7 @@ export const SecurePlaces = ({
           text={strings.savePlace}
           // disabled={!place.name || !place.coordinates.lat}
           theme="filled"
-          onPress={onAddPlaceValue}
+          onPress={onNextPage}
           classCustomBody="w-80"
         />
       </View>

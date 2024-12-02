@@ -30,13 +30,13 @@ export interface ISecurityData {
       }[];
   pgpDeviceKeyData: {
     devicePrivateKey: string;
+    keyUUID: string;
     date: Timestamp | null;
     email: string;
     approved: boolean;
   };
   deviceIdentifyer: {
     os: string;
-    deviceUuid: string;
     date: Timestamp | null;
   };
 }

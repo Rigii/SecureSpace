@@ -14,6 +14,8 @@ export interface IOnboardingFormValues {
     };
   };
   securePlaceRadius: string;
+  keyPassword: string;
+  confirmKeyPassword: string;
 }
 
 export interface IUserData {

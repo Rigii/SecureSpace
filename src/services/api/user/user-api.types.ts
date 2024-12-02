@@ -12,7 +12,6 @@ export interface IPublicKey {
   approved: boolean;
   date: number;
   email: string;
-  deviceUuid: string;
   publicKey: string;
   os: string;
 }
@@ -23,7 +22,6 @@ export interface IDataSecretsAPI {
   accessCredentials: {password: string; email: string}[];
   accountId: string;
   pgpPublicKey: IPublicKey;
-  deviceIdentifyer: string;
   securePlaces: {
     name: string;
     securePlaceData: {

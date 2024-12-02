@@ -3,10 +3,9 @@
 import Toast from 'react-native-toast-message';
 
 export enum EPopupType {
-  DEFAULT = 'DEFAULT',
-  ERROR = 'ERROR',
-  WARNING = 'WARNING',
-  SUCCESS = 'SUCCESS',
+  INFO = 'info',
+  ERROR = 'error',
+  SUCCESS = 'success',
 }
 
 export const ErrorNotificationHandler = ({
