@@ -99,7 +99,7 @@ export const SecurePlaces = ({
         </View>
         <ThemedButton
           text={strings.savePlace}
-          // disabled={!place.name || !place.coordinates.lat}
+          disabled={!!errors.securePlaceData || !!errors.securePlaceName}
           theme="filled"
           onPress={onNextPage}
           classCustomBody="w-80"

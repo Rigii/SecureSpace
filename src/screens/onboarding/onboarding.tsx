@@ -61,9 +61,9 @@ export const OnboardingFlow = () => {
 
   const onSubmit = async (values: IOnboardingFormValues) => {
     const userKeys = await generatePGPKeyPair({
-      userIds: [{name: 'Bill', email: 'Geits'}],
+      userIds: [{name: values.name, email: userAccountData.email}],
       numBits: 2048,
-      passphrase: '',
+      passphrase: values.keyPassword,
     });
 
     const publicKeyData = {
@@ -98,46 +98,50 @@ export const OnboardingFlow = () => {
 
       console.log(77777777777, response.data?.newPublicKeysData?.id);
 
-      // await saveKeyOnDevice({
-      //   email: userAccountData.email,
-      //   password: values.keyPassword,
-      //   keyUUID: '333',
-      //   devicePrivateKey: userKeys.privateKey,
-      // });
+      if (values.saveKeyOnDevice) {
+        await saveKeyOnDevice({
+          email: userAccountData.email,
+          password: values.keyPassword,
+          keyUUID: response.data?.newPublicKeysData?.id,
+          devicePrivateKey: userKeys.privateKey,
+        });
+      }
 
-      // const pgpDeviceKeyData = {
-      //   devicePrivateKey: userKeys.privateKey,
-      //   date: getTime(new Date()),
-      //   email: userAccountData.email,
-      //   keyUUID: response.newPublicKeysData.id,
-      //   approved: true,
-      // };
+      const pgpDeviceKeyData = {
+        devicePrivateKey: userKeys.privateKey,
+        date: getTime(new Date()),
+        email: userAccountData.email,
+        keyUUID: response.data?.newPublicKeysData?.id,
+        approved: true,
+      };
 
-      // const deviceIdentifyer = {
-      //   os: Platform.OS,
-      //   date: getTime(new Date()),
-      // };
+      console.log(33333333333, pgpDeviceKeyData);
 
-      // dispatch(
-      //   setUser({
-      //     title: values.titleForm,
-      //     name: values.name,
-      //   }),
-      //   setSecurityData({
-      //     accessCredentials: values.imergencyPasswordsEmails,
-      //     deviceIdentifyer,
-      //     pgpDeviceKeyData,
-      //     securePlaces: [
-      //       {
-      //         name: values.securePlaceName,
-      //         securePlaceData: values.securePlaceData,
-      //         securePlaceRadius: values.securePlaceRadius,
-      //       },
-      //     ],
-      //   }),
-      // );
+      const deviceIdentifyer = {
+        os: Platform.OS,
+        date: getTime(new Date()),
+      };
 
-      // setIsSubmitted(true);
+      dispatch(
+        setUser({
+          title: values.titleForm,
+          name: values.name,
+        }),
+        setSecurityData({
+          accessCredentials: values.imergencyPasswordsEmails,
+          deviceIdentifyer,
+          pgpDeviceKeyData,
+          securePlaces: [
+            {
+              name: values.securePlaceName,
+              securePlaceData: values.securePlaceData,
+              securePlaceRadius: values.securePlaceRadius,
+            },
+          ],
+        }),
+      );
+
+      setIsSubmitted(true);
     } catch (error) {
       const currentError = error as Error;
 
@@ -181,6 +185,7 @@ export const OnboardingFlow = () => {
         securePlaceRadius: '',
         keyPassword: '',
         confirmKeyPassword: '',
+        saveKeyOnDevice: false,
       }}
       validationSchema={validationOnboardingSchema}
       isInitialValid={false}

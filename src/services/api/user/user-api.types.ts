@@ -16,6 +16,14 @@ export interface IPublicKey {
   os: string;
 }
 
+export interface INewPublicKeysDataResponse {
+  id: string;
+  email: string;
+  approved: boolean;
+  public_key: string;
+  os: string;
+}
+
 export interface IDataSecretsAPI {
   accountSecret?: string;
   destroyAccountSecret?: string;

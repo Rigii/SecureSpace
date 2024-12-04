@@ -16,6 +16,7 @@ export interface IOnboardingFormValues {
   securePlaceRadius: string;
   keyPassword: string;
   confirmKeyPassword: string;
+  saveKeyOnDevice: boolean;
 }
 
 export interface IUserData {
