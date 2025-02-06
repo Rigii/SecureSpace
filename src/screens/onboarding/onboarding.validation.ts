@@ -13,13 +13,11 @@ export const validationOnboardingSchema = Yup.object().shape({
     'securePlaceData-address-filled',
     'securePlaceName is invalid because securePlaceData.address is filled',
     function (value) {
-      const {securePlaceData} = this.parent; // Access the parent object
-      // Check if securePlaceData.address exists and is not empty
+      const {securePlaceData} = this.parent;
       if (securePlaceData?.address) {
-        // Return true if securePlaceName is valid; otherwise, it's invalid
         return !!value;
       }
-      // If address is empty, no error should occur for securePlaceName
+
       return true;
     },
   ),
@@ -31,13 +29,27 @@ export const validationOnboardingSchema = Yup.object().shape({
       long: Yup.string(),
     }),
   }),
-  keyPassword: Yup.string()
-    .min(6, 'Too Short!')
-    .max(12, 'Too Long!')
-    .required('The passwod should have at least 6 symbols'),
-  confirmKeyPassword: Yup.string()
-    .min(6, 'Too Short!')
-    .max(12, 'Too Long!')
-    .required('The passwod should have at least 6 symbols')
-    .oneOf([Yup.ref('keyPassword')], 'Passwords must match'),
+  keyPassword: Yup.string().test(
+    'is-greater-than-five-and-less-than-twenty',
+    'Value must be greater than 5 and less than 20',
+    value => {
+      if (!value) return true;
+      return value?.length > 5 && value.length < 20;
+    },
+  ),
+  confirmKeyPassword: Yup.string().test(
+    'securePlaceData-address-filled',
+    'securePlaceName is invalid because securePlaceData.address is filled',
+    function (value) {
+      const {keyPassword} = this.parent;
+      if (!keyPassword) {
+        return true;
+      }
+      return keyPassword === value;
+    },
+  ),
+  // .oneOf(
+  //   [Yup.ref('keyPassword')],
+  //   'Passwords must match',
+  // ),
 });

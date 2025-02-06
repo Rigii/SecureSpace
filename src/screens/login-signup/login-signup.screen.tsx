@@ -10,14 +10,8 @@ import {EmailPasswordForm} from './email-password-form';
 import {EAuthMode} from './login-sign-up.types';
 
 export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
-  const {
-    onMicrosoftSignUp,
-    onGoogleSignUp,
-    loginSignUp,
-    onForgotPassword,
-    onChangeMode,
-    mode,
-  } = useLoginSignUpUserState({navigation});
+  const {onGoogleSignUp, loginSignUp, onForgotPassword, onChangeMode, mode} =
+    useLoginSignUpUserState({navigation});
 
   return (
     <View className="flex flex-col content-center items-center justify-center flex-1 w-full gap-y-5">
@@ -36,12 +30,6 @@ export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
           theme="lightBordered"
           // rightContent={<GoogleIcon />}
           onPress={onGoogleSignUp}
-        />
-        <ThemedButton
-          text={strings.enterWithOutlook}
-          theme="lightBordered"
-          // rightContent={<OutlookIcon />}
-          onPress={onMicrosoftSignUp}
         />
       </View>
     </View>

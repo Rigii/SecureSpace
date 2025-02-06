@@ -3,19 +3,18 @@ import {strings} from '../../../constants/strings/onboarding.strings';
 import {Keyboard, TouchableWithoutFeedback, View} from 'react-native';
 import {Title1, Title3} from '../../../components/title';
 import {Input, KeyboardTypes} from '../../../components/input';
-import {FormikHandlers, FormikErrors, FormikTouched} from 'formik';
+import {FormikErrors, FormikTouched} from 'formik';
 import {ThemedButton} from '../../../components/themed-button';
-import {IOnboardingFormValues} from '../onboarding.types';
 import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../../services/ErrorNotificationHandler';
+import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
 
 export const DownloadKey = ({
   keyPassword,
   confirmKeyPassword,
   errors,
-  touched,
   validateForm,
   handleChange,
   handleSubmit,
@@ -25,7 +24,7 @@ export const DownloadKey = ({
   errors: FormikErrors<IOnboardingFormValues>;
   touched: FormikTouched<IOnboardingFormValues>;
   validateForm: (values?: any) => Promise<FormikErrors<IOnboardingFormValues>>;
-  handleChange: FormikHandlers['handleChange'];
+  handleChange: (field: keyof IOnboardingFormValues) => (value: string) => void;
   handleSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
 }) => {
   const handleScreenPress = () => {
@@ -59,7 +58,7 @@ export const DownloadKey = ({
               keyboardType={KeyboardTypes.default}
               className="w-80"
               isSecure={true}
-              isError={touched.keyPassword && !!errors.keyPassword}
+              isError={!!errors.keyPassword}
             />
             <Input
               value={confirmKeyPassword}
@@ -68,14 +67,13 @@ export const DownloadKey = ({
               keyboardType={KeyboardTypes.default}
               className="w-80"
               isSecure={true}
-              isError={
-                touched.confirmKeyPassword && !!errors.confirmKeyPassword
-              }
+              isError={!!errors.confirmKeyPassword}
             />
           </View>
         </View>
         <ThemedButton
           text={strings.saveYourKey}
+          disabled={Object.keys(errors).length > 0}
           theme="filled"
           onPress={onSubmit}
           classCustomBody="w-80"

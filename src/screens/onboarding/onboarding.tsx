@@ -6,7 +6,7 @@ import {SecurePlaces} from './onboarding-cases/secure-places';
 import {WelcomeAboard} from './onboarding-cases/welcome-aboard';
 import {validationOnboardingSchema} from './onboarding.validation';
 import Swiper from 'react-native-swiper';
-import {IOnboardingFormValues, SwiperRef} from './onboarding.types';
+import {SwiperRef} from './onboarding.types';
 import {useDispatch} from 'react-redux';
 import {
   setSecurityData,
@@ -28,15 +28,17 @@ import {getTime} from 'date-fns';
 import {Platform} from 'react-native';
 import {generateDeviceDataKeyFile} from '../../services/pgp-service/create-key-file';
 import {DownloadKey} from './onboarding-cases/download-key';
+import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
+import {updateFormField} from '../../app/store/state/onboardingState/onboardingSlice';
+import {FormikActions} from 'formik';
 
 export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
-
   const swiperRef = useRef<SwiperRef>(null);
-  const {userAccountData, securityData} = useReduxSelector(
+  const {userAccountData} = useReduxSelector(
     state => state.anonymousUserReducer,
   );
-
+  const formState = useReduxSelector(state => state.onboardingFormReducer);
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -96,8 +98,6 @@ export const OnboardingFlow = () => {
         throw new Error('PGP Key id is not awailable');
       }
 
-      console.log(77777777777, response.data?.newPublicKeysData?.id);
-
       if (values.saveKeyOnDevice) {
         await saveKeyOnDevice({
           email: userAccountData.email,
@@ -114,8 +114,6 @@ export const OnboardingFlow = () => {
         keyUUID: response.data?.newPublicKeysData?.id,
         approved: true,
       };
-
-      console.log(33333333333, pgpDeviceKeyData);
 
       const deviceIdentifyer = {
         os: Platform.OS,
@@ -169,29 +167,11 @@ export const OnboardingFlow = () => {
 
   return (
     <Formik
-      initialValues={{
-        name: '',
-        titleForm: '',
-        imergencyPasswordsEmails: [{email: '', password: ''}],
-        securePlaceName: '',
-        securePlaceData: {
-          id: '',
-          address: '',
-          coordinates: {
-            lat: '',
-            long: '',
-          },
-        },
-        securePlaceRadius: '',
-        keyPassword: '',
-        confirmKeyPassword: '',
-        saveKeyOnDevice: false,
-      }}
+      initialValues={formState}
       validationSchema={validationOnboardingSchema}
       isInitialValid={false}
       onSubmit={onSubmit}>
       {({
-        handleChange,
         setFieldValue,
         handleSubmit,
         handleBlur,
@@ -199,48 +179,61 @@ export const OnboardingFlow = () => {
         values,
         errors,
         touched,
-      }) => (
-        <Swiper showsPagination={false} ref={swiperRef} loop={false}>
-          <UserInitialData
-            nikValue={values.name}
-            sexValue={values.titleForm}
-            handleChange={handleChange}
-            setFieldValue={setFieldValue}
-            onNextPage={onNextPage}
-            handleBlur={handleBlur}
-            validateForm={validateForm}
-            errors={errors}
-            touched={touched}
-          />
-          <ImergencyPasswords
-            imergencyPasswordsEmails={values.imergencyPasswordsEmails}
-            setFieldValue={setFieldValue}
-            onNextPage={onNextPage}
-            handleBlur={handleBlur}
-            validateForm={validateForm}
-            handleChange={handleChange}
-            errors={errors}
-          />
-          <SecurePlaces
-            securePlaceNameValue={values.securePlaceName}
-            errors={errors}
-            touched={touched}
-            securePlaceRadiusValue={values.securePlaceRadius}
-            handleChange={handleChange}
-            setFieldValue={setFieldValue}
-            onNextPage={onNextPage}
-          />
-          <DownloadKey
-            keyPassword={values.keyPassword}
-            confirmKeyPassword={values.confirmKeyPassword}
-            errors={errors}
-            touched={touched}
-            validateForm={validateForm}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-          />
-        </Swiper>
-      )}
+      }) => {
+        const handleFieldChange =
+          (field: keyof IOnboardingFormValues) => (value: string) => {
+            dispatch(updateFormField({field, value}));
+            setFieldValue(field, value);
+          };
+
+        const handleSetFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'] =
+          (field: keyof IOnboardingFormValues, value) => {
+            dispatch(updateFormField({field, value}));
+            setFieldValue(field, value);
+          };
+
+        return (
+          <Swiper showsPagination={false} ref={swiperRef} loop={false}>
+            <UserInitialData
+              nikValue={values.name}
+              sexValue={values.titleForm}
+              handleChange={handleFieldChange}
+              setFieldValue={handleSetFieldValue}
+              onNextPage={onNextPage}
+              handleBlur={handleBlur}
+              validateForm={validateForm}
+              errors={errors}
+              touched={touched}
+            />
+            <ImergencyPasswords
+              imergencyPasswordsEmails={values.imergencyPasswordsEmails}
+              setFieldValue={handleSetFieldValue}
+              onNextPage={onNextPage}
+              handleBlur={handleBlur}
+              validateForm={validateForm}
+              errors={errors}
+            />
+            <SecurePlaces
+              securePlaceNameValue={values.securePlaceName}
+              errors={errors}
+              touched={touched}
+              securePlaceRadiusValue={values.securePlaceRadius}
+              handleChange={handleFieldChange}
+              setFieldValue={handleSetFieldValue}
+              onNextPage={onNextPage}
+            />
+            <DownloadKey
+              keyPassword={values.keyPassword}
+              confirmKeyPassword={values.confirmKeyPassword}
+              errors={errors}
+              touched={touched}
+              validateForm={validateForm}
+              handleChange={handleFieldChange}
+              handleSubmit={handleSubmit}
+            />
+          </Swiper>
+        );
+      }}
     </Formik>
   );
 };

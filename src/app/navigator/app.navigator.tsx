@@ -7,6 +7,8 @@ import {PrivateRoute} from './PrivateRoute';
 import {RootStackParamList, manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
 import {OnboardingFlow} from '../../screens/onboarding/onboarding';
+import ScreenWrapper from '../../components/screen-wrapper/screen-wraper';
+import ChatList from '../../screens/chat/chat-list';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -33,11 +35,19 @@ export const AppNavigationContainer = () => {
             />
           )}
         </Stack.Screen>
-        <Stack.Screen
+        {/* <Stack.Screen
           name={manualEncryptionScreenRoutes.home}
           component={Home}
           options={{headerShown: false}}
-        />
+        /> */}
+        <Stack.Screen name={manualEncryptionScreenRoutes.home}>
+          {props => (
+            <ScreenWrapper>
+              <Home />
+              {/*<Home route={props.route} navigation={props.navigation} />*/}
+            </ScreenWrapper>
+          )}
+        </Stack.Screen>
         <Stack.Screen
           name={manualEncryptionScreenRoutes.registerLogin}
           component={LoginSignUpUser}
@@ -46,10 +56,13 @@ export const AppNavigationContainer = () => {
           name={manualEncryptionScreenRoutes.onboarding}
           component={OnboardingFlow}
         />
-        {/* <Stack.Screen
-          name={manualEncryptionScreenRoutes.home}
-          component={AppTestComponent}
-        /> */}
+        <Stack.Screen name={manualEncryptionScreenRoutes.chatList}>
+          {props => (
+            <ScreenWrapper>
+              <ChatList />
+            </ScreenWrapper>
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

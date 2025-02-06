@@ -4,8 +4,9 @@ import {Keyboard, FlatList, TouchableWithoutFeedback, View} from 'react-native';
 import {Title1} from '../../../components/title';
 import {Input, KeyboardTypes} from '../../../components/input';
 import {ThemedButton} from '../../../components/themed-button';
-import {IOnboardingFormValues, IUserData} from '../onboarding.types';
-import {FormikErrors, FormikHandlers, FormikActions} from 'formik';
+import {IUserData} from '../onboarding.types';
+import {FormikErrors, FormikActions} from 'formik';
+import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
 
 export const ImergencyPasswords = ({
   imergencyPasswordsEmails,
@@ -14,7 +15,6 @@ export const ImergencyPasswords = ({
 }: {
   imergencyPasswordsEmails: {email: string; password: string}[];
   errors: FormikErrors<IOnboardingFormValues>;
-  handleChange: FormikHandlers['handleChange'];
   setFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'];
   onNextPage: () => void;
   validateForm: (values?: any) => Promise<FormikErrors<IOnboardingFormValues>>;

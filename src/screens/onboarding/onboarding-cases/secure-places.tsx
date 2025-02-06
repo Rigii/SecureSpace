@@ -3,12 +3,7 @@ import {strings} from '../../../constants/strings/onboarding.strings';
 import {Keyboard, TouchableWithoutFeedback, View} from 'react-native';
 import {Title1} from '../../../components/title';
 import {Input, KeyboardTypes} from '../../../components/input';
-import {
-  FormikActions,
-  FormikHandlers,
-  FormikErrors,
-  FormikTouched,
-} from 'formik';
+import {FormikActions, FormikErrors, FormikTouched} from 'formik';
 
 import {ThemedButton} from '../../../components/themed-button';
 import {
@@ -16,7 +11,7 @@ import {
   GooglePlaceDetail,
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
-import {IOnboardingFormValues} from '../onboarding.types';
+import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
 
 export const SecurePlaces = ({
   securePlaceNameValue,
@@ -31,7 +26,7 @@ export const SecurePlaces = ({
   securePlaceRadiusValue: string;
   errors: FormikErrors<IOnboardingFormValues>;
   touched: FormikTouched<IOnboardingFormValues>;
-  handleChange: FormikHandlers['handleChange'];
+  handleChange: (field: keyof IOnboardingFormValues) => (value: string) => void;
   setFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'];
   onNextPage: () => void;
 }) => {

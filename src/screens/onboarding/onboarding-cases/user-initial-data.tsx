@@ -4,11 +4,11 @@ import {Keyboard, TouchableWithoutFeedback, View} from 'react-native';
 import {Title1} from '../../../components/title';
 import {Input, KeyboardTypes} from '../../../components/input';
 import RadioGroup from 'react-native-radio-buttons-group';
-import {FormikHandlers, FormikActions} from 'formik';
+import {FormikActions} from 'formik';
 import {ThemedButton} from '../../../components/themed-button';
 import {FormikErrors, FormikTouched} from 'formik';
-import {IOnboardingFormValues} from '../onboarding.types';
 import {radioButtonsData} from '../onboarding.mocked';
+import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
 
 export const UserInitialData = ({
   nikValue,
@@ -30,7 +30,7 @@ export const UserInitialData = ({
     (e: React.FocusEvent<any, Element>): void;
     <T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
   };
-  handleChange: FormikHandlers['handleChange'];
+  handleChange: (field: keyof IOnboardingFormValues) => (value: string) => void;
   setFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'];
   onNextPage: () => void;
   validateForm: (values?: any) => Promise<FormikErrors<IOnboardingFormValues>>;

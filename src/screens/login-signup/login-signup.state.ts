@@ -12,7 +12,7 @@ import {setUser} from '../../app/store/state/userState/userAction';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading] = useState(false);
   const dispatch = useDispatch();
 
   const onForgotPassword = () => setMode(EAuthMode.resetPassword);
@@ -54,14 +54,17 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const proceedUserAuthData = (user: IUserAuthData) => {
     if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
+      return;
       // Redirect here
     }
+    navigation.navigate(manualEncryptionScreenRoutes.home);
   };
 
   const loginSignUp = async (signInData: {email: string; password: string}) => {
     try {
       const isSignUp = mode === EAuthMode.signUp;
       const responce = await registerSignInUserApi(signInData, isSignUp);
+
       if (isSignUp) {
         ErrorNotificationHandler({
           text1: strings.confirmYourEmail,
@@ -71,7 +74,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
 
       const user = responce.data.user as IUserAuthData;
       const token = responce.data.token;
-
       dispatch(
         setUser({
           id: user.id,
@@ -89,7 +91,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       proceedUserAuthData(user);
     } catch (error) {
       const currentError = error as AxiosError<IHttpExceptionResponse>;
-      if (currentError.response?.data.message === 'Not exist') {
+      if (currentError.response?.data.message) {
         ErrorNotificationHandler({
           text1: strings.dontHaveAccount,
           text2: strings.pleaseSignUp,

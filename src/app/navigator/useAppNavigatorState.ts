@@ -2,9 +2,9 @@
 import {useReduxSelector} from '../store/store';
 
 export const useAppNavigatorState = () => {
-  const {token} = useReduxSelector(state => state.anonymousUserReducer);
-
-  //   const dispatch = useDispatch();
+  const {token} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
 
   const isAuthenticated = !!token;
 
