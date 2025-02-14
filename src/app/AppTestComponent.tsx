@@ -10,7 +10,6 @@ import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
   Text,
   useColorScheme,
   View,
@@ -69,10 +68,6 @@ export const AppTestComponent = () => {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>

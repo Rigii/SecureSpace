@@ -159,7 +159,7 @@ export const OnboardingFlow = () => {
     return (
       <WelcomeAboard
         navigateToMain={() =>
-          navigation.navigate(manualEncryptionScreenRoutes.root)
+          navigation.navigate(manualEncryptionScreenRoutes.home)
         }
       />
     );

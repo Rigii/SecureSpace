@@ -36,21 +36,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     // }
   };
 
-  const onMicrosoftSignUp = async () => {
-    console.log('Check Microsoft Sign Up');
-    // try {
-    //   setLoading(true);
-    //   await signInWithMicrosoft();
-    // } catch (error) {
-    //   const currentError = error as Error;
-    //   ErrorNotificationHandler({
-    //     type: EPopupType.DEFAULT,
-    //     message: 'Sign Up Error',
-    //   });
-    //   console.error('Sign Up Error', currentError, currentError.message);
-    // }
-  };
-
   const proceedUserAuthData = (user: IUserAuthData) => {
     if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
@@ -74,6 +59,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
 
       const user = responce.data.user as IUserAuthData;
       const token = responce.data.token;
+
       dispatch(
         setUser({
           id: user.id,
@@ -108,7 +94,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     mode,
     isLoading,
     loginSignUp,
-    onMicrosoftSignUp,
     onGoogleSignUp,
     onChangeMode,
     onForgotPassword,
