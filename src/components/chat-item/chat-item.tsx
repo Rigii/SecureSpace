@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 
 interface ChatListItemProps {
   chatName: string;
@@ -13,7 +13,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
   unreadMessages,
 }) => {
   return (
-    <View className="flex-row items-center p-3 border-b border-gray-200">
+    <TouchableOpacity className="flex-row items-center p-3 border-b border-gray-200">
       <View className="w-10 h-10 bg-gray-300 rounded-full mr-4" />
       <Text className="flex-1 text-lg font-bold text-black">{chatName}</Text>
       <View className="items-end">
@@ -24,7 +24,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
           }`}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

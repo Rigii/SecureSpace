@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, FlatList} from 'react-native';
 import ChatListItem from '../../components/chat-item/chat-item';
+import {useReduxSelector} from '../../app/store/store';
 
 const chatData = [
   {
@@ -30,6 +31,10 @@ const chatData = [
 ];
 
 const ChatList: React.FC = () => {
+  const {userAccountData} = useReduxSelector(
+    state => state.anonymousUserReducer,
+  );
+
   return (
     <View className="flex-1">
       <FlatList
