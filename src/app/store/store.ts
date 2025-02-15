@@ -1,6 +1,7 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import anonymousUserReducer from './state/userState/userSlice';
 import onboardingFormReducer from './state/onboardingState/onboardingSlice';
+import userChatsSlice from './state/userChats/userChatsSlice';
 import restrictionsReducer, {
   IRestrictionsState,
 } from './state/applicationRestrictionsState/restrictionsSlice';
@@ -17,8 +18,10 @@ import {
   getSecureStorageData,
 } from '../../services/async-secure-storage/secure-storage-services';
 import {IOnboardingFormValues} from './state/onboardingState/onboardingStateTypes';
+import {IUserChats} from './state/userChats/userChatsState.types';
 
 const rootReducer = combineReducers({
+  userChatsSlice,
   anonymousUserReducer,
   restrictionsReducer,
   paymentSettingsReducer,
@@ -43,6 +46,7 @@ export const setupStore = async () => {
 };
 
 export interface IState {
+  userChatsSlice: IUserChats;
   anonymousUserReducer: IUserState;
   restrictionsReducer: IRestrictionsState;
   paymentSettingsReducer: IPaymentSettings;

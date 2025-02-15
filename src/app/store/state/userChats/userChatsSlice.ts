@@ -16,7 +16,7 @@ const initialState: IUserChats = {
   invitations: [],
 };
 
-export const anonymousUserSlice = createSlice({
+export const userChatsSlice = createSlice({
   name: 'anonymousUser',
   initialState,
   reducers: {},
@@ -48,4 +48,4 @@ export const anonymousUserSlice = createSlice({
   },
 });
 
-export default anonymousUserSlice.reducer;
+export default userChatsSlice.reducer;

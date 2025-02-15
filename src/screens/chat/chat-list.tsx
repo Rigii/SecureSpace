@@ -30,10 +30,17 @@ const chatData = [
   },
 ];
 
+// export interface IChatRoomId {
+//   chatId: string;
+//   date: Date;
+//   updateDate: Date;
+//   isOwner: boolean;
+//   roomType: string;
+//   chatRoomName: string;
+// }
+
 const ChatList: React.FC = () => {
-  const {userAccountData} = useReduxSelector(
-    state => state.anonymousUserReducer,
-  );
+  const userChatsData = useReduxSelector(state => state.userChatsSlice);
 
   return (
     <View className="flex-1">
