@@ -13,6 +13,7 @@ export const manualEncryptionScreenRoutes: {
   onboarding: 'onboarding',
   root: 'root',
   notFound: 'notFound',
+  chatList: 'chatList',
 };
 
 export type RootStackParamList = {
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   onboarding: undefined;
   root: undefined;
   notFound: undefined;
+  chatList: undefined;
 };
 
 export type TManualEncryptionScreens =

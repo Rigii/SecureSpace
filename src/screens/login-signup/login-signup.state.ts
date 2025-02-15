@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {EAuthMode, IUserAuthData} from './login-sign-up.types';
-import {locallyEmailForSignIn} from '../../services/async-storage/async-storage-service';
+import {locallyEmailForSignIn} from '../../services/async-secure-storage/async-storage-service';
 import {registerSignInUserApi} from '../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
 import {strings} from '../../constants/strings/login-signup.strings';
@@ -12,7 +12,7 @@ import {setUser} from '../../app/store/state/userState/userAction';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading] = useState(false);
   const dispatch = useDispatch();
 
   const onForgotPassword = () => setMode(EAuthMode.resetPassword);
@@ -36,32 +36,20 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     // }
   };
 
-  const onMicrosoftSignUp = async () => {
-    console.log('Check Microsoft Sign Up');
-    // try {
-    //   setLoading(true);
-    //   await signInWithMicrosoft();
-    // } catch (error) {
-    //   const currentError = error as Error;
-    //   ErrorNotificationHandler({
-    //     type: EPopupType.DEFAULT,
-    //     message: 'Sign Up Error',
-    //   });
-    //   console.error('Sign Up Error', currentError, currentError.message);
-    // }
-  };
-
   const proceedUserAuthData = (user: IUserAuthData) => {
     if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
+      return;
       // Redirect here
     }
+    navigation.navigate(manualEncryptionScreenRoutes.home);
   };
 
   const loginSignUp = async (signInData: {email: string; password: string}) => {
     try {
       const isSignUp = mode === EAuthMode.signUp;
       const responce = await registerSignInUserApi(signInData, isSignUp);
+
       if (isSignUp) {
         ErrorNotificationHandler({
           text1: strings.confirmYourEmail,
@@ -89,7 +77,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       proceedUserAuthData(user);
     } catch (error) {
       const currentError = error as AxiosError<IHttpExceptionResponse>;
-      if (currentError.response?.data.message === 'Not exist') {
+      if (currentError.response?.data.message) {
         ErrorNotificationHandler({
           text1: strings.dontHaveAccount,
           text2: strings.pleaseSignUp,
@@ -106,7 +94,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     mode,
     isLoading,
     loginSignUp,
-    onMicrosoftSignUp,
     onGoogleSignUp,
     onChangeMode,
     onForgotPassword,

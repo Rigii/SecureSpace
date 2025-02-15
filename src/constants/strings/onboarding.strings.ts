@@ -14,6 +14,12 @@ export const strings = {
   delete: 'Delete',
   radius: 'Radius in meters',
   welcomeAboard: 'Welcome on board!',
+  allmoustDone: 'Allmoust Done',
+  pleaseSaveYourKey:
+    'Download and store your key safe, to be able restore or use your encrypted data with other devices',
+  saveYourKey: 'Save Your Key',
+  yourKeyPassword: 'Password',
+  confirmKeyPassword: 'Confirm Password',
   nowYouCanStart: 'Now you can start saving your confidential content!',
   toTheMainScreen: 'To the main screen',
   saveNikname: 'Save nikname',

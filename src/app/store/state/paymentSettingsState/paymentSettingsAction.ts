@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {strings} from '../../../../constants/strings/encryption-decryption.strings';
-import {locallyManualEncryptionPaymentSettings} from '../../../../services/async-storage/async-storage-service';
+import {locallyManualEncryptionPaymentSettings} from '../../../../services/async-secure-storage/async-storage-service';
 // import {GetApplicationPaymentSettings} from '../../../../utilities/functionsAdapter/functionsAdapter';
 
 const GetMockedApplicationSettings = () => ({

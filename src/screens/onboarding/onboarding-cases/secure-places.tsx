@@ -3,12 +3,7 @@ import {strings} from '../../../constants/strings/onboarding.strings';
 import {Keyboard, TouchableWithoutFeedback, View} from 'react-native';
 import {Title1} from '../../../components/title';
 import {Input, KeyboardTypes} from '../../../components/input';
-import {
-  FormikActions,
-  FormikHandlers,
-  FormikErrors,
-  FormikTouched,
-} from 'formik';
+import {FormikActions, FormikErrors, FormikTouched} from 'formik';
 
 import {ThemedButton} from '../../../components/themed-button';
 import {
@@ -16,30 +11,22 @@ import {
   GooglePlaceDetail,
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
-import {IOnboardingFormValues} from '../onboarding.types';
-import {
-  EPopupType,
-  ErrorNotificationHandler,
-} from '../../../services/ErrorNotificationHandler';
+import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
 
 export const SecurePlaces = ({
   securePlaceNameValue,
   securePlaceRadiusValue,
   errors,
   touched,
-  validateForm,
   handleChange,
   setFieldValue,
   onNextPage,
-  handleSubmit,
 }: {
   securePlaceNameValue: string;
   securePlaceRadiusValue: string;
   errors: FormikErrors<IOnboardingFormValues>;
   touched: FormikTouched<IOnboardingFormValues>;
-  validateForm: (values?: any) => Promise<FormikErrors<IOnboardingFormValues>>;
-  handleSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
-  handleChange: FormikHandlers['handleChange'];
+  handleChange: (field: keyof IOnboardingFormValues) => (value: string) => void;
   setFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'];
   onNextPage: () => void;
 }) => {
@@ -69,19 +56,6 @@ export const SecurePlaces = ({
         long: `${detail?.geometry?.location.lng}` || '',
       },
     });
-  };
-
-  const onAddPlaceValue = async () => {
-    const errors = await validateForm();
-    if (Object.keys(errors).length > 0) {
-      ErrorNotificationHandler({
-        type: EPopupType.DEFAULT,
-        text1: strings.addingPlaceError,
-        text2: errors.name,
-      });
-    }
-    handleSubmit();
-    // onNextPage();
   };
 
   const handleScreenPress = () => {
@@ -120,9 +94,9 @@ export const SecurePlaces = ({
         </View>
         <ThemedButton
           text={strings.savePlace}
-          // disabled={!place.name || !place.coordinates.lat}
+          disabled={!!errors.securePlaceData || !!errors.securePlaceName}
           theme="filled"
-          onPress={onAddPlaceValue}
+          onPress={onNextPage}
           classCustomBody="w-80"
         />
       </View>

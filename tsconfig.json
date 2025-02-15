@@ -1,6 +1,6 @@
 {
   "extends": "@react-native/typescript-config/tsconfig.json",
-  "include": ["src/**/*.ts", "src/**/*.tsx", "env.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "env.d.ts", "*.d.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "types": ["nativewind/types"]

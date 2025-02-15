@@ -10,11 +10,18 @@ export interface IUserOnboardingAPI {
 
 export interface IPublicKey {
   approved: boolean;
-  browser: string;
+  date: number;
   email: string;
-  id: string;
-  loggedIn: boolean;
   publicKey: string;
+  os: string;
+}
+
+export interface INewPublicKeysDataResponse {
+  id: string;
+  email: string;
+  approved: boolean;
+  public_key: string;
+  os: string;
 }
 
 export interface IDataSecretsAPI {
@@ -22,6 +29,7 @@ export interface IDataSecretsAPI {
   destroyAccountSecret?: string;
   accessCredentials: {password: string; email: string}[];
   accountId: string;
+  pgpPublicKey: IPublicKey;
   securePlaces: {
     name: string;
     securePlaceData: {
@@ -33,7 +41,6 @@ export interface IDataSecretsAPI {
       };
     };
     securePlaceRadius: string;
-    publicKey?: IPublicKey;
   }[];
 }
 
