@@ -4,11 +4,13 @@ import {
   RootStackParamList,
   manualEncryptionScreenRoutes,
 } from '../../app/navigator/screens';
-import {SidebarIcon} from '../../assets/icons/sidebarIcon';
-import {LogoutSmallIcon} from '../../assets/icons/logoutSmallIcon';
-import {HomeIcon} from '../../assets/icons/homeIcon';
-import {ChatIcon} from '../../assets/icons/chatIcon';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  ChatIcon,
+  HomeIcon,
+  LogoutSmallIcon,
+  SidebarIcon,
+} from '../../assets/icons';
 
 const TopBar = ({currentScreen}: {currentScreen: string}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

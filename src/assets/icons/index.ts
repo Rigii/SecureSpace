@@ -6,3 +6,7 @@ export * from './pinIcon';
 export * from './safeIcon';
 export * from './info';
 export * from './microphoneIcon';
+export * from './logoutSmallIcon';
+export * from './homeIcon';
+export * from './chatIcon';
+export * from './sidebarIcon';
