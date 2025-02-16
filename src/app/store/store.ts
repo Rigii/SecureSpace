@@ -3,6 +3,7 @@ import {persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import anonymousUserReducer from './state/userState/userSlice';
 import onboardingFormReducer from './state/onboardingState/onboardingSlice';
+import chatRoomsReducer from './state/chatRoomsContent/chatRoomsSlice';
 import userChatsReducer from './state/userChats/userChatsSlice';
 import restrictionsReducer, {
   IRestrictionsState,
@@ -21,6 +22,7 @@ import {
 } from '../../services/async-secure-storage/secure-storage-services';
 import {IOnboardingFormValues} from './state/onboardingState/onboardingStateTypes';
 import {IUserChats} from './state/userChats/userChatsState.types';
+import {IChatRooms} from './state/chatRoomsContent/chatRoomsState.types';
 
 const chatPersistConfig = {
   key: 'chat',
@@ -29,6 +31,7 @@ const chatPersistConfig = {
 
 const rootReducer = combineReducers({
   userChatsReducer: persistReducer(chatPersistConfig, userChatsReducer),
+  chatRoomsReducer: persistReducer(chatPersistConfig, chatRoomsReducer),
   anonymousUserReducer,
   restrictionsReducer,
   paymentSettingsReducer,
@@ -54,6 +57,7 @@ export const setupStore = async () => {
 };
 
 export interface IState {
+  chatRoomsReducer: IChatRooms;
   userChatsReducer: IUserChats;
   anonymousUserReducer: IUserState;
   restrictionsReducer: IRestrictionsState;

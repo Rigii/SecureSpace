@@ -31,6 +31,10 @@ export const chatRoomsReducer = createSlice({
       addMessageToChatRoom,
       (state, action: PayloadAction<IChatMessage>) => {
         const chatRoomId = action.payload.id;
+
+        if (!state[chatRoomId]) {
+          return;
+        }
         const chatRoom = state[chatRoomId];
 
         if (chatRoom) {

@@ -32,7 +32,7 @@ export interface IChatMessage {
   sender_nik_name: string;
   content: string;
   chatId: number;
-  lifeCycleLimitHours: number;
+  lifeCycleLimitHours: any; // Change the type to 'any'
   is_admin: boolean;
   media_url: string;
   voice_message_url: string;
