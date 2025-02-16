@@ -1,15 +1,17 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import {persistReducer} from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import anonymousUserReducer from './state/userState/userSlice';
 import onboardingFormReducer from './state/onboardingState/onboardingSlice';
-import userChatsSlice from './state/userChats/userChatsSlice';
+import userChatsReducer from './state/userChats/userChatsSlice';
 import restrictionsReducer, {
   IRestrictionsState,
-} from './state/applicationRestrictionsState/restrictionsSlice';
+} from './state/applicationRestrictions/restrictionsSlice';
 import paymentSettingsReducer, {
   IPaymentSettings,
-} from './state/paymentSettingsState/paymentSettingsSlice';
-import manualEncryptionDataReducer from './state/manualEncryptionState/manualEncryptionSlice';
-import {IManualEncryptionState} from './state/manualEncryptionState/types';
+} from './state/paymentSettings/paymentSettingsSlice';
+import manualEncryptionDataReducer from './state/manualEncryption/manualEncryptionSlice';
+import {IManualEncryptionState} from './state/manualEncryption/types';
 import {TypedUseSelectorHook, useSelector} from 'react-redux';
 import {IUserState} from './state/userState/userState.types';
 import persistMiddleware from './middleware/persistMiddleware';
@@ -20,8 +22,13 @@ import {
 import {IOnboardingFormValues} from './state/onboardingState/onboardingStateTypes';
 import {IUserChats} from './state/userChats/userChatsState.types';
 
+const chatPersistConfig = {
+  key: 'chat',
+  storage: AsyncStorage,
+};
+
 const rootReducer = combineReducers({
-  userChatsSlice,
+  userChatsReducer: persistReducer(chatPersistConfig, userChatsReducer),
   anonymousUserReducer,
   restrictionsReducer,
   paymentSettingsReducer,
@@ -37,16 +44,17 @@ export const setupStore = async () => {
   return configureStore({
     reducer: rootReducer,
     preloadedState: {
-      anonymousUserReducer: anonymousUserData || undefined, // Предзагрузка состояния
+      anonymousUserReducer: anonymousUserData || undefined, // Load user data from secure storage
     },
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().concat(persistMiddleware.middleware),
-    // middleware: getDefaultMiddleware => [...getDefaultMiddleware()],
+      getDefaultMiddleware({serializableCheck: false}).concat(
+        persistMiddleware.middleware,
+      ),
   });
 };
 
 export interface IState {
-  userChatsSlice: IUserChats;
+  userChatsReducer: IUserChats;
   anonymousUserReducer: IUserState;
   restrictionsReducer: IRestrictionsState;
   paymentSettingsReducer: IPaymentSettings;
@@ -59,11 +67,3 @@ export const useReduxSelector: TypedUseSelectorHook<IState> = useSelector;
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = Awaited<ReturnType<typeof setupStore>>;
 export type AppDispatch = AppStore['dispatch'];
-
-// return configureStore({
-//   reducer: rootReducer,
-//   preloadedState: {
-//     anonymousUserReducer: anonymousUserData || undefined, // Предзагрузка состояния
-//   },
-//   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(persistMiddleware.middleware),
-// });

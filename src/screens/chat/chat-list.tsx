@@ -40,7 +40,7 @@ const chatData = [
 // }
 
 const ChatList: React.FC = () => {
-  const userChatsData = useReduxSelector(state => state.userChatsSlice);
+  const userChatsData = useReduxSelector(state => state.userChatsReducer);
 
   return (
     <View className="flex-1">
