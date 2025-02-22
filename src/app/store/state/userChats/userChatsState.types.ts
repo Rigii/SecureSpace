@@ -1,10 +1,8 @@
-import {Timestamp} from 'react-native-reanimated/lib/typescript/reanimated2/commonTypes';
-
 export interface IUserChats {
   interlocutorId: string;
   accountId: string;
-  created: Timestamp | null;
-  updated: Timestamp | null;
+  created: Date | null;
+  updated: Date | null;
   email: string;
   chatRoomIds: IChatRoomId[];
   invitations: IInvitations[];

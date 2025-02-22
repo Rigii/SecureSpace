@@ -24,7 +24,7 @@ export const userChatsReducer = createSlice({
     builder.addCase(
       storeUserChats,
       (state, action: PayloadAction<IUserChats>) => {
-        state = action.payload;
+        return {...state, ...action.payload};
       },
     );
 

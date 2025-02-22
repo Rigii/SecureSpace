@@ -1,8 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
-import {useReduxSelector} from '../../app/store/store';
 import ChatList from './chat-list';
 import {CreateChatAccount} from './create-chat-account';
+import {ChatListScreenState} from './chat-list-screen.state';
 
 const chatData = [
   {
@@ -31,25 +31,11 @@ const chatData = [
   },
 ];
 
-// export interface IChatRoomId {
-//   chatId: string;
-//   date: Date;
-//   updateDate: Date;
-//   isOwner: boolean;
-//   roomType: string;
-//   chatRoomName: string;
-// }
-
 const ChatListScreen: React.FC = () => {
-  const userChatsData = useReduxSelector(state => state.userChatsReducer);
-
+  const {accountId} = ChatListScreenState();
   return (
     <View className="flex-1">
-      {userChatsData?.accountId ? (
-        <ChatList chatData={chatData} />
-      ) : (
-        <CreateChatAccount />
-      )}
+      {accountId ? <ChatList chatData={chatData} /> : <CreateChatAccount />}
     </View>
   );
 };

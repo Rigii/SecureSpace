@@ -2,7 +2,7 @@ import {createAction} from '@reduxjs/toolkit';
 import {IChatRoomId, IInvitations, IUserChats} from './userChatsState.types';
 
 export const storeUserChats = createAction<IUserChats>(
-  'anonymousUser/setAnonymousUser',
+  'anonymousUser/storeUserChats',
 );
 
 export const addInvitation = createAction<IInvitations>(
