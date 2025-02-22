@@ -13,7 +13,7 @@ import {RootStackParamList, manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
 import {OnboardingFlow} from '../../screens/onboarding/onboarding';
 import TopSidebar from '../../components/screen-wrapper/top-sidebar';
-import ChatList from '../../screens/chat/chat-list';
+import ChatListScreen from '../../screens/chat/chat-list-screen';
 import {Text} from 'react-native-svg';
 import {View} from 'react-native';
 import {ThemedButton} from '../../components/themed-button';
@@ -77,7 +77,7 @@ export const AppNavigationContainer = () => {
             component={OnboardingFlow}
           />
           <Stack.Screen name={manualEncryptionScreenRoutes.chatList}>
-            {props => <ChatList />}
+            {props => <ChatListScreen />}
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
