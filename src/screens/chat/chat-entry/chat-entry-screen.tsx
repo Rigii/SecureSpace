@@ -1,8 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
-import ChatList from './chat-list';
-import {CreateChatAccount} from './create-chat-account';
-import {ChatListScreenState} from './chat-list-screen.state';
+import ChatList from '../chat-list/chat-list';
+import {CreateChatAccount} from '../create-chat-account';
+import {ChatEntryScreenState} from './chat-entry-screen.state';
 
 const chatData = [
   {
@@ -32,7 +32,7 @@ const chatData = [
 ];
 
 const ChatListScreen: React.FC = () => {
-  const {accountId} = ChatListScreenState();
+  const {accountId} = ChatEntryScreenState();
   return (
     <View className="flex-1">
       {accountId ? <ChatList chatData={chatData} /> : <CreateChatAccount />}

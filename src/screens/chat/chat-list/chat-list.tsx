@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, FlatList} from 'react-native';
-import ChatListItem from '../../components/chat-item/chat-item';
+import ChatListItem from '../../../components/chat-item/chat-item';
+import {ChatListState} from './chat-list.state';
 
 interface ChatListProps {
   chatData: {
@@ -12,6 +13,12 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = ({chatData}) => {
+  const {chatRooms} = ChatListState();
+
+  if (!chatRooms) {
+    return null;
+  }
+
   return (
     <View className="flex-1">
       <FlatList

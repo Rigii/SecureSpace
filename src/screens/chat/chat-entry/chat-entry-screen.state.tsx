@@ -1,14 +1,14 @@
 import {useEffect} from 'react';
-import {useReduxSelector} from '../../app/store/store';
-import {getChatUserApi} from '../../services/api/chat/chat.api';
+import {useReduxSelector} from '../../../app/store/store';
+import {getChatUserApi} from '../../../services/api/chat/chat.api';
 import {useDispatch} from 'react-redux';
-import {storeUserChats} from '../../app/store/state/userChats/userChatsAction';
+import {storeUserChats} from '../../../app/store/state/userChats/userChatsAction';
 import {
   IChatRoomId,
   IInvitations,
-} from '../../app/store/state/userChats/userChatsState.types';
+} from '../../../app/store/state/userChats/userChatsState.types';
 
-export const ChatListScreenState = () => {
+export const ChatEntryScreenState = () => {
   const dispatch = useDispatch();
   const {id, token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,

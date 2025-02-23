@@ -5,12 +5,12 @@ export interface IChatRooms {
 export interface IChatRoom {
   id: string;
   chatName: string;
-  chatTYpe: string;
+  chatType: string;
   ownerId: string;
   moderatorIds: string[];
   participiantIds: string[];
   usersData: IUserData[];
-  onvitedUserIds: string[];
+  invitedUserIds: string[];
   chat_icon_url: string;
   messages: IChatMessage[];
   created: Date | null;

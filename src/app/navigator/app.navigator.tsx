@@ -13,7 +13,7 @@ import {RootStackParamList, manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
 import {OnboardingFlow} from '../../screens/onboarding/onboarding';
 import TopSidebar from '../../components/screen-wrapper/top-sidebar';
-import ChatListScreen from '../../screens/chat/chat-list-screen';
+import ChatListScreen from '../../screens/chat/chat-entry/chat-entry-screen';
 import {Text} from 'react-native-svg';
 import {View} from 'react-native';
 import {ThemedButton} from '../../components/themed-button';

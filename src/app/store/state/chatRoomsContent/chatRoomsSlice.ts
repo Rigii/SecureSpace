@@ -16,14 +16,14 @@ export const chatRoomsReducer = createSlice({
     builder.addCase(
       addUserChatRooms,
       (state, action: PayloadAction<IChatRooms>) => {
-        state = action.payload;
+        return {...state, ...action.payload};
       },
     );
 
     builder.addCase(
       addNewChatRoom,
       (state, action: PayloadAction<IChatRoom>) => {
-        state = {...state, [action.payload.id]: action.payload};
+        return {...state, [action.payload.id]: action.payload};
       },
     );
 
@@ -39,7 +39,7 @@ export const chatRoomsReducer = createSlice({
 
         if (chatRoom) {
           chatRoom.messages.push(action.payload);
-          state = {...state, [chatRoomId]: chatRoom};
+          return {...state, [chatRoomId]: chatRoom};
         }
       },
     );
