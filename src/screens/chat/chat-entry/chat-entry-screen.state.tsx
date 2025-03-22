@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
-import {getChatUserApi} from '../../../services/api/chat/chat.api';
+import {getChatUserApi} from '../../../services/api/chat/chat-api';
 import {useDispatch} from 'react-redux';
 import {storeUserChats} from '../../../app/store/state/userChats/userChatsAction';
 import {

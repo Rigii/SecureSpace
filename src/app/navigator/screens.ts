@@ -14,6 +14,7 @@ export const manualEncryptionScreenRoutes: {
   root: 'root',
   notFound: 'notFound',
   chatList: 'chatList',
+  createChatRoom: 'createChatRoom',
 };
 
 export type RootStackParamList = {
@@ -27,6 +28,7 @@ export type RootStackParamList = {
   messageAccessRequest: undefined;
   invitation: {inviteId: string};
   onboarding: undefined;
+  createChatRoom: undefined;
   root: undefined;
   notFound: undefined;
   chatList: undefined;

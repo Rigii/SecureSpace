@@ -19,6 +19,7 @@ import {View} from 'react-native';
 import {ThemedButton} from '../../components/themed-button';
 import {useState} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {CreateChatRoom} from '../../components/create-update-chat/create-update-chat';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -75,6 +76,10 @@ export const AppNavigationContainer = () => {
           <Stack.Screen
             name={manualEncryptionScreenRoutes.onboarding}
             component={OnboardingFlow}
+          />
+          <Stack.Screen
+            name={manualEncryptionScreenRoutes.createChatRoom}
+            component={CreateChatRoom}
           />
           <Stack.Screen name={manualEncryptionScreenRoutes.chatList}>
             {props => <ChatListScreen />}

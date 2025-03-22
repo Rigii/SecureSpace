@@ -47,7 +47,7 @@ export const DownloadKey = ({
   return (
     <TouchableWithoutFeedback onPress={handleScreenPress}>
       <View className="flex flex-col items-center flex-1 p-3 w-screen">
-        <View className="block flex-1 m-auto items-center justify-center gap-y-5 overflow-scroll">
+        <View className="block flex-1 mt-auto items-center justify-center gap-y-5 overflow-scroll">
           <Title1>{strings.allmoustDone}</Title1>
           <Title3>{strings.pleaseSaveYourKey}</Title3>
           <View>

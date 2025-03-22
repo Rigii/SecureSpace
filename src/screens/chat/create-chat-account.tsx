@@ -4,7 +4,7 @@ import {ThemedButton} from '../../components/themed-button';
 import {Title1, Title3} from '../../components/title';
 import {strings} from './chat.strings';
 import {useReduxSelector} from '../../app/store/store';
-import {createChatUserApi} from '../../services/api/chat/chat.api';
+import {createChatUserApi} from '../../services/api/chat/chat-api';
 import {
   EPopupType,
   ErrorNotificationHandler,

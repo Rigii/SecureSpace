@@ -1,8 +1,6 @@
-import {
-  EExpiry,
-  LocationDistance,
-} from "ManualEncryptionDecryption/encrypt.types";
-import { TwoFactor } from "../../../../../adapters/firebase-adapter";
+import {TwoFactor} from '../../../../screens/login-signup/login-sign-up.types';
+import {ILocationDistance} from '../../../../services/xhr-services/xhr.types';
+import {EExpiry} from '../../../types/encrypt.types';
 
 export interface IManualEncryptionState {
   receivers: string;
@@ -15,5 +13,5 @@ export interface IManualEncryptionState {
   is2fa: boolean;
   isExpirationNotification: boolean;
   isReceipts: boolean;
-  locationRange?: LocationDistance;
+  locationRange?: ILocationDistance;
 }

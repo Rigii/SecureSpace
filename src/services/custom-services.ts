@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Appearance} from 'react-native';
 
 export const validateEmail = (email: string) =>
@@ -24,4 +25,13 @@ export const isDarkMode = () => {
 
 export const developmentLog = (name: string, value: any) => {
   console.log(name, value);
+};
+
+export const asyncStorageLogger = async () => {
+  if (!__DEV__) {
+    return;
+  }
+  const keys = await AsyncStorage.getAllKeys();
+  const result = await AsyncStorage.multiGet(keys);
+  console.log('LOGGER: AsyncStorage contents:', result);
 };

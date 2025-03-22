@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
-import {getChatRoomsData} from '../../../services/api/chat/chat.api';
+import {getChatRoomsData} from '../../../services/api/chat/chat-api';
 import {useDispatch} from 'react-redux';
 import {addUserChatRooms} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 
@@ -14,10 +14,11 @@ export const ChatListState = () => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!!chatRoomIds || !token) {
+      if (!chatRoomIds || !token) {
         return;
       }
-      const response = await getChatRoomsData(chatRoomIds, token);
+      const chatIdsArray = chatRoomIds.map(chatId => chatId.chatId);
+      const response = await getChatRoomsData(chatIdsArray, token);
 
       const chatRoomsData = response.data.reduce(
         (
@@ -43,7 +44,7 @@ export const ChatListState = () => {
             chatType: currentValue.chat_type,
             ownerId: currentValue.owner_id,
             moderatorIds: currentValue.moderator_ids,
-            participiantIds: currentValue.participant_ids,
+            participiantEmails: currentValue.participant_ids,
             usersData: currentValue.users_data,
             invitedUserIds: currentValue.invited_user_ids,
             chat_icon_url: currentValue.chat_icon_url,

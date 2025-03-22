@@ -1,14 +1,20 @@
+import {ISecurePlace} from '../../../types/encrypt.types';
+
 export interface IChatRooms {
   [key: string]: IChatRoom;
 }
-
+export enum EChatVariants {
+  private = 'private',
+  multi = 'multi',
+}
 export interface IChatRoom {
   id: string;
   chatName: string;
-  chatType: string;
+  chatType: EChatVariants;
   ownerId: string;
   moderatorIds: string[];
-  participiantIds: string[];
+  participiantEmails: string[];
+  availabilityAreaData: ISecurePlace;
   usersData: IUserData[];
   invitedUserIds: string[];
   chat_icon_url: string;
