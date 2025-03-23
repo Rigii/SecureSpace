@@ -24,15 +24,28 @@ import {IOnboardingFormValues} from './state/onboardingState/onboardingStateType
 import {IUserChats} from './state/userChats/userChatsState.types';
 import {IChatRooms} from './state/chatRoomsContent/chatRoomsState.types';
 
-const chatPersistConfig = {
-  key: 'chat',
+const userChatsPersistConfig = {
+  key: 'userChats',
+  storage: AsyncStorage,
+};
+
+const chatRoomsPersistConfig = {
+  key: 'chatRooms',
+  storage: AsyncStorage,
+};
+
+const anonymousUserPersistConfig = {
+  key: 'anonymousUser',
   storage: AsyncStorage,
 };
 
 const rootReducer = combineReducers({
-  userChatsReducer: persistReducer(chatPersistConfig, userChatsReducer),
-  chatRoomsReducer: persistReducer(chatPersistConfig, chatRoomsReducer),
-  anonymousUserReducer,
+  userChatsReducer: persistReducer(userChatsPersistConfig, userChatsReducer),
+  chatRoomsReducer: persistReducer(chatRoomsPersistConfig, chatRoomsReducer),
+  anonymousUserReducer: persistReducer(
+    anonymousUserPersistConfig,
+    anonymousUserReducer,
+  ),
   restrictionsReducer,
   paymentSettingsReducer,
   manualEncryptionDataReducer,

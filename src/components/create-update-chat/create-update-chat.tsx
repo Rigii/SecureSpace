@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useContext, useRef} from 'react';
 import {Formik} from 'formik';
 import {
   GooglePlaceData,
@@ -12,23 +12,26 @@ import {ChatParticipiantEmails} from './create-chat-cases/chat-participiant-emai
 import Swiper from 'react-native-swiper';
 import {validationCreateChatSchema} from './create-update-chat.validation';
 import {ChatLocationRestrictions} from './create-chat-cases/chat-location';
-import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
+// import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
 import {ChatCheckData} from './create-chat-cases/chat-check-data';
-import {createUpdateChatRoom} from '../../services/api/chat/chat-api';
+// import {createUpdateChatRoom} from '../../services/api/chat/chat-api';
 import {useReduxSelector} from '../../app/store/store';
 import {ISecurePlaceData} from '../../app/types/encrypt.types';
+import {ChatSocketProviderContext} from '../../services/sockets/chat-provider';
 
 export const CreateChatRoom: React.FC = () => {
   const swiperRef = useRef<React.ElementRef<typeof Swiper>>(null);
-  const {token, name} = useReduxSelector(
-    state => state.anonymousUserReducer.userAccountData,
-  );
+  // const {token, name} = useReduxSelector(
+  //   state => state.anonymousUserReducer.userAccountData,
+  // );
   const securityData = useReduxSelector(
     state => state.anonymousUserReducer.securityData,
   );
   const {interlocutorId, email} = useReduxSelector(
     state => state.userChatsReducer,
   );
+
+  const {handleCreateChat} = useContext(ChatSocketProviderContext);
 
   const formState: ICreateRoomFormValues = {
     chatName: '',
@@ -41,11 +44,6 @@ export const CreateChatRoom: React.FC = () => {
 
   const onSubmit = async (values: ICreateRoomFormValues) => {
     try {
-      const chatKeys = await generatePGPKeyPair({
-        userIds: [{name: values.chatName}],
-        numBits: 2048,
-      });
-
       const awailabilityAreaData =
         values.availabilityAreaData as ISecurePlaceData;
 
@@ -55,12 +53,13 @@ export const CreateChatRoom: React.FC = () => {
         ownerEmail: email,
         ownerNickName: email,
         chatType: values.chatType,
-        creatorPublicKeyIds: [''],
+        creatorPublicKeyIds: [securityData.pgpDeviceKeyData.keyUUID],
         locationAreaAvailability: awailabilityAreaData
           ? [
               {
-                ...awailabilityAreaData,
+                securePlaceData: awailabilityAreaData,
                 securePlaceRadius: values.availabilityAreaRadius,
+                name: 'home',
               },
             ]
           : [],
@@ -70,11 +69,8 @@ export const CreateChatRoom: React.FC = () => {
         chatIconUrl: '',
       };
 
-      console.log(88887777, securityData);
-      // const createChatAPIResponce = createUpdateChatRoom(
-      //   postChatRoomData,
-      //   token,
-      // );
+      console.log(88887777, postChatRoomData);
+      handleCreateChat(postChatRoomData);
     } catch (e) {}
   };
 

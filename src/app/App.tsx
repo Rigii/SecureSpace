@@ -7,6 +7,7 @@ import {Provider} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {Text, View} from 'react-native';
 import {asyncStorageLogger} from '../services/custom-services';
+import {ChatSocketProvider} from '../services/sockets/chat-provider';
 
 (global as any).asyncStorageLogger = asyncStorageLogger; // For asyncStorage debugging
 
@@ -39,7 +40,9 @@ function App(): React.JSX.Element {
   return (
     <>
       <Provider store={store}>
-        <AppNavigationContainer />
+        <ChatSocketProvider>
+          <AppNavigationContainer />
+        </ChatSocketProvider>
         <Toast />
       </Provider>
     </>
