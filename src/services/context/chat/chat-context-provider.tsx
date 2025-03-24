@@ -3,20 +3,19 @@ import {Socket} from 'socket.io-client';
 import {
   connectUserChatNotificationsSocket,
   createChatRoom,
-} from './chat.socket';
-import {ICreateChatRoom} from './chat-api.types';
+} from '../../sockets/chat/chat.socket';
+import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
+import {useReduxSelector} from '../../../app/store/store';
 
 // Create the context
 export const ChatSocketProviderContext = createContext<{
   socket: Socket | null;
   messages: string[];
-  setUserIdChannel: (userId: string) => void;
   handleCreateChat: (chatData: ICreateChatRoom) => void;
   handleJoinChat: (chatId: string) => void;
 }>({
   socket: null,
   messages: [],
-  setUserIdChannel: () => {},
   handleCreateChat: () => {},
   handleJoinChat: () => {},
 });
@@ -26,12 +25,15 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
-  const [userIdChannel, setUserIdChannel] = useState<string>('');
+
+  const {interlocutorId} = useReduxSelector(state => state.userChatsReducer);
 
   useEffect(() => {
-    if (!userIdChannel) return;
+    if (!interlocutorId) return;
+    console.log(111111, interlocutorId);
 
-    const newSocket = connectUserChatNotificationsSocket(userIdChannel);
+    const newSocket = connectUserChatNotificationsSocket(interlocutorId);
+    console.log(2222222, newSocket);
 
     newSocket.on('connect', () => {
       console.log('Connected to the chat server');
@@ -56,11 +58,12 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       newSocket.disconnect();
       newSocket.removeAllListeners();
     };
-  }, [userIdChannel]); // Reconnect when userIdChannel changes
+  }, [interlocutorId]); // Reconnect when userIdChannel changes
 
   const handleCreateChat = (chatData: ICreateChatRoom) => {
     if (socket) {
-      createChatRoom(socket, chatData);
+      const room = createChatRoom(socket, chatData);
+      console.log(555555, room);
     } else {
       console.error('Socket is not connected');
     }
@@ -79,7 +82,6 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       value={{
         socket,
         messages,
-        setUserIdChannel,
         handleCreateChat,
         handleJoinChat,
       }}>

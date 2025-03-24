@@ -1,4 +1,4 @@
-import {BASE_URL} from '@env';
+import {BASE_URL, BASE_URL_LOCAL} from '@env';
 import {io, Socket} from 'socket.io-client';
 import {ICreateChatRoom} from './chat-api.types';
 
@@ -25,19 +25,21 @@ export const chatEvents = {
 
 export const connectUserChatNotificationsSocket = (
   userIdChannel: string,
-): Socket =>
-  io(`${BASE_URL}${CHAT_ROOM_URL}`, {
-    query: {userIdChannel},
+): Socket => {
+  console.log(33333, `${BASE_URL_LOCAL}${CHAT_ROOM_URL}`);
+  return io(`${BASE_URL_LOCAL}${CHAT_ROOM_URL}`, {
+    query: {userId: userIdChannel},
     transports: ['websocket'],
     reconnection: true,
   });
+};
 
 export const createChatRoom = (socket: Socket, chatData: ICreateChatRoom) => {
   if (!socket) {
     console.error('WebSocket connection is not established.');
     return;
   }
-
+  console.log(3333, chatData);
   socket.emit(socketMessageNamespaces.CREATE_CHAT, chatData);
 
   socket.on(chatEvents.CREATE_CHAT_SUCCESS, data => {

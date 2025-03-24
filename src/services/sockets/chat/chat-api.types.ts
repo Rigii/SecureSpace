@@ -1,4 +1,4 @@
-import {ISecurePlaceData} from '../../app/types/encrypt.types';
+import {ISecurePlaceData} from '../../../app/types/encrypt.types';
 
 export interface ICreateChatRoom {
   chatName: string;

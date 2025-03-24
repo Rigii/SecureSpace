@@ -17,7 +17,7 @@ import {ChatCheckData} from './create-chat-cases/chat-check-data';
 // import {createUpdateChatRoom} from '../../services/api/chat/chat-api';
 import {useReduxSelector} from '../../app/store/store';
 import {ISecurePlaceData} from '../../app/types/encrypt.types';
-import {ChatSocketProviderContext} from '../../services/sockets/chat-provider';
+import {ChatSocketProviderContext} from '../../services/context/chat/chat-context-provider';
 
 export const CreateChatRoom: React.FC = () => {
   const swiperRef = useRef<React.ElementRef<typeof Swiper>>(null);

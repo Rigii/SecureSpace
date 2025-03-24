@@ -2,7 +2,7 @@ import {getData, postData} from '../../xhr-services/api-service';
 
 const CREATE_CHAT_USER_URL = '/chat/create-chat-user';
 const GET_CHAT_USER_URL = '/chat/get-chat-user';
-const GET_CHAT_ROOMS_URL = '/chat/create-chat-room';
+const GET_CHAT_ROOMS_URL = '/chat/get-chat-rooms';
 
 export const createChatUserApi = async (
   chatUserData: {

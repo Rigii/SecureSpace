@@ -18,6 +18,11 @@ export const ChatListState = () => {
         return;
       }
       const chatIdsArray = chatRoomIds.map(chatId => chatId.chatId);
+
+      if (chatIdsArray.length === 0) {
+        return;
+      }
+
       const response = await getChatRoomsData(chatIdsArray, token);
 
       const chatRoomsData = response.data.reduce(
