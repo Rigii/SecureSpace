@@ -30,10 +30,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
 
   useEffect(() => {
     if (!interlocutorId) return;
-    console.log(111111, interlocutorId);
-
     const newSocket = connectUserChatNotificationsSocket(interlocutorId);
-    console.log(2222222, newSocket);
 
     newSocket.on('connect', () => {
       console.log('Connected to the chat server');
@@ -63,7 +60,6 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const handleCreateChat = (chatData: ICreateChatRoom) => {
     if (socket) {
       const room = createChatRoom(socket, chatData);
-      console.log(555555, room);
     } else {
       console.error('Socket is not connected');
     }

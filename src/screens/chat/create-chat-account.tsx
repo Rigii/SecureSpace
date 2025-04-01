@@ -11,15 +11,46 @@ import {
 } from '../../services/ErrorNotificationHandler';
 import {AxiosError} from 'axios';
 import {IHttpExceptionResponse} from '../../services/xhr-services/xhr.types';
+import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
+import {useDispatch} from 'react-redux';
+import {createUserChatsAccount} from '../../app/store/state/userChats/userChatsAction';
+import {
+  IChatRoomId,
+  IInvitations,
+} from '../../app/store/state/userChats/userChatsState.types';
 
 export const CreateChatAccount = () => {
-  const {token, id, email} = useReduxSelector(
+  const {token, id, email, name} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
 
+  const dispatch = useDispatch();
+
   const onCreateChatAccount = async () => {
     try {
-      await createChatUserApi({ownerEmail: email, ownerId: id}, token);
+      // TODO: Save here the the user Chat keys to the redux async store
+      const userKeys = await generatePGPKeyPair({
+        userIds: [{name: name || email, email}],
+        numBits: 2048,
+      });
+      const response = await createChatUserApi(
+        {ownerEmail: email, ownerId: id},
+        token,
+      );
+
+      const storeData = {
+        interlocutorId: response.data.interlocutor_id as string,
+        accountId: response.data.chat_account_id as string,
+        created: response.data.created as Date,
+        updated: response.data.updated as Date,
+        email: response.data.email as string,
+        chatRoomIds: response.data.chat_room_ids as IChatRoomId[],
+        invitations: response.data.invitations as IInvitations[],
+        publicChatKey: userKeys.publicKey,
+        privateChatKey: userKeys.privateKey,
+      };
+
+      dispatch(createUserChatsAccount(storeData));
     } catch (error) {
       const typedError = error as AxiosError<IHttpExceptionResponse>;
       ErrorNotificationHandler({

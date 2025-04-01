@@ -69,7 +69,6 @@ export const CreateChatRoom: React.FC = () => {
         chatIconUrl: '',
       };
 
-      console.log(88887777, postChatRoomData);
       handleCreateChat(postChatRoomData);
     } catch (e) {}
   };

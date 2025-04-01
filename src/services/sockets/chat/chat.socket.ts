@@ -26,7 +26,6 @@ export const chatEvents = {
 export const connectUserChatNotificationsSocket = (
   userIdChannel: string,
 ): Socket => {
-  console.log(33333, `${BASE_URL_LOCAL}${CHAT_ROOM_URL}`);
   return io(`${BASE_URL_LOCAL}${CHAT_ROOM_URL}`, {
     query: {userId: userIdChannel},
     transports: ['websocket'],
@@ -39,7 +38,6 @@ export const createChatRoom = (socket: Socket, chatData: ICreateChatRoom) => {
     console.error('WebSocket connection is not established.');
     return;
   }
-  console.log(3333, chatData);
   socket.emit(socketMessageNamespaces.CREATE_CHAT, chatData);
 
   socket.on(chatEvents.CREATE_CHAT_SUCCESS, data => {
