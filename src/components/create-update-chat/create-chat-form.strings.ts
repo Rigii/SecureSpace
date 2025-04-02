@@ -17,4 +17,6 @@ export const strings = {
   chatType: 'Chat Type',
   participiants: 'Participiants',
   awailabilityAddress: 'Awailability Address',
+  publicChatKeyMissing:
+    'Public chat key is missing. Please create chat account',
 };

@@ -18,18 +18,23 @@ import {ChatCheckData} from './create-chat-cases/chat-check-data';
 import {useReduxSelector} from '../../app/store/store';
 import {ISecurePlaceData} from '../../app/types/encrypt.types';
 import {ChatSocketProviderContext} from '../../services/context/chat/chat-context-provider';
+import {strings} from './create-chat-form.strings';
 
 export const CreateChatRoom: React.FC = () => {
   const swiperRef = useRef<React.ElementRef<typeof Swiper>>(null);
   // const {token, name} = useReduxSelector(
   //   state => state.anonymousUserReducer.userAccountData,
   // );
-  const securityData = useReduxSelector(
-    state => state.anonymousUserReducer.securityData,
-  );
-  const {interlocutorId, email} = useReduxSelector(
+  // const securityData = useReduxSelector(
+  //   state => state.anonymousUserReducer.securityData,
+  // );
+  const {interlocutorId, email, publicChatKey} = useReduxSelector(
     state => state.userChatsReducer,
   );
+
+  if (!publicChatKey) {
+    throw new Error(strings.publicChatKeyMissing);
+  }
 
   const {handleCreateChat} = useContext(ChatSocketProviderContext);
 
@@ -49,11 +54,11 @@ export const CreateChatRoom: React.FC = () => {
 
       const postChatRoomData = {
         chatName: values.chatName,
-        ownerId: interlocutorId,
+        interlocutorId,
         ownerEmail: email,
         ownerNickName: email,
         chatType: values.chatType,
-        creatorPublicKeyIds: [securityData.pgpDeviceKeyData.keyUUID],
+        creatorPublicChatKey: publicChatKey,
         locationAreaAvailability: awailabilityAreaData
           ? [
               {

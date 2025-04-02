@@ -1,4 +1,4 @@
-import {BASE_URL, BASE_URL_LOCAL} from '@env';
+import {BASE_URL_LOCAL} from '@env';
 import {io, Socket} from 'socket.io-client';
 import {ICreateChatRoom} from './chat-api.types';
 

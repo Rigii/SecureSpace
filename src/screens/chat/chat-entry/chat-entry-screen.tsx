@@ -32,15 +32,11 @@ const chatData = [
 ];
 
 const ChatListScreen: React.FC = () => {
-  const {accountId, publicChatKey} = ChatEntryScreenState();
+  const {publicChatKey} = ChatEntryScreenState();
   // TODO: remove publicChatKey from the check below after then all users are going to be updated with the new public/private key
   return (
     <View className="flex-1">
-      {accountId && publicChatKey ? (
-        <ChatList chatData={chatData} />
-      ) : (
-        <CreateChatAccount />
-      )}
+      {publicChatKey ? <ChatList chatData={chatData} /> : <CreateChatAccount />}
     </View>
   );
 };
