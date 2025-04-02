@@ -19,7 +19,7 @@ export const ChatEntryScreenState = () => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!!accountId) {
+      if (!!accountId && !!publicChatKey) {
         return;
       }
 
@@ -39,7 +39,7 @@ export const ChatEntryScreenState = () => {
     }
 
     fetchData();
-  }, [accountId, id, token, dispatch]);
+  }, [accountId, id, token, publicChatKey, dispatch]);
 
   return {accountId, publicChatKey};
 };

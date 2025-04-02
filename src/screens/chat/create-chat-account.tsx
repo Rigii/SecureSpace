@@ -34,7 +34,7 @@ export const CreateChatAccount = () => {
         numBits: 2048,
       });
       const response = await createChatUserApi(
-        {ownerEmail: email, ownerId: id},
+        {ownerEmail: email, ownerId: id, publicChatKey: userKeys.publicKey},
         token,
       );
 

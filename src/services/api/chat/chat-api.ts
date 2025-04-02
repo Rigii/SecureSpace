@@ -8,6 +8,7 @@ export const createChatUserApi = async (
   chatUserData: {
     ownerEmail: string;
     ownerId: string;
+    publicChatKey: string;
   },
   token: string,
 ) => postData(token, CREATE_CHAT_USER_URL, chatUserData);

@@ -28,7 +28,6 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const [messages, setMessages] = useState<string[]>([]);
 
   const {interlocutorId} = useReduxSelector(state => state.userChatsReducer);
-
   useEffect(() => {
     if (!interlocutorId) return;
     const newSocket = connectUserChatNotificationsSocket(interlocutorId);
