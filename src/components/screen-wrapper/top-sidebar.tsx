@@ -10,7 +10,8 @@ type TTopSidebarProps = {
 const TopSidebar: React.FC<TTopSidebarProps> = ({currentRoute}) => {
   if (
     !currentRoute ||
-    currentRoute === manualEncryptionScreenRoutes.registerLogin
+    currentRoute === manualEncryptionScreenRoutes.registerLogin ||
+    currentRoute === manualEncryptionScreenRoutes.onboarding
   ) {
     return null;
   }

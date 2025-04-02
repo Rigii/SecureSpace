@@ -125,6 +125,9 @@ export const OnboardingFlow = () => {
           title: values.titleForm,
           name: values.name,
         }),
+      );
+
+      dispatch(
         setSecurityData({
           accessCredentials: values.imergencyPasswordsEmails,
           deviceIdentifyer,

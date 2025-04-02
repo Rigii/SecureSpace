@@ -16,14 +16,16 @@ export interface IManualEncryptionUserLimits {
   locationLocked: string[] | [];
 }
 
-export interface ISecurePlace {
+export interface ISecurePlaceData {
   id: string;
-  name: string;
   address: string;
   coordinates: {
     lat: string;
     long: string;
   };
+}
+
+export interface ISecurePlace extends ISecurePlaceData {
   securePlaceRadius: string;
 }
 

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {isJSON} from '../custom-services';
-import {IAEncryptionLimits} from '../../app/store/state/applicationRestrictionsState/application-restrictions.types';
-import {IAEncryptionPaymentSettings} from '../../app/store/state/paymentSettingsState/payment-settings.types';
+import {IAEncryptionLimits} from '../../app/store/state/applicationRestrictions/application-restrictions.types';
+import {IAEncryptionPaymentSettings} from '../../app/store/state/paymentSettings/payment-settings.types';
 
 enum ELocalStorage {
   manualEncryptionPlanSelected = 'manualEncryptionPlanSelected',

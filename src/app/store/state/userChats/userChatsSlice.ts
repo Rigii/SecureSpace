@@ -1,9 +1,15 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {IChatRoomId, IInvitations, IUserChats} from './userChatsState.types';
 import {
-  storeUserChats,
+  IChatRoomId,
+  IFetchedChatRoomsData,
+  IInvitations,
+  IUserChats,
+} from './userChatsState.types';
+import {
+  updateUserChatsAccountSlice,
   addInvitation,
   addActiveChatRoom,
+  createUserChatsAccount,
 } from './userChatsAction';
 
 const initialState: IUserChats = {
@@ -12,19 +18,28 @@ const initialState: IUserChats = {
   created: null,
   updated: null,
   email: '',
+  publicChatKey: '',
+  privateChatKey: '',
   chatRoomIds: [],
   invitations: [],
 };
 
-export const userChatsSlice = createSlice({
+export const userChatsReducer = createSlice({
   name: 'anonymousUser',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder.addCase(
-      storeUserChats,
+      createUserChatsAccount,
       (state, action: PayloadAction<IUserChats>) => {
-        state = action.payload;
+        return {...state, ...action.payload};
+      },
+    );
+
+    builder.addCase(
+      updateUserChatsAccountSlice,
+      (state, action: PayloadAction<IFetchedChatRoomsData>) => {
+        return {...state, ...action.payload};
       },
     );
 
@@ -48,4 +63,4 @@ export const userChatsSlice = createSlice({
   },
 });
 
-export default userChatsSlice.reducer;
+export default userChatsReducer.reducer;

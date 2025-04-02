@@ -1,0 +1,22 @@
+export const strings = {
+  newChatroom: 'New Chatroom',
+  nameAndType: 'Name & Type',
+  roomName: 'Room name',
+  address: 'Address',
+  radius: 'Radius',
+  password: 'Password',
+  createChat: 'Create Chat',
+  next: 'Next',
+  chatPassword: 'Chat Password',
+  locationRestrictions: 'Location Restrictions',
+  participiantEmail: 'Participiant Email',
+  addChatRoomParticipiants: 'Add Chat Room Participiants',
+  optional: 'optional',
+  checkYourChatData: 'Check your chat data',
+  chatName: 'Chat Name',
+  chatType: 'Chat Type',
+  participiants: 'Participiants',
+  awailabilityAddress: 'Awailability Address',
+  publicChatKeyMissing:
+    'Public chat key is missing. Please create chat account',
+};

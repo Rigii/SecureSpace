@@ -51,6 +51,7 @@ export interface IInputProps {
   iconEndClassName?: string;
   placeholderIcon?: any;
   iconRight?: any;
+  textRight?: boolean;
   isError?: boolean;
   editable?: boolean;
   labelWrapperClassName?: string;
