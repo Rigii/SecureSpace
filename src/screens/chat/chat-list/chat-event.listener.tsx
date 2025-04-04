@@ -18,7 +18,7 @@ export const ChatSocketEventListener = () => {
     state => state.anonymousUserReducer.userAccountData,
   );
   const {accountId, interlocutorId} = useReduxSelector(
-    state => state.userChatsReducer,
+    state => state.userChatAccountReducer,
   );
 
   const chatUserSocketListener = listernUserChatNotifications(interlocutorId);

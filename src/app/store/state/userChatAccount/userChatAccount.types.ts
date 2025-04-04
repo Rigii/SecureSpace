@@ -1,17 +1,16 @@
-export interface IUserChats {
+export interface IUserChatAccount {
   interlocutorId: string;
-  accountId: string;
+  chatAccountId: string;
   publicChatKey: string;
   privateChatKey: string;
   created: Date | null;
   updated: Date | null;
   email: string;
-  chatRoomIds: IChatRoomId[];
   invitations: IInvitations[];
 }
 
 export interface IFetchedChatRoomsData
-  extends Omit<IUserChats, 'publicChatKey' | 'privateChatKey'> {}
+  extends Omit<IUserChatAccount, 'publicChatKey' | 'privateChatKey'> {}
 
 export interface IChatRoomId {
   chatId: string;

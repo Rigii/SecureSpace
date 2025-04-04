@@ -5,4 +5,7 @@ export const strings = {
   socketError: 'Socket error:',
   socketIsNotConnected: 'Socket is not connected',
   joinedChatRoom: 'Joined chat room:',
+  userChatInvitation: 'User chat invitation',
+  newRoomInvitation: 'You have been invited to a new chat room:',
+  findRoomInChatList: 'You could find it in the chat list',
 };

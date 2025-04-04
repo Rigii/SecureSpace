@@ -29,7 +29,7 @@ export const CreateChatRoom: React.FC = () => {
   //   state => state.anonymousUserReducer.securityData,
   // );
   const {interlocutorId, email, publicChatKey} = useReduxSelector(
-    state => state.userChatsReducer,
+    state => state.userChatAccountReducer,
   );
 
   if (!publicChatKey) {

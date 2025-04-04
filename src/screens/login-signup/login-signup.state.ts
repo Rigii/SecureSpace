@@ -9,6 +9,14 @@ import {AxiosError} from 'axios';
 import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../app/store/state/userState/userAction';
+import {updateUserChatsAccountSlice} from '../../app/store/state/userChatAccount/userChatAccountAction';
+import {
+  IFetchedChatRoomsData,
+  IInvitations,
+} from '../../app/store/state/userChatAccount/userChatAccount.types';
+import {addUserChatRooms} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {IUserAccount} from '../../app/store/state/userState/userState.types';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
@@ -59,20 +67,60 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
 
       const user = responce.data.user as IUserAuthData;
       const token = responce.data.token;
+      console.log(333333, user?.user_info?.user_chats);
 
-      dispatch(
-        setUser({
-          id: user.id,
-          role: user.role,
-          created: user.created,
-          isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
+      const userData: IUserAccount = {
+        id: user.id,
+        role: user.role,
+        created: user.created,
+        isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
+        email: user.email,
+        token,
+        portraitUri: user.user_info?.portrait_uri as string,
+        title: user.user_info?.title as string,
+        phoneNumber: user.user_info?.phone_number as string,
+      };
+      dispatch(setUser(userData));
+
+      if (user?.user_info?.interlocutorId) {
+        const chatAccountData: IFetchedChatRoomsData = {
           email: user.email,
-          token,
-          portraitUri: user.user_info?.portrait_uri as string,
-          title: user.user_info?.title as string,
-          phoneNumber: user.user_info?.phone_number as string,
-        }),
-      );
+          interlocutorId: user.user_info?.interlocutor_id as string,
+          chatAccountId: user.user_info?.chat_account_id as string,
+          created: user.user_info?.created as unknown as Date,
+          updated: user.user_info?.updated as unknown as Date,
+          invitations: user.user_info?.invitations as unknown as IInvitations[],
+        };
+        dispatch(updateUserChatsAccountSlice(chatAccountData));
+      }
+
+      const userChatRooms = user?.user_info?.user_chats as any[];
+
+      if (userChatRooms) {
+        const userChatsObject = userChatRooms.reduce(
+          (accumulator: any, currentValue: any) => {
+            const chatRoomData: IChatRoom = {
+              id: currentValue.id,
+              password: '',
+              chatName: currentValue.chat_name,
+              chatType: currentValue.chat_type,
+              ownerId: currentValue.owner_id,
+              moderatorIds: currentValue.moderator_ids,
+              usersData: currentValue.users_data,
+              invitedUserIds: currentValue.invited_user_ids,
+              messageDurationHours: currentValue.message_duration_hours,
+              chatMediaStorageUrl: currentValue.chat_media_storage_url,
+              chatIconUrl: currentValue.chat_icon_url,
+              availabilityAreaData: currentValue.availability_area_data,
+              messages: currentValue.messages,
+            };
+            return {...accumulator, [chatRoomData.id]: chatRoomData};
+          },
+          {},
+        );
+
+        dispatch(addUserChatRooms(userChatsObject));
+      }
 
       proceedUserAuthData(user);
     } catch (error) {

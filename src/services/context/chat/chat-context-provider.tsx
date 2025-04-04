@@ -8,6 +8,10 @@ import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
 import {useReduxSelector} from '../../../app/store/store';
 import {strings} from './chat-provider.strings';
 import {socketEvents, socketMessageNamespaces} from './chat-context.constants';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../ErrorNotificationHandler';
 
 export const ChatSocketProviderContext = createContext<{
   socket: Socket | null;
@@ -27,7 +31,9 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
 
-  const {interlocutorId} = useReduxSelector(state => state.userChatsReducer);
+  const {interlocutorId} = useReduxSelector(
+    state => state.userChatAccountReducer,
+  );
   useEffect(() => {
     if (!interlocutorId) return;
     const newSocket = connectUserChatNotificationsSocket(interlocutorId);
@@ -39,6 +45,15 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     newSocket.on(socketEvents.NEW_MESSAGE, (message: string) => {
       console.log(strings.newMessageReceived, message);
       setMessages(prevMessages => [...prevMessages, message]);
+    });
+
+    newSocket.on(socketEvents.USER_CHAT_INVITATION, (message: any) => {
+      console.log(strings.userChatInvitation, message);
+      ErrorNotificationHandler({
+        type: EPopupType.INFO,
+        text1: `${strings.newRoomInvitation} ${message.chatName}`,
+        text2: strings.findRoomInChatList,
+      });
     });
 
     newSocket.on(socketEvents.DISCONNECT, () => {

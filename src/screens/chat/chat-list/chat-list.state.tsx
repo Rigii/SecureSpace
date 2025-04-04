@@ -9,7 +9,7 @@ export const ChatListState = () => {
   const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
-  const {chatRoomIds} = useReduxSelector(state => state.userChatsReducer);
+  const {chatRoomIds} = useReduxSelector(state => state.userChatAccountReducer);
   const chatRooms = useReduxSelector(state => state.chatRoomsReducer);
 
   useEffect(() => {
