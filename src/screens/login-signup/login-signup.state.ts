@@ -113,8 +113,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
           {},
         );
 
-        console.log(222244444, userChatsObject);
-
         dispatch(addUserChatRooms(userChatsObject));
       }
       proceedUserAuthData(user);
