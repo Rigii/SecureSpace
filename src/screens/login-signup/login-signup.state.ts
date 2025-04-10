@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {EAuthMode, IUserAuthData} from './login-sign-up.types';
+import {EAuthMode, IFetchedUserAuthData} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-secure-storage/async-storage-service';
 import {registerSignInUserApi} from '../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
@@ -10,13 +10,7 @@ import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../app/store/state/userState/userAction';
 import {updateUserChatsAccountSlice} from '../../app/store/state/userChatAccount/userChatAccountAction';
-import {
-  IFetchedChatRoomsData,
-  IInvitations,
-} from '../../app/store/state/userChatAccount/userChatAccount.types';
 import {addUserChatRooms} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
-import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
-import {IUserAccount} from '../../app/store/state/userState/userState.types';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
@@ -44,7 +38,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     // }
   };
 
-  const proceedUserAuthData = (user: IUserAuthData) => {
+  const proceedUserAuthData = (user: IFetchedUserAuthData) => {
     if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
       return;
@@ -65,11 +59,10 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         });
       }
 
-      const user = responce.data.user as IUserAuthData;
+      const user = responce.data.user as IFetchedUserAuthData;
+      const userChats = user?.user_info?.user_chats;
       const token = responce.data.token;
-      console.log(333333, user?.user_info?.user_chats);
-
-      const userData: IUserAccount = {
+      const userData = {
         id: user.id,
         role: user.role,
         created: user.created,
@@ -80,26 +73,27 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         title: user.user_info?.title as string,
         phoneNumber: user.user_info?.phone_number as string,
       };
+
       dispatch(setUser(userData));
 
-      if (user?.user_info?.interlocutorId) {
-        const chatAccountData: IFetchedChatRoomsData = {
+      if (user?.user_info.user_chats?.interlocutor_id) {
+        const chatAccountData = {
           email: user.email,
-          interlocutorId: user.user_info?.interlocutor_id as string,
-          chatAccountId: user.user_info?.chat_account_id as string,
-          created: user.user_info?.created as unknown as Date,
-          updated: user.user_info?.updated as unknown as Date,
-          invitations: user.user_info?.invitations as unknown as IInvitations[],
+          interlocutorId: userChats?.interlocutor_id,
+          chatAccountId: userChats?.chat_account_id,
+          created: userChats?.created,
+          updated: userChats?.updated,
+          invitations: userChats?.invitations,
         };
+
         dispatch(updateUserChatsAccountSlice(chatAccountData));
       }
 
-      const userChatRooms = user?.user_info?.user_chats as any[];
-
+      const userChatRooms = userChats?.chat_rooms;
       if (userChatRooms) {
         const userChatsObject = userChatRooms.reduce(
           (accumulator: any, currentValue: any) => {
-            const chatRoomData: IChatRoom = {
+            const chatRoomData = {
               id: currentValue.id,
               password: '',
               chatName: currentValue.chat_name,
@@ -119,9 +113,10 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
           {},
         );
 
+        console.log(222244444, userChatsObject);
+
         dispatch(addUserChatRooms(userChatsObject));
       }
-
       proceedUserAuthData(user);
     } catch (error) {
       const currentError = error as AxiosError<IHttpExceptionResponse>;
