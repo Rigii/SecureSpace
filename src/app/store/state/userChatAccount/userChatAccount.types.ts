@@ -6,7 +6,7 @@ export interface IUserChatAccount {
   created: Date | null;
   updated: Date | null;
   email: string;
-  invitations: IFetchedInvitations[];
+  invitations: IInvitations[];
 }
 
 export interface IFetchedChatRoomsData
@@ -21,7 +21,7 @@ export interface IChatRoomId {
   chatRoomName: string;
 }
 
-export interface IFetchedInvitations {
+export interface IInvitations {
   chatId: string;
   date: Date;
 }

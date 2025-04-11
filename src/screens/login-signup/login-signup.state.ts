@@ -60,7 +60,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       }
 
       const user = responce.data.user as IFetchedUserAuthData;
-      const userChats = user?.user_info?.user_chats;
+      const userChats = user?.user_info?.user_chat_account;
       const token = responce.data.token;
       const userData = {
         id: user.id,
@@ -76,7 +76,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
 
       dispatch(setUser(userData));
 
-      if (user?.user_info.user_chats?.interlocutor_id) {
+      if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {
           email: user.email,
           interlocutorId: userChats?.interlocutor_id,
@@ -115,6 +115,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
 
         dispatch(addUserChatRooms(userChatsObject));
       }
+
       proceedUserAuthData(user);
     } catch (error) {
       const currentError = error as AxiosError<IHttpExceptionResponse>;

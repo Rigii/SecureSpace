@@ -18,10 +18,9 @@ interface ChatListProps {
   }[];
 }
 
-const ChatList: React.FC<ChatListProps> = ({chatData}) => {
+const ChatList: React.FC<ChatListProps> = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {chatRoomsArray} = ChatListState();
-
+  const {chatRoomsArray, interlocutorId} = ChatListState();
   const navigateCreateChat = () => {
     navigation.navigate(manualEncryptionScreenRoutes.createChatRoom);
   };
@@ -37,9 +36,12 @@ const ChatList: React.FC<ChatListProps> = ({chatData}) => {
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <ChatListItem
-            chatName={item.chatName}
+            chatItemData={item}
+            interlocutorId={interlocutorId}
             lastMessageTime={
-              item.messages.length > 0 ? item.messages[0].created : ''
+              item.messages && item.messages?.length > 0
+                ? item.messages[0].created.toUTCString()
+                : '12.08.2025'
             }
             unreadMessages={false}
           />

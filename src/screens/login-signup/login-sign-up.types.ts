@@ -231,7 +231,7 @@ export interface IFetchedUserAuthData {
     role: string;
     title: string;
     updated: Date;
-    user_chats: IFetchedUserChats;
+    user_chat_account: IFetchedUserChats;
   };
   token: string;
 }
