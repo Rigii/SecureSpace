@@ -2,12 +2,14 @@ import React, {createContext, useEffect, useState} from 'react';
 import {Socket} from 'socket.io-client';
 import {
   connectUserChatNotificationsSocket,
-  createChatRoom,
+  createChatRoomSocket,
+  declineChatRoomInvitationSocket,
+  joinChatRoomSocket,
 } from '../../sockets/chat/chat.socket';
 import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
 import {useReduxSelector} from '../../../app/store/store';
 import {strings} from './chat-provider.strings';
-import {socketEvents, socketMessageNamespaces} from './chat-context.constants';
+import {socketEvents} from './chat-context.constants';
 import {
   EPopupType,
   ErrorNotificationHandler,
@@ -17,12 +19,14 @@ export const ChatSocketProviderContext = createContext<{
   socket: Socket | null;
   messages: string[];
   handleCreateChat: (chatData: ICreateChatRoom) => void;
-  handleJoinChat: (chatId: string) => void;
+  handleJoinChat: ({chatId}: {chatId: string}) => void;
+  handleDeclineChatRoomInvitation: ({chatId}: {chatId: string}) => void;
 }>({
   socket: null,
   messages: [],
   handleCreateChat: () => {},
   handleJoinChat: () => {},
+  handleDeclineChatRoomInvitation: () => {},
 });
 
 export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
@@ -74,18 +78,38 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
 
   const handleCreateChat = (chatData: ICreateChatRoom) => {
     if (socket) {
-      createChatRoom(socket, chatData);
+      createChatRoomSocket(socket, chatData);
     } else {
       console.error(strings.socketIsNotConnected);
     }
   };
 
-  const handleJoinChat = (chatId: string) => {
-    if (socket) {
-      socket.emit(socketMessageNamespaces.JOIN_CHAT, chatId);
-      // setCurrentChatId(chatId);
-      console.log(`${strings.joinedChatRoom} ${chatId}`);
-    }
+  const updateUserChatDataLocal = () => {
+    // removeInterlocutorIdFromChatInvitationArray(chatId);
+  };
+
+  const handleJoinChat = ({chatId}: {chatId: string}) => {
+    joinChatRoomSocket(
+      socket,
+      {
+        chatId,
+        interlocutorId,
+      },
+      updateUserChatDataLocal,
+    );
+
+    console.log(`${strings.joinedChatRoom} ${chatId}`);
+  };
+
+  const handleDeclineChatRoomInvitation = ({chatId}: {chatId: string}) => {
+    declineChatRoomInvitationSocket(
+      socket,
+      {
+        chatId,
+        interlocutorId,
+      },
+      updateUserChatDataLocal,
+    );
   };
 
   return (
@@ -95,6 +119,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
         messages,
         handleCreateChat,
         handleJoinChat,
+        handleDeclineChatRoomInvitation,
       }}>
       {children}
     </ChatSocketProviderContext.Provider>

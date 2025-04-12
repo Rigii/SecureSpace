@@ -22,14 +22,14 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
   return (
     <TouchableOpacity className="flex-row items-center justify-center p-3 border-b border-gray-200">
       <View className="w-10 h-10 bg-gray-300 rounded-full mr-4" />
-      <Text className="flex-1 text-lg font-bold text-black ">
+      <Text className="flex-1 text-lg font-bold text-black">
         {chatItemData.chatName}
       </Text>
 
       <View className="flex-row gap-x-3 items-center">
         <View className="flex-col items-end">
           <Text className="text-gray-500 text-xs">{lastMessageTime}</Text>
-          {isInvitationAccepted && <AcceptDecline />}
+          {isInvitationAccepted && <AcceptDecline chatId={chatItemData.id} />}
         </View>
         <View
           className={`w-3 h-3 rounded-full ${

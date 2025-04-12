@@ -10,7 +10,7 @@ import {
   chatEvents,
   listernUserChatNotifications,
   socketMessageNamespaces,
-} from '../../../services/api/chat/chat.socket';
+} from '../../../services/sockets/chat/chat.socket';
 
 export const ChatSocketEventListener = () => {
   const dispatch = useDispatch();
