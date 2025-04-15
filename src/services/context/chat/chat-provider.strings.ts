@@ -8,4 +8,6 @@ export const strings = {
   userChatInvitation: 'User chat invitation',
   newRoomInvitation: 'You have been invited to a new chat room:',
   findRoomInChatList: 'You could find it in the chat list',
+  chatInvitationDeclined: 'Invitation Declined',
+  chatInvitationAccepted: 'Invitation Accepted',
 };

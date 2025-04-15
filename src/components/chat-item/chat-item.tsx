@@ -17,7 +17,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
   unreadMessages,
 }) => {
   const isInvitationAccepted =
-    chatItemData?.invitedUserIds.includes(interlocutorId);
+    chatItemData?.invitedUserIds?.includes(interlocutorId);
 
   return (
     <TouchableOpacity className="flex-row items-center justify-center p-3 border-b border-gray-200">

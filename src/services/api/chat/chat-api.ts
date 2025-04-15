@@ -16,5 +16,10 @@ export const createChatUserApi = async (
 export const getChatUserApi = async (ownerId: string, token: string) =>
   postData(token, GET_CHAT_USER_URL, {ownerId});
 
-export const getChatRoomsData = async (roomIds: string[], token: string) =>
-  postData(token, GET_CHAT_ROOMS_URL, {roomIds});
+export const getChatRoomsData = async ({
+  roomIds,
+  token,
+}: {
+  roomIds: string[];
+  token: string;
+}) => postData(token, GET_CHAT_ROOMS_URL, {roomIds});

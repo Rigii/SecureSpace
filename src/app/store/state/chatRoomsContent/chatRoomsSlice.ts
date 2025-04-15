@@ -1,9 +1,16 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {IChatRoom, IChatRooms, IChatMessage} from './chatRoomsState.types';
+import {
+  IChatRoom,
+  IChatRooms,
+  IChatMessage,
+  IDeleteChatRoom,
+} from './chatRoomsState.types';
 import {
   addMessageToChatRoom,
   addNewChatRoom,
   addUserChatRooms,
+  deleteChatRoom,
+  updateChatRoom,
 } from './chatRoomsAction';
 
 const initialState: IChatRooms = {};
@@ -23,7 +30,24 @@ export const chatRoomsReducer = createSlice({
     builder.addCase(
       addNewChatRoom,
       (state, action: PayloadAction<IChatRoom>) => {
+        if (state[action.payload.id]) {
+          return;
+        }
         return {...state, [action.payload.id]: action.payload};
+      },
+    );
+
+    builder.addCase(
+      updateChatRoom,
+      (state, action: PayloadAction<IChatRoom>) => {
+        return {...state, [action.payload.id]: action.payload};
+      },
+    );
+
+    builder.addCase(
+      deleteChatRoom,
+      (state, action: PayloadAction<IDeleteChatRoom>) => {
+        delete state[action?.payload?.chatRoomId];
       },
     );
 
@@ -37,10 +61,8 @@ export const chatRoomsReducer = createSlice({
         }
         const chatRoom = state[chatRoomId];
 
-        if (chatRoom) {
-          chatRoom.messages.push(action.payload);
-          return {...state, [chatRoomId]: chatRoom};
-        }
+        // dirrect change works — while createSlice uses Immer.js
+        chatRoom.messages.push(action.payload);
       },
     );
   },

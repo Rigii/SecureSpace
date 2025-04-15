@@ -1,8 +1,14 @@
+import {IFetchedUserChatAccount} from '../../../../screens/login-signup/login-sign-up.types';
 import {ISecurePlace} from '../../../types/encrypt.types';
 
 export interface IChatRooms {
   [key: string]: IChatRoom;
 }
+
+export interface IDeleteChatRoom {
+  chatRoomId: string;
+}
+
 export enum EChatVariants {
   private = 'private',
   multi = 'multi',
@@ -14,13 +20,13 @@ export interface IChatRoom {
   chatType: EChatVariants;
   ownerId: string;
   moderatorIds: string[];
-  usersData: IUserData[];
+  usersData?: IFetchedUserChatAccount;
   invitedUserIds: string[];
-  messageDurationHours: number;
+  messageDurationHours: number | null;
   password: string;
   chatMediaStorageUrl: string;
-  chatIconUrl: string;
-  availabilityAreaData: ISecurePlace;
+  chatIconUrl: string | null;
+  availabilityAreaData: ISecurePlace | null;
   messages: IChatMessage[]; // Fetching messages from Mongodb by common chat ID. Start with the last date.
 }
 

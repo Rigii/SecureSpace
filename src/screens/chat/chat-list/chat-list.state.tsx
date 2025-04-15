@@ -8,5 +8,5 @@ export const ChatListState = () => {
 
   const chatRoomsArray = Object.values(chatRooms);
 
-  return {chatRoomsArray, interlocutorId: userChatAccount.interlocutorId};
+  return {chatRoomsArray, interlocutorId: userChatAccount?.interlocutorId};
 };

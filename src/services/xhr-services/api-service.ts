@@ -64,5 +64,5 @@ export const postData = (token: string, requestUrl: string, payload: any) => {
 };
 
 export const getData = (token: string, requestUrl: string, payload: any) => {
-  return getInstance(token).get(`${BASE_URL_LOCAL}${requestUrl}`, payload);
+  return getInstance(token).post(`${BASE_URL_LOCAL}${requestUrl}`, payload);
 };

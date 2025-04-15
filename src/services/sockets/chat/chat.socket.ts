@@ -61,7 +61,6 @@ export const createChatRoomSocket = (
 export const joinChatRoomSocket = (
   socket: Socket | null,
   chatData: {chatId: string; interlocutorId: string},
-  updateUserChatDataLocal: () => void,
 ) => {
   if (!socket) {
     console.error(strings.wSConnectionNotEstablished);
@@ -72,7 +71,6 @@ export const joinChatRoomSocket = (
 
   socket.on(chatEvents.JOIN_CHAT_SUCCESS, data => {
     console.log(strings.roomJoined, data);
-    updateUserChatDataLocal();
     return data;
   });
 
@@ -85,7 +83,6 @@ export const joinChatRoomSocket = (
 export const declineChatRoomInvitationSocket = (
   socket: Socket | null,
   chatData: {chatId: string; interlocutorId: string},
-  updateUserChatDataLocal: () => void,
 ) => {
   if (!socket) {
     console.error(strings.wSConnectionNotEstablished);
@@ -96,7 +93,6 @@ export const declineChatRoomInvitationSocket = (
 
   socket.on(chatEvents.DECLINE_CHAT_INVITATION_SUCCESS, data => {
     console.log(strings.roomInvitationDeclinedDone, data);
-    updateUserChatDataLocal();
     return data;
   });
 
