@@ -18,28 +18,32 @@ interface ChatListProps {
   }[];
 }
 
-const ChatList: React.FC<ChatListProps> = ({chatData}) => {
+const ChatList: React.FC<ChatListProps> = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {chatRooms} = ChatListState();
-
+  const {chatRoomsArray, interlocutorId} = ChatListState();
   const navigateCreateChat = () => {
     navigation.navigate(manualEncryptionScreenRoutes.createChatRoom);
   };
 
-  if (!chatRooms) {
+  if (!chatRoomsArray) {
     return null;
   }
 
   return (
     <View className="flex-1">
       <FlatList
-        data={chatData}
+        data={chatRoomsArray}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <ChatListItem
-            chatName={item.chatName}
-            lastMessageTime={item.lastMessageTime}
-            unreadMessages={item.unreadMessages}
+            chatItemData={item}
+            interlocutorId={interlocutorId}
+            lastMessageTime={
+              item.messages && item.messages?.length > 0
+                ? item.messages[0].created.toUTCString()
+                : '12.08.2025'
+            }
+            unreadMessages={false}
           />
         )}
         showsVerticalScrollIndicator={false}

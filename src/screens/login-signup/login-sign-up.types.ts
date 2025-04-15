@@ -209,7 +209,7 @@ export interface ILoginFormValues {
   password: string;
 }
 
-export interface IUserAuthData {
+export interface IFetchedUserAuthData {
   password: string;
   id: string;
   created: Date;
@@ -219,6 +219,51 @@ export interface IUserAuthData {
   provider: string;
   externalAuthProviderId: string;
   emailVerified: boolean;
-  user_info: Record<string, string | string[] | boolean> | null;
+  user_info: {
+    account_id: string;
+    created: Date;
+    email: string | null;
+    id: string;
+    is_onboarding_done: boolean;
+    name: string;
+    phone_number: string;
+    portrait_uri: string;
+    role: string;
+    title: string;
+    updated: Date;
+    user_chat_account: IFetchedUserChats;
+  };
   token: string;
+}
+
+export interface IFetchedInvitations {
+  chatId: string;
+  date: Date;
+}
+
+export interface IFetchedUserChats {
+  interlocutor_id: string;
+  chat_account_id: string;
+  public_chat_key: string;
+  created: Date;
+  updated: Date;
+  email: string;
+  invitations: IFetchedInvitations[];
+  chat_rooms: IFetchedChatRoom[];
+}
+
+export interface IFetchedChatRoom {
+  chat_icon_url: string | null;
+  chat_media_storage_url: string;
+  chat_name: string;
+  chat_type: string;
+  created: Date;
+  id: string;
+  invited_user_ids: string[];
+  message_duration_hours: number | null;
+  moderator_ids: string[];
+  owner_id: string;
+  password: string | null;
+  updated: Date;
+  availability_area_data: null;
 }

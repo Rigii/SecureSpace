@@ -13,11 +13,8 @@ import {AxiosError} from 'axios';
 import {IHttpExceptionResponse} from '../../services/xhr-services/xhr.types';
 import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
 import {useDispatch} from 'react-redux';
-import {createUserChatsAccount} from '../../app/store/state/userChats/userChatsAction';
-import {
-  IChatRoomId,
-  IInvitations,
-} from '../../app/store/state/userChats/userChatsState.types';
+import {createUserChatsAccount} from '../../app/store/state/userChatAccount/userChatAccountAction';
+import {IInvitations} from '../../app/store/state/userChatAccount/userChatAccount.types';
 
 export const CreateChatAccount = () => {
   const {token, id, email, name} = useReduxSelector(
@@ -40,11 +37,10 @@ export const CreateChatAccount = () => {
 
       const storeData = {
         interlocutorId: response.data.interlocutor_id as string,
-        accountId: response.data.chat_account_id as string,
+        chatAccountId: response.data.chat_account_id as string,
         created: response.data.created as Date,
         updated: response.data.updated as Date,
         email: response.data.email as string,
-        chatRoomIds: response.data.chat_room_ids as IChatRoomId[],
         invitations: response.data.invitations as IInvitations[],
         publicChatKey: userKeys.publicKey,
         privateChatKey: userKeys.privateKey,

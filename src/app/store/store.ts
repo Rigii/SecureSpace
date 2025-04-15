@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import anonymousUserReducer from './state/userState/userSlice';
 import onboardingFormReducer from './state/onboardingState/onboardingSlice';
 import chatRoomsReducer from './state/chatRoomsContent/chatRoomsSlice';
-import userChatsReducer from './state/userChats/userChatsSlice';
+import userChatAccountReducer from './state/userChatAccount/userChatAccountSlice';
 import restrictionsReducer, {
   IRestrictionsState,
 } from './state/applicationRestrictions/restrictionsSlice';
@@ -21,7 +21,7 @@ import {
   getSecureStorageData,
 } from '../../services/async-secure-storage/secure-storage-services';
 import {IOnboardingFormValues} from './state/onboardingState/onboardingStateTypes';
-import {IUserChats} from './state/userChats/userChatsState.types';
+import {IUserChatAccount} from './state/userChatAccount/userChatAccount.types';
 import {IChatRooms} from './state/chatRoomsContent/chatRoomsState.types';
 
 const userChatsPersistConfig = {
@@ -40,7 +40,10 @@ const anonymousUserPersistConfig = {
 };
 
 const rootReducer = combineReducers({
-  userChatsReducer: persistReducer(userChatsPersistConfig, userChatsReducer),
+  userChatAccountReducer: persistReducer(
+    userChatsPersistConfig,
+    userChatAccountReducer,
+  ),
   chatRoomsReducer: persistReducer(chatRoomsPersistConfig, chatRoomsReducer),
   anonymousUserReducer: persistReducer(
     anonymousUserPersistConfig,
@@ -71,7 +74,7 @@ export const setupStore = async () => {
 
 export interface IState {
   chatRoomsReducer: IChatRooms;
-  userChatsReducer: IUserChats;
+  userChatAccountReducer: IUserChatAccount;
   anonymousUserReducer: IUserState;
   restrictionsReducer: IRestrictionsState;
   paymentSettingsReducer: IPaymentSettings;

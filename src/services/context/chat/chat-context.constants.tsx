@@ -3,6 +3,7 @@ export const socketEvents = {
   DISCONNECT: 'disconnect',
   NEW_MESSAGE: 'newMessage',
   ERROR: 'error',
+  USER_CHAT_INVITATION: 'user_chat_invitation',
 };
 
 export const socketMessageNamespaces = {

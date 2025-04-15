@@ -7,23 +7,24 @@ export enum EChatVariants {
   private = 'private',
   multi = 'multi',
 }
+
 export interface IChatRoom {
   id: string;
   chatName: string;
   chatType: EChatVariants;
   ownerId: string;
   moderatorIds: string[];
-  participiantEmails: string[];
-  availabilityAreaData: ISecurePlace;
   usersData: IUserData[];
   invitedUserIds: string[];
-  chat_icon_url: string;
-  messages: IChatMessage[];
-  created: Date | null;
-  updated: Date | null;
+  messageDurationHours: number;
+  password: string;
+  chatMediaStorageUrl: string;
+  chatIconUrl: string;
+  availabilityAreaData: ISecurePlace;
+  messages: IChatMessage[]; // Fetching messages from Mongodb by common chat ID. Start with the last date.
 }
 
-interface IUserData {
+export interface IUserData {
   [key: string]: {
     user_id: string;
     public_key_id: string[];

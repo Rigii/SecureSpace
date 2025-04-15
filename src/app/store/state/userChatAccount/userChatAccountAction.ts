@@ -3,10 +3,10 @@ import {
   IChatRoomId,
   IFetchedChatRoomsData,
   IInvitations,
-  IUserChats,
-} from './userChatsState.types';
+  IUserChatAccount,
+} from './userChatAccount.types';
 
-export const createUserChatsAccount = createAction<IUserChats>(
+export const createUserChatsAccount = createAction<IUserChatAccount>(
   'anonymousUser/createUserChatsAccount',
 );
 

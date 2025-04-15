@@ -1,37 +1,34 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  IChatRoomId,
   IFetchedChatRoomsData,
   IInvitations,
-  IUserChats,
-} from './userChatsState.types';
+  IUserChatAccount,
+} from './userChatAccount.types';
 import {
   updateUserChatsAccountSlice,
   addInvitation,
-  addActiveChatRoom,
   createUserChatsAccount,
-} from './userChatsAction';
+} from './userChatAccountAction';
 
-const initialState: IUserChats = {
+const initialState: IUserChatAccount = {
   interlocutorId: '',
-  accountId: '',
+  chatAccountId: '',
   created: null,
   updated: null,
   email: '',
   publicChatKey: '',
   privateChatKey: '',
-  chatRoomIds: [],
   invitations: [],
 };
 
-export const userChatsReducer = createSlice({
+export const userChatAccountReducer = createSlice({
   name: 'anonymousUser',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder.addCase(
       createUserChatsAccount,
-      (state, action: PayloadAction<IUserChats>) => {
+      (state, action: PayloadAction<IUserChatAccount>) => {
         return {...state, ...action.payload};
       },
     );
@@ -52,15 +49,15 @@ export const userChatsReducer = createSlice({
       },
     );
 
-    builder.addCase(
-      addActiveChatRoom,
-      (state, action: PayloadAction<IChatRoomId>) => {
-        if (action.payload) {
-          state.chatRoomIds.push(action.payload);
-        }
-      },
-    );
+    // builder.addCase(
+    //   addActiveChatRoom,
+    //   (state, action: PayloadAction<IChatRoomId>) => {
+    //     if (action.payload) {
+    //       state.chatRoomIds.push(action.payload);
+    //     }
+    //   },
+    // );
   },
 });
 
-export default userChatsReducer.reducer;
+export default userChatAccountReducer.reducer;

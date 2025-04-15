@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {EAuthMode, IUserAuthData} from './login-sign-up.types';
+import {EAuthMode, IFetchedUserAuthData} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-secure-storage/async-storage-service';
 import {registerSignInUserApi} from '../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
@@ -9,6 +9,8 @@ import {AxiosError} from 'axios';
 import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../app/store/state/userState/userAction';
+import {updateUserChatsAccountSlice} from '../../app/store/state/userChatAccount/userChatAccountAction';
+import {addUserChatRooms} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
@@ -36,7 +38,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     // }
   };
 
-  const proceedUserAuthData = (user: IUserAuthData) => {
+  const proceedUserAuthData = (user: IFetchedUserAuthData) => {
     if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
       return;
@@ -57,22 +59,62 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         });
       }
 
-      const user = responce.data.user as IUserAuthData;
+      const user = responce.data.user as IFetchedUserAuthData;
+      const userChats = user?.user_info?.user_chat_account;
       const token = responce.data.token;
+      const userData = {
+        id: user.id,
+        role: user.role,
+        created: user.created,
+        isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
+        email: user.email,
+        token,
+        portraitUri: user.user_info?.portrait_uri as string,
+        title: user.user_info?.title as string,
+        phoneNumber: user.user_info?.phone_number as string,
+      };
 
-      dispatch(
-        setUser({
-          id: user.id,
-          role: user.role,
-          created: user.created,
-          isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
+      dispatch(setUser(userData));
+
+      if (user?.user_info?.user_chat_account?.interlocutor_id) {
+        const chatAccountData = {
           email: user.email,
-          token,
-          portraitUri: user.user_info?.portrait_uri as string,
-          title: user.user_info?.title as string,
-          phoneNumber: user.user_info?.phone_number as string,
-        }),
-      );
+          interlocutorId: userChats?.interlocutor_id,
+          chatAccountId: userChats?.chat_account_id,
+          created: userChats?.created,
+          updated: userChats?.updated,
+          invitations: userChats?.invitations,
+        };
+
+        dispatch(updateUserChatsAccountSlice(chatAccountData));
+      }
+
+      const userChatRooms = userChats?.chat_rooms;
+      if (userChatRooms) {
+        const userChatsObject = userChatRooms.reduce(
+          (accumulator: any, currentValue: any) => {
+            const chatRoomData = {
+              id: currentValue.id,
+              password: '',
+              chatName: currentValue.chat_name,
+              chatType: currentValue.chat_type,
+              ownerId: currentValue.owner_id,
+              moderatorIds: currentValue.moderator_ids,
+              usersData: currentValue.users_data,
+              invitedUserIds: currentValue.invited_user_ids,
+              messageDurationHours: currentValue.message_duration_hours,
+              chatMediaStorageUrl: currentValue.chat_media_storage_url,
+              chatIconUrl: currentValue.chat_icon_url,
+              availabilityAreaData: currentValue.availability_area_data,
+              messages: currentValue.messages,
+            };
+            return {...accumulator, [chatRoomData.id]: chatRoomData};
+          },
+          {},
+        );
+
+        dispatch(addUserChatRooms(userChatsObject));
+      }
 
       proceedUserAuthData(user);
     } catch (error) {
