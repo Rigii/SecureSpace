@@ -8,6 +8,7 @@ interface ChatListItemProps {
   interlocutorId: string;
   lastMessageTime: string;
   unreadMessages: boolean;
+  navigateToChatRoom: (chatId: string) => void;
 }
 
 const ChatListItem: React.FC<ChatListItemProps> = ({
@@ -15,12 +16,19 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
   interlocutorId,
   lastMessageTime,
   unreadMessages,
+  navigateToChatRoom,
 }) => {
   const isInvitationAccepted =
     chatItemData?.invitedUserIds?.includes(interlocutorId);
 
+  const onNavigateToChatRoom = () => {
+    navigateToChatRoom(chatItemData.id);
+  };
+
   return (
-    <TouchableOpacity className="flex-row items-center justify-center p-3 border-b border-gray-200">
+    <TouchableOpacity
+      className="flex-row items-center justify-center p-3 border-b border-gray-200"
+      onPress={onNavigateToChatRoom}>
       <View className="w-10 h-10 bg-gray-300 rounded-full mr-4" />
       <Text className="flex-1 text-lg font-bold text-black">
         {chatItemData.chatName}

@@ -60,7 +60,7 @@ export const createChatRoomSocket = (
 
 export const joinChatRoomSocket = (
   socket: Socket | null,
-  chatData: {chatId: string; interlocutorId: string},
+  chatData: {userChatIds: string[]; interlocutorId: string},
 ) => {
   if (!socket) {
     console.error(strings.wSConnectionNotEstablished);

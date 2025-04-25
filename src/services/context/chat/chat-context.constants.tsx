@@ -4,6 +4,7 @@ export const socketEvents = {
   NEW_MESSAGE: 'newMessage',
   ERROR: 'error',
   USER_CHAT_INVITATION: 'user_chat_invitation',
+  CHAT_ROOM_MESSAGE: 'chat_room_message',
 };
 
 export const socketMessageNamespaces = {

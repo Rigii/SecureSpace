@@ -20,6 +20,7 @@ import {ThemedButton} from '../../components/themed-button';
 import {useState} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {CreateChatRoom} from '../../components/create-update-chat/create-update-chat';
+import ChatRoomScreen from '../../screens/chat/room-screen/room-screen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -66,9 +67,10 @@ export const AppNavigationContainer = () => {
               />
             )}
           </Stack.Screen>
-          <Stack.Screen name={manualEncryptionScreenRoutes.home}>
-            {props => <Home />}
-          </Stack.Screen>
+          <Stack.Screen
+            name={manualEncryptionScreenRoutes.home}
+            component={Home}
+          />
           <Stack.Screen
             name={manualEncryptionScreenRoutes.registerLogin}
             component={LoginSignUpUser}
@@ -81,8 +83,12 @@ export const AppNavigationContainer = () => {
             name={manualEncryptionScreenRoutes.createChatRoom}
             component={CreateChatRoom}
           />
-          <Stack.Screen name={manualEncryptionScreenRoutes.chatList}>
-            {props => <ChatListScreen />}
+          <Stack.Screen
+            name={manualEncryptionScreenRoutes.chatList}
+            component={ChatListScreen}
+          />
+          <Stack.Screen name={manualEncryptionScreenRoutes.chatRoom}>
+            {props => <ChatRoomScreen chatId={props.route.params.chatId} />}
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>

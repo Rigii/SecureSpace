@@ -2,12 +2,12 @@ import React from 'react';
 import {View, FlatList} from 'react-native';
 import ChatListItem from '../../../components/chat-item/chat-item';
 import {ChatListState} from './chat-list.state';
-import {PlusButton} from '../../../components/themed-button/plus-button';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
   RootStackParamList,
   manualEncryptionScreenRoutes,
 } from '../../../app/navigator/screens';
+import {PlusButton} from '../../../components/themed-button';
 
 interface ChatListProps {
   chatData: {
@@ -23,6 +23,12 @@ const ChatList: React.FC<ChatListProps> = () => {
   const {chatRoomsArray, interlocutorId} = ChatListState();
   const navigateCreateChat = () => {
     navigation.navigate(manualEncryptionScreenRoutes.createChatRoom);
+  };
+  const navigateToChatRoom = (chatId: string) => {
+    navigation.navigate(manualEncryptionScreenRoutes.chatRoom, {
+      chatId,
+      participantId: interlocutorId,
+    });
   };
 
   if (!chatRoomsArray) {
@@ -43,6 +49,7 @@ const ChatList: React.FC<ChatListProps> = () => {
                 ? item.messages[0].created.toUTCString()
                 : '12.08.2025'
             }
+            navigateToChatRoom={navigateToChatRoom}
             unreadMessages={false}
           />
         )}

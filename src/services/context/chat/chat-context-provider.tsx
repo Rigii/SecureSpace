@@ -65,6 +65,13 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       setMessages(prevMessages => [...prevMessages, message]);
     });
 
+    newSocket.on(socketEvents.CHAT_ROOM_MESSAGE, (message: string) => {
+      ErrorNotificationHandler({
+        type: EPopupType.INFO,
+        text1: `${strings.newMessageReceived} ${message}`,
+      });
+    });
+
     newSocket.on(socketEvents.USER_CHAT_INVITATION, async (message: any) => {
       console.log(strings.userChatInvitation, message);
       ErrorNotificationHandler({
@@ -139,7 +146,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     }
 
     joinChatRoomSocket(socket, {
-      chatId,
+      userChatIds: [chatId],
       interlocutorId,
     });
 
