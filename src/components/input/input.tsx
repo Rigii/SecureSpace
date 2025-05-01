@@ -60,9 +60,7 @@ export const Input = (props: IInputProps) => {
     <View
       style={props.style}
       key={props.key}
-      className={`flex w-full relative justify-center border-b-[1px] ${
-        props.className
-      } ${props.isError ? 'border-b-red-500' : 'border-b-opacity-gray'}`}>
+      className={`flex relative justify-center ${props.className}`}>
       {!(
         (isFocused && props.hideLabelOnFocus) ||
         (props.hideLabelOnFocus && !!props.value) ||
@@ -88,7 +86,7 @@ export const Input = (props: IInputProps) => {
       )}
 
       <TouchableOpacity activeOpacity={1} onPress={handleInputPress}>
-        <View pointerEvents="none">
+        <View pointerEvents={props.isPointerEventsBlocked ? 'none' : 'auto'}>
           <TextInput
             ref={inputRef}
             placeholderTextColor={props.placeholderTextColor || '#35353580'}
@@ -98,13 +96,18 @@ export const Input = (props: IInputProps) => {
             value={props.value}
             onChangeText={onChange}
             onKeyPress={catchKey}
-            className={`flex-row relative text-base self-end text-dark-gray h-14 w-full ${
+            scrollEnabled={true} // IOS
+            textAlignVertical="top" // important for Android
+            className={`flex-row relative text-base self-end text-dark-gray w-full ${
               props.hideLabelOnFocus && 'text-left pr-10'
             }${!isFocused && props.hideLabelOnFocus && props.labelClassName} ${
-              props.isError && 'text-red-500'
+              props.isError
+                ? 'text-red-500 border-b-red-500'
+                : 'border-b-opacity-gray'
             } ${props.icon && 'pl-5'}
             ${props.inputClassName}
             ${props.textRight && 'text-right'}
+            ${!props.multiline && 'h-14 border-b-[1px]'}
             `}
             secureTextEntry={props.isSecure}
             onFocus={onFocus}

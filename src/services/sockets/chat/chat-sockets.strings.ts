@@ -6,4 +6,5 @@ export const strings = {
   joiningRoomError: 'Joining room error',
   roomInvitationDeclinedDone: 'Chat room invitation declined successfully:',
   errorRoomInvitationDeclined: 'Error. Chat room invitation is not declined:',
+  sendingChatRoomMessageError: 'Error sending chat room message:',
 };

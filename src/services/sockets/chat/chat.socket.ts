@@ -1,6 +1,6 @@
 import {BASE_URL_LOCAL} from '@env';
 import {io, Socket} from 'socket.io-client';
-import {ICreateChatRoom} from './chat-api.types';
+import {IChatMessage, ICreateChatRoom} from './chat-api.types';
 import {strings} from './chat-sockets.strings';
 
 const CHAT_ROOM_URL = '/chat_room';
@@ -14,8 +14,8 @@ export const socketMessageNamespaces = {
   REMOVE_CHAT: 'remove_chat',
   JOIN_CHAT: 'join_chat',
   DECLINE_CHAT: 'decline_chat',
-  SEND_MESSAGE: 'send_message',
   LEAVE_CHAT: 'leave_chat',
+  CHAT_ROOM_MESSAGE: 'chat_room_message',
 };
 
 export const chatEvents = {
@@ -27,13 +27,18 @@ export const chatEvents = {
   JOIN_CHAT_ERROR: 'join_chat_error',
   DECLINE_CHAT_INVITATION_SUCCESS: 'decline_chat_invitation_success',
   DECLINE_CHAT_INVITATION_ERROR: 'decline_chat_invitation_error',
+  ROOM_MESSAGE_SENT: 'room_message_sent',
+  ROOM_MESSAGE_FAILED: 'room_message_failed',
+  ROOM_MESSAGE_RECEIVED: 'room_message_received',
+  ROOM_MESSAGE_SEEN: 'room_message_seen',
 };
 
 export const connectUserChatNotificationsSocket = (
   userIdChannel: string,
+  roomIds?: string[],
 ): Socket => {
   return io(`${BASE_URL_LOCAL}${CHAT_ROOM_URL}`, {
-    query: {userId: userIdChannel},
+    query: {userId: userIdChannel, roomIds},
     transports: ['websocket'],
     reconnection: true,
   });
@@ -98,6 +103,28 @@ export const declineChatRoomInvitationSocket = (
 
   socket.on(chatEvents.DECLINE_CHAT_INVITATION_ERROR, error => {
     console.error(strings.errorRoomInvitationDeclined, error);
+    throw new Error(error);
+  });
+};
+
+export const sendChatRoomMessage = (
+  socket: Socket | null,
+  messageData: IChatMessage,
+) => {
+  if (!socket) {
+    console.error(strings.wSConnectionNotEstablished);
+    return;
+  }
+
+  socket.emit(socketMessageNamespaces.CHAT_ROOM_MESSAGE, messageData);
+
+  socket.on(chatEvents.ROOM_MESSAGE_SENT, data => {
+    console.log(strings.roomInvitationDeclinedDone, data);
+    return data;
+  });
+
+  socket.on(chatEvents.ROOM_MESSAGE_FAILED, error => {
+    console.error(strings.sendingChatRoomMessageError, error);
     throw new Error(error);
   });
 };

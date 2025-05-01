@@ -66,4 +66,5 @@ export interface IInputProps {
   isFocusOnLink?: boolean;
   numberOfLines?: number;
   autoCapitalize?: TAutoCapitalize;
+  isPointerEventsBlocked?: boolean;
 }

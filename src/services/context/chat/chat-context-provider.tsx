@@ -5,6 +5,7 @@ import {
   createChatRoomSocket,
   declineChatRoomInvitationSocket,
   joinChatRoomSocket,
+  sendChatRoomMessage,
 } from '../../sockets/chat/chat.socket';
 import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
 import {useReduxSelector} from '../../../app/store/store';
@@ -29,12 +30,22 @@ export const ChatSocketProviderContext = createContext<{
   handleCreateChat: (chatData: ICreateChatRoom) => void;
   handleJoinChat: ({chatId}: {chatId: string}) => void;
   handleDeclineChatRoomInvitation: ({chatId}: {chatId: string}) => void;
+  setCurrentActiveChatId: React.Dispatch<React.SetStateAction<string | null>>;
+  handleSendChatRoomMessage: ({
+    message,
+    chatRoomId,
+  }: {
+    message: string;
+    chatRoomId: string;
+  }) => void;
 }>({
   socket: null,
   messages: [],
   handleCreateChat: () => {},
   handleJoinChat: () => {},
   handleDeclineChatRoomInvitation: () => {},
+  handleSendChatRoomMessage: () => {},
+  setCurrentActiveChatId: () => {},
 });
 
 export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
@@ -42,8 +53,11 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
+  const [currentActiveChatId, setCurrentActiveChatId] = useState<string | null>(
+    null,
+  );
 
-  const {interlocutorId} = useReduxSelector(
+  const {interlocutorId, email} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
@@ -65,12 +79,18 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       setMessages(prevMessages => [...prevMessages, message]);
     });
 
-    newSocket.on(socketEvents.CHAT_ROOM_MESSAGE, (message: string) => {
-      ErrorNotificationHandler({
-        type: EPopupType.INFO,
-        text1: `${strings.newMessageReceived} ${message}`,
-      });
-    });
+    newSocket.on(
+      socketEvents.CHAT_ROOM_MESSAGE,
+      (message: {chatId: string; chatName: string; message: string}) => {
+        if (currentActiveChatId === message.chatId) {
+          return;
+        }
+        ErrorNotificationHandler({
+          type: EPopupType.INFO,
+          text1: `${strings.newMessageReceived} ${message}`,
+        });
+      },
+    );
 
     newSocket.on(socketEvents.USER_CHAT_INVITATION, async (message: any) => {
       console.log(strings.userChatInvitation, message);
@@ -124,7 +144,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       newSocket.disconnect();
       newSocket.removeAllListeners();
     };
-  }, [dispatch, interlocutorId, token]); // Reconnect when userIdChannel changes
+  }, [currentActiveChatId, dispatch, interlocutorId, token]);
 
   const handleCreateChat = (chatData: ICreateChatRoom) => {
     if (socket) {
@@ -162,6 +182,22 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     console.log(`${strings.joinedChatRoom} ${chatId}`);
   };
 
+  const handleSendChatRoomMessage = ({
+    message,
+    chatRoomId,
+  }: {
+    message: string;
+    chatRoomId: string;
+  }) => {
+    const messageData = {
+      chatRoomId,
+      message,
+      senderId: interlocutorId,
+      senderName: email,
+    };
+    sendChatRoomMessage(socket, messageData);
+  };
+
   const handleDeclineChatRoomInvitation = ({chatId}: {chatId: string}) => {
     declineChatRoomInvitationSocket(socket, {
       chatId,
@@ -180,9 +216,11 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       value={{
         socket,
         messages,
+        setCurrentActiveChatId,
         handleCreateChat,
         handleJoinChat,
         handleDeclineChatRoomInvitation,
+        handleSendChatRoomMessage,
       }}>
       {children}
     </ChatSocketProviderContext.Provider>

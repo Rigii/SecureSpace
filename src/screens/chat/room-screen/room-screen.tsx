@@ -1,20 +1,73 @@
-import React from 'react';
-import {View, FlatList} from 'react-native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import React, {useContext, useEffect} from 'react';
+import {View, FlatList, SafeAreaView} from 'react-native';
 import {useReduxSelector} from '../../../app/store/store';
 import {ChatMessage} from './components/chat-message.component';
 import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
-import {Input, KeyboardTypes} from '../../../components/input';
-import {strings} from '../chat.strings';
+import ChatInput from './components/chat-input.component';
+import {connectUserChatNotificationsSocket} from '../../../services/sockets/chat/chat.socket';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../../services/ErrorNotificationHandler';
+import {strings} from '../../../services/context/chat/chat-provider.strings';
+import {socketEvents} from '../../../services/context/chat/chat-context.constants';
+import {ChatSocketProviderContext} from '../../../services/context/chat/chat-context-provider';
 
 interface IChatRoomScreen {
   chatId: string;
 }
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
-  // const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {setCurrentActiveChatId} = useContext(ChatSocketProviderContext);
+  const {interlocutorId} = useReduxSelector(
+    state => state.userChatAccountReducer,
+  );
 
-  const [currentMessage, setCurrentMessage] = React.useState<string>('');
+  useEffect(() => {
+    setCurrentActiveChatId(chatId);
+    const currentChatSocket = connectUserChatNotificationsSocket(
+      interlocutorId,
+      [chatId],
+    );
+
+    currentChatSocket.on(socketEvents.CONNECT, () => {
+      console.log(`${strings.connectedChatWithId} ${chatId}`);
+    });
+
+    currentChatSocket.on(socketEvents.DISCONNECT, () => {
+      console.log(`${strings.disconnectedChatWithId} ${chatId}`);
+    });
+
+    currentChatSocket.on(socketEvents.USER_JOINED_CHAT, () => {
+      console.log(`${strings.disconnectedChatWithId} ${chatId}`);
+    });
+
+    currentChatSocket.on(socketEvents.USER_LEFT_CHAT, () => {
+      console.log(`${strings.disconnectedChatWithId} ${chatId}`);
+    });
+
+    currentChatSocket.on(
+      socketEvents.CHAT_ROOM_MESSAGE,
+      (message: {
+        message: string;
+        chatRoomId: string;
+        senderName: string;
+        senderId: string;
+        date: string;
+      }) => {
+        ErrorNotificationHandler({
+          type: EPopupType.INFO,
+          text1: `${strings.newMessageReceived} ${message}`,
+        });
+      },
+    );
+
+    return () => {
+      currentChatSocket.disconnect();
+      currentChatSocket.removeAllListeners();
+    };
+  }, [chatId, interlocutorId, setCurrentActiveChatId]);
+
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
   const participantId = useReduxSelector(
     state => state.userChatAccountReducer.interlocutorId,
@@ -41,15 +94,9 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         )}
         showsVerticalScrollIndicator={false}
       />
-      <Input
-        value={currentMessage}
-        onBlur={() => null}
-        onChange={setCurrentMessage}
-        name="room-message"
-        placeholder={strings.enterYourMessage}
-        keyboardType={KeyboardTypes.default}
-        className="w-80"
-      />
+      <SafeAreaView>
+        <ChatInput chatId={chatId} />
+      </SafeAreaView>
     </View>
   );
 };
