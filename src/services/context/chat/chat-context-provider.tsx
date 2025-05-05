@@ -149,6 +149,9 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const handleCreateChat = (chatData: ICreateChatRoom) => {
     if (socket) {
       createChatRoomSocket(socket, chatData);
+
+      /* TODO: Uncomment this when the server is ready to handle chat creation */
+      // dispatch(addNewChatRoom(chatData));
     } else {
       console.error(strings.socketIsNotConnected);
     }

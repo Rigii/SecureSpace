@@ -41,14 +41,14 @@ export interface IUserData {
 
 export interface IChatMessage {
   id: string;
-  participant_id: string;
-  sender_nik_name: string;
-  content: string;
-  chatId: number;
-  lifeCycleLimitHours: any; // Change the type to 'any'
-  is_admin: boolean;
-  media_url: string;
-  voice_message_url: string;
-  created: Date;
-  updated: Date;
+  participantId: string;
+  senderNikName: string;
+  message: string;
+  chatRoomId: string;
+  lifeCycleLimitHours?: number;
+  isAdmin: boolean;
+  mediaUrl?: string;
+  voiceMessageUrl?: string;
+  created: string;
+  updated: string;
 }

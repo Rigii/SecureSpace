@@ -5,13 +5,11 @@ import {ChatMessage} from './components/chat-message.component';
 import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
 import ChatInput from './components/chat-input.component';
 import {connectUserChatNotificationsSocket} from '../../../services/sockets/chat/chat.socket';
-import {
-  EPopupType,
-  ErrorNotificationHandler,
-} from '../../../services/ErrorNotificationHandler';
 import {strings} from '../../../services/context/chat/chat-provider.strings';
 import {socketEvents} from '../../../services/context/chat/chat-context.constants';
 import {ChatSocketProviderContext} from '../../../services/context/chat/chat-context-provider';
+import {useDispatch} from 'react-redux';
+import {addMessageToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 
 interface IChatRoomScreen {
   chatId: string;
@@ -19,9 +17,11 @@ interface IChatRoomScreen {
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
   const {setCurrentActiveChatId} = useContext(ChatSocketProviderContext);
+  // const chatRooms = useReduxSelector(state => state.chatRoomsReducer);
   const {interlocutorId} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setCurrentActiveChatId(chatId);
@@ -48,17 +48,32 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
 
     currentChatSocket.on(
       socketEvents.CHAT_ROOM_MESSAGE,
-      (message: {
+      (messageObject: {
+        id: string;
+        participantId: string;
+        senderNikName: string;
         message: string;
         chatRoomId: string;
-        senderName: string;
-        senderId: string;
-        date: string;
+        isAdmin: boolean;
+        mediaUrl?: string;
+        voiceMessageUrl?: string;
+        created: string;
+        updated: string;
       }) => {
-        ErrorNotificationHandler({
-          type: EPopupType.INFO,
-          text1: `${strings.newMessageReceived} ${message}`,
-        });
+        const storeData: IChatMessage = {
+          id: messageObject.id,
+          message: messageObject.message,
+          created: new Date(messageObject.created).toLocaleString(),
+          updated: new Date(messageObject.updated).toLocaleString(),
+          senderNikName: messageObject.senderNikName,
+          participantId: messageObject.participantId,
+          chatRoomId: messageObject.chatRoomId,
+          isAdmin: false,
+          mediaUrl: messageObject.mediaUrl,
+          voiceMessageUrl: messageObject.voiceMessageUrl,
+        };
+
+        dispatch(addMessageToChatRoom(storeData));
       },
     );
 
@@ -66,7 +81,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
       currentChatSocket.disconnect();
       currentChatSocket.removeAllListeners();
     };
-  }, [chatId, interlocutorId, setCurrentActiveChatId]);
+  }, [chatId, interlocutorId, setCurrentActiveChatId, dispatch]);
 
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
   const participantId = useReduxSelector(
@@ -86,10 +101,10 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <ChatMessage
-            message={item.content}
-            isOwnMessage={item.participant_id === participantId}
-            senderName={item.sender_nik_name}
-            time={item.created.toUTCString()}
+            message={item.message}
+            isOwnMessage={item.participantId === participantId}
+            senderName={item.senderNikName}
+            time={item.created}
           />
         )}
         showsVerticalScrollIndicator={false}

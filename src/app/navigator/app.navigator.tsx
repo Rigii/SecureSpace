@@ -20,7 +20,7 @@ import {ThemedButton} from '../../components/themed-button';
 import {useState} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {CreateChatRoom} from '../../components/create-update-chat/create-update-chat';
-import ChatRoomScreen from '../../screens/chat/room-screen/room-screen';
+import ChatRoomScreen from '../../screens/chat/chat-room-screen/room-screen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();

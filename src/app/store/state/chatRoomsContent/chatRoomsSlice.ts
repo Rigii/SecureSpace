@@ -54,15 +54,14 @@ export const chatRoomsReducer = createSlice({
     builder.addCase(
       addMessageToChatRoom,
       (state, action: PayloadAction<IChatMessage>) => {
-        const chatRoomId = action.payload.id;
-
+        const chatRoomId = action.payload.chatRoomId;
         if (!state[chatRoomId]) {
           return;
         }
         const chatRoom = state[chatRoomId];
 
         // dirrect change works — while createSlice uses Immer.js
-        chatRoom.messages.push(action.payload);
+        chatRoom.messages = [...chatRoom.messages, action.payload];
       },
     );
   },

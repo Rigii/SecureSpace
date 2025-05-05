@@ -1,6 +1,6 @@
 import {useReduxSelector} from '../../../app/store/store';
 
-export const ChatListState = () => {
+export const UseChatListState = () => {
   const chatRooms = useReduxSelector(state => state.chatRoomsReducer);
   const userChatAccount = useReduxSelector(
     state => state.userChatAccountReducer,

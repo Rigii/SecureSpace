@@ -32,7 +32,7 @@ export const EmailPasswordForm: React.FC<{
       enableReinitialize={true}
       isInitialValid={false}
       validationSchema={SignUpSchema}
-      initialValues={{email: '', password: ''}}
+      initialValues={{email: 'Valakardin@asd.as', password: '123456'}}
       onSubmit={values => {
         loginSignUp({email: values.email, password: values.password});
       }}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, FlatList} from 'react-native';
 import ChatListItem from '../../../components/chat-item/chat-item';
-import {ChatListState} from './chat-list.state';
+import {UseChatListState} from './chat-list.state';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
   RootStackParamList,
@@ -20,10 +20,12 @@ interface ChatListProps {
 
 const ChatList: React.FC<ChatListProps> = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {chatRoomsArray, interlocutorId} = ChatListState();
+  const {chatRoomsArray, interlocutorId} = UseChatListState();
+
   const navigateCreateChat = () => {
     navigation.navigate(manualEncryptionScreenRoutes.createChatRoom);
   };
+
   const navigateToChatRoom = (chatId: string) => {
     navigation.navigate(manualEncryptionScreenRoutes.chatRoom, {
       chatId,
@@ -46,7 +48,7 @@ const ChatList: React.FC<ChatListProps> = () => {
             interlocutorId={interlocutorId}
             lastMessageTime={
               item.messages && item.messages?.length > 0
-                ? item.messages[0].created.toUTCString()
+                ? new Date(item.messages[0].created).toLocaleString()
                 : '12.08.2025'
             }
             navigateToChatRoom={navigateToChatRoom}
