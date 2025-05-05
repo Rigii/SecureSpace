@@ -13,4 +13,5 @@ export const strings = {
   findRoomInChatList: 'You could find it in the chat list',
   chatInvitationDeclined: 'Invitation Declined',
   chatInvitationAccepted: 'Invitation Accepted',
+  errorFetchingMessages: 'Error fetching messages:',
 };

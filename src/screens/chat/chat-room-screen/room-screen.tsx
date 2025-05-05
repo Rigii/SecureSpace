@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {View, FlatList, SafeAreaView} from 'react-native';
 import {useReduxSelector} from '../../../app/store/store';
 import {ChatMessage} from './components/chat-message.component';
@@ -10,6 +10,7 @@ import {socketEvents} from '../../../services/context/chat/chat-context.constant
 import {ChatSocketProviderContext} from '../../../services/context/chat/chat-context-provider';
 import {useDispatch} from 'react-redux';
 import {addMessageToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
 
 interface IChatRoomScreen {
   chatId: string;
@@ -17,13 +18,31 @@ interface IChatRoomScreen {
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
   const {setCurrentActiveChatId} = useContext(ChatSocketProviderContext);
-  // const chatRooms = useReduxSelector(state => state.chatRoomsReducer);
+  const {token} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
   const {interlocutorId} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
   const dispatch = useDispatch();
 
+  const getMessages = useCallback(async () => {
+    try {
+      const roomMessagesResponce = await getChatRoomMessages({
+        roomId: chatId,
+        pagination: {page: 1, limit: 20},
+        token,
+      });
+
+      console.log(1111111111, roomMessagesResponce.data);
+    } catch (error) {
+      console.log(strings.errorFetchingMessages, error);
+    }
+  }, [token, chatId]);
+
   useEffect(() => {
+    getMessages();
+
     setCurrentActiveChatId(chatId);
     const currentChatSocket = connectUserChatNotificationsSocket(
       interlocutorId,
@@ -81,7 +100,14 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
       currentChatSocket.disconnect();
       currentChatSocket.removeAllListeners();
     };
-  }, [chatId, interlocutorId, setCurrentActiveChatId, dispatch]);
+  }, [
+    chatId,
+    interlocutorId,
+    token,
+    setCurrentActiveChatId,
+    dispatch,
+    getMessages,
+  ]);
 
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
   const participantId = useReduxSelector(
