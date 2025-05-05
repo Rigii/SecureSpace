@@ -19,3 +19,10 @@ export interface ISecurePlace {
   securePlaceData: ISecurePlaceData;
   securePlaceRadius: string;
 }
+
+export interface IChatMessage {
+  chatRoomId: string;
+  message: string;
+  senderId: string;
+  senderName: string;
+}

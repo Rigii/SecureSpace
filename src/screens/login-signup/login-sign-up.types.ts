@@ -1,5 +1,6 @@
 // import {UserCredential, User as IAuthUser} from 'firebase/auth';
 // import {Key} from '../../adapters/firebase-adapter';
+import {EChatVariants} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
 import {IErrorResponse} from '../../services/xhr-services/xhr.types';
 
 // export type TKeys = Array<Key>;
@@ -231,7 +232,7 @@ export interface IFetchedUserAuthData {
     role: string;
     title: string;
     updated: Date;
-    user_chat_account: IFetchedUserChats;
+    user_chat_account: IFetchedUserChatAccount;
   };
   token: string;
 }
@@ -241,7 +242,7 @@ export interface IFetchedInvitations {
   date: Date;
 }
 
-export interface IFetchedUserChats {
+export interface IFetchedUserChatAccount {
   interlocutor_id: string;
   chat_account_id: string;
   public_chat_key: string;
@@ -256,7 +257,7 @@ export interface IFetchedChatRoom {
   chat_icon_url: string | null;
   chat_media_storage_url: string;
   chat_name: string;
-  chat_type: string;
+  chat_type: EChatVariants;
   created: Date;
   id: string;
   invited_user_ids: string[];
@@ -266,4 +267,6 @@ export interface IFetchedChatRoom {
   password: string | null;
   updated: Date;
   availability_area_data: null;
+  users_data?: IFetchedUserChatAccount;
+  messages?: any;
 }

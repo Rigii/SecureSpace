@@ -15,6 +15,7 @@ export const manualEncryptionScreenRoutes: {
   notFound: 'notFound',
   chatList: 'chatList',
   createChatRoom: 'createChatRoom',
+  chatRoom: 'chatRoom',
 };
 
 export type RootStackParamList = {
@@ -32,6 +33,7 @@ export type RootStackParamList = {
   root: undefined;
   notFound: undefined;
   chatList: undefined;
+  chatRoom: {chatId: string; participantId: string};
 };
 
 export type TManualEncryptionScreens =

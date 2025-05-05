@@ -1,6 +1,9 @@
 export const strings = {
   connectedChatServer: 'Connected to the chat server',
+  connectedChatWithId: 'Connected to the chat with ID:',
+  disconnectedChatWithId: 'Disconnected from the chat with ID:',
   newMessageReceived: 'New message received:',
+  newRoomMessageReceived: 'New in-room message received:',
   disconnectedChatServer: 'Disconnected from the chat server',
   socketError: 'Socket error:',
   socketIsNotConnected: 'Socket is not connected',
@@ -8,4 +11,6 @@ export const strings = {
   userChatInvitation: 'User chat invitation',
   newRoomInvitation: 'You have been invited to a new chat room:',
   findRoomInChatList: 'You could find it in the chat list',
+  chatInvitationDeclined: 'Invitation Declined',
+  chatInvitationAccepted: 'Invitation Accepted',
 };

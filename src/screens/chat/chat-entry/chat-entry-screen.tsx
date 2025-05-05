@@ -1,9 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
-import ChatList from '../chat-list/chat-list';
 import {CreateChatAccount} from '../create-chat-account';
 import {ChatEntryScreenState} from './chat-entry-screen.state';
 import {chatData} from './chat-rooms.mocked';
+import ChatList from '../chat-list/chat-list';
 
 const ChatListScreen: React.FC = () => {
   const {publicChatKey} = ChatEntryScreenState();

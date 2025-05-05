@@ -9,4 +9,5 @@ export const strings = {
   youAddedToChat: 'You added to the chat',
   chatRoomCreated: 'Chat room created',
   failChatCreation: 'Failed to create chat',
+  enterYourMessage: 'Enter your message',
 };

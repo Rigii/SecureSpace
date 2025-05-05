@@ -11,6 +11,7 @@ import {useDispatch} from 'react-redux';
 import {setUser} from '../../app/store/state/userState/userAction';
 import {updateUserChatsAccountSlice} from '../../app/store/state/userChatAccount/userChatAccountAction';
 import {addUserChatRooms} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
@@ -93,7 +94,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       if (userChatRooms) {
         const userChatsObject = userChatRooms.reduce(
           (accumulator: any, currentValue: any) => {
-            const chatRoomData = {
+            const chatRoomData: IChatRoom = {
               id: currentValue.id,
               password: '',
               chatName: currentValue.chat_name,
@@ -106,7 +107,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
               chatMediaStorageUrl: currentValue.chat_media_storage_url,
               chatIconUrl: currentValue.chat_icon_url,
               availabilityAreaData: currentValue.availability_area_data,
-              messages: currentValue.messages,
+              messages: currentValue.messages || [],
             };
             return {...accumulator, [chatRoomData.id]: chatRoomData};
           },
