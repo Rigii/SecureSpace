@@ -11,7 +11,8 @@
     "start": "react-native start",
     "start:debug": "npx react-native start --experimental-debugger",
     "start:stage": "ENVFILE=.env.stage react-native start",
-    "test": "jest"
+    "test": "jest",
+    "kll": "npx kill-port 8081"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.22.1",
