@@ -2,17 +2,14 @@ import React from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import {
   RootStackParamList,
+  TManualEncryptionScreens,
   manualEncryptionScreenRoutes,
 } from '../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {
-  ChatIcon,
-  HomeIcon,
-  LogoutSmallIcon,
-  SidebarIcon,
-} from '../../assets/icons';
+import {ChatIcon, HomeIcon, LogoutSmallIcon} from '../../assets/icons';
+import DropdownButton from '../modal-side-bar/modal-bar';
 
-const TopBar = ({currentScreen}: {currentScreen: string}) => {
+const TopBar = ({currentScreen}: {currentScreen: TManualEncryptionScreens}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const toggleRedirectChatHome = () => {
@@ -39,10 +36,8 @@ const TopBar = ({currentScreen}: {currentScreen: string}) => {
   };
 
   return (
-    <View className="flex-row items-center justify-between px-4 py-3">
-      <TouchableOpacity>
-        <SidebarIcon />
-      </TouchableOpacity>
+    <View className="relative flex-row items-center justify-between px-4 py-3">
+      <DropdownButton currentScreen={currentScreen} />
 
       <View className="flex-row gap-4">
         <TouchableOpacity>

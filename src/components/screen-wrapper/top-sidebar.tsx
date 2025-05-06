@@ -1,10 +1,13 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native';
 import TopBar from '../top-bar/top-bar';
-import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
+import {
+  TManualEncryptionScreens,
+  manualEncryptionScreenRoutes,
+} from '../../app/navigator/screens';
 
 type TTopSidebarProps = {
-  currentRoute: string | null;
+  currentRoute: TManualEncryptionScreens | null;
 };
 
 const TopSidebar: React.FC<TTopSidebarProps> = ({currentRoute}) => {
@@ -16,7 +19,7 @@ const TopSidebar: React.FC<TTopSidebarProps> = ({currentRoute}) => {
     return null;
   }
   return (
-    <SafeAreaView className="bg-gray-900">
+    <SafeAreaView className="bg-gray-900 overflow-auto">
       <TopBar currentScreen={currentRoute} />
     </SafeAreaView>
   );

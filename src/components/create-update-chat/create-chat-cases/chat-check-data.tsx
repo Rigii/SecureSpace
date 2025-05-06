@@ -1,12 +1,12 @@
 import React from 'react';
-import {Title1, Title2} from '../../../components/title';
+import {Title1, Title2} from '../../text-titles/title';
 import {ThemedButton} from '../../../components/themed-button';
 import {FormikErrors} from 'formik';
 import {ICreateRoomFormValues} from '../create-update-chat.types';
 import {strings} from '../create-chat-form.strings';
 import {FlatList, View} from 'react-native';
 import {ISecurePlaceData} from '../../../app/types/encrypt.types';
-import {TextNormal} from '../../text-styled';
+import {TextNormal} from '../../text-titles/text-styled';
 
 export const ChatCheckData: React.FC<{
   errors: FormikErrors<ICreateRoomFormValues>;

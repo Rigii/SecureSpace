@@ -1,5 +1,7 @@
-export const sidebarDropdownDataSets = {
-  roomSet: [
+import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
+
+export const sidebarModalSets = {
+  [manualEncryptionScreenRoutes.chatRoom]: [
     {
       id: 'roomInfo',
       label: 'Room Info',
@@ -37,7 +39,7 @@ export const sidebarDropdownDataSets = {
       action: () => null,
     },
   ],
-  chatListSet: [
+  [manualEncryptionScreenRoutes.chatList]: [
     {
       id: 'chatListSearch',
       label: 'Search',
@@ -57,7 +59,7 @@ export const sidebarDropdownDataSets = {
       action: () => null,
     },
   ],
-  homeSet: [
+  [manualEncryptionScreenRoutes.home]: [
     {
       id: 'homeSearch',
       label: 'Search',

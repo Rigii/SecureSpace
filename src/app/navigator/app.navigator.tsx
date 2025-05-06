@@ -9,7 +9,11 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {AppTestComponent} from '../AppTestComponent';
 import {PrivateRoute} from './privateRoute';
-import {RootStackParamList, manualEncryptionScreenRoutes} from './screens';
+import {
+  RootStackParamList,
+  TManualEncryptionScreens,
+  manualEncryptionScreenRoutes,
+} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
 import {OnboardingFlow} from '../../screens/onboarding/onboarding';
 import TopSidebar from '../../components/screen-wrapper/top-sidebar';
@@ -46,15 +50,21 @@ export const Home = () => {
 export const AppNavigationContainer = () => {
   const isAuthenticated = false;
   const navigationRef = useNavigationContainerRef();
-  const [currentRoute, setCurrentRoute] = useState<string | null>(null);
+
+  const [currentRoute, setCurrentRoute] =
+    useState<TManualEncryptionScreens | null>(null);
+
+  const onSetCurrentRoute = () =>
+    setCurrentRoute(
+      (navigationRef.getCurrentRoute()?.name as TManualEncryptionScreens) ||
+        null,
+    );
 
   return (
     <SafeAreaProvider>
       <NavigationContainer
         ref={navigationRef}
-        onStateChange={() =>
-          setCurrentRoute(navigationRef.getCurrentRoute()?.name || null)
-        }>
+        onStateChange={onSetCurrentRoute}>
         <TopSidebar currentRoute={currentRoute} />
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name={manualEncryptionScreenRoutes.root}>
