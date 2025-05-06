@@ -3,6 +3,7 @@ import {postData} from '../../xhr-services/api-service';
 const CREATE_CHAT_USER_URL = '/chat/create-chat-user';
 const GET_CHAT_USER_URL = '/chat/get-chat-user';
 const GET_CHAT_ROOMS_URL = '/chat/get-chat-rooms';
+const GET_ROOM_MESSAGES_URL = '/chat/get-room-messages';
 
 export const createChatUserApi = async (
   chatUserData: {
@@ -23,3 +24,13 @@ export const getChatRoomsData = async ({
   roomIds: string[];
   token: string;
 }) => postData(token, GET_CHAT_ROOMS_URL, {roomIds});
+
+export const getChatRoomMessages = async ({
+  roomId,
+  pagination,
+  token,
+}: {
+  roomId: string;
+  pagination?: {page: number; limit: number};
+  token: string;
+}) => postData(token, GET_ROOM_MESSAGES_URL, {roomId, ...pagination});

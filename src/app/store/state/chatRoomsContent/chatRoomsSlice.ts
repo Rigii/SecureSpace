@@ -7,6 +7,7 @@ import {
 } from './chatRoomsState.types';
 import {
   addMessageToChatRoom,
+  addMessagesToChatRoom,
   addNewChatRoom,
   addUserChatRooms,
   deleteChatRoom,
@@ -48,6 +49,20 @@ export const chatRoomsReducer = createSlice({
       deleteChatRoom,
       (state, action: PayloadAction<IDeleteChatRoom>) => {
         delete state[action?.payload?.chatRoomId];
+      },
+    );
+
+    builder.addCase(
+      addMessagesToChatRoom,
+      (state, action: PayloadAction<IChatMessage[]>) => {
+        const chatRoomId = action.payload[0].chatRoomId;
+        if (!state[chatRoomId]) {
+          return;
+        }
+        const chatRoom = state[chatRoomId];
+
+        // dirrect change works — while createSlice uses Immer.js
+        chatRoom.messages = [...action.payload];
       },
     );
 

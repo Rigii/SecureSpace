@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {View, FlatList, SafeAreaView} from 'react-native';
 import {useReduxSelector} from '../../../app/store/store';
 import {ChatMessage} from './components/chat-message.component';
@@ -9,7 +9,11 @@ import {strings} from '../../../services/context/chat/chat-provider.strings';
 import {socketEvents} from '../../../services/context/chat/chat-context.constants';
 import {ChatSocketProviderContext} from '../../../services/context/chat/chat-context-provider';
 import {useDispatch} from 'react-redux';
-import {addMessageToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {
+  addMessageToChatRoom,
+  addMessagesToChatRoom,
+} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
 
 interface IChatRoomScreen {
   chatId: string;
@@ -17,13 +21,57 @@ interface IChatRoomScreen {
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
   const {setCurrentActiveChatId} = useContext(ChatSocketProviderContext);
-  // const chatRooms = useReduxSelector(state => state.chatRoomsReducer);
+  const {token} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
   const {interlocutorId} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
   const dispatch = useDispatch();
 
+  const getMessages = useCallback(async () => {
+    try {
+      const roomMessagesResponce = await getChatRoomMessages({
+        roomId: chatId,
+        pagination: {page: 1, limit: 20},
+        token,
+      });
+
+      const messages = roomMessagesResponce?.data.map(
+        (messageObject: {
+          id: string;
+          participantId: string;
+          senderNikName: string;
+          message: string;
+          chatRoomId: string;
+          isAdmin: boolean;
+          mediaUrl?: string;
+          voiceMessageUrl?: string;
+          created: string;
+          updated: string;
+        }) => ({
+          id: messageObject.id,
+          message: messageObject.message,
+          created: new Date(messageObject.created).toLocaleString(),
+          updated: new Date(messageObject.updated).toLocaleString(),
+          senderNikName: messageObject.senderNikName,
+          participantId: messageObject.participantId,
+          chatRoomId: messageObject.chatRoomId,
+          isAdmin: false,
+          mediaUrl: messageObject.mediaUrl,
+          voiceMessageUrl: messageObject.voiceMessageUrl,
+        }),
+      );
+
+      dispatch(addMessagesToChatRoom(messages));
+    } catch (error) {
+      console.log(strings.errorFetchingMessages, error);
+    }
+  }, [chatId, token, dispatch]);
+
   useEffect(() => {
+    getMessages();
+
     setCurrentActiveChatId(chatId);
     const currentChatSocket = connectUserChatNotificationsSocket(
       interlocutorId,
@@ -81,7 +129,14 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
       currentChatSocket.disconnect();
       currentChatSocket.removeAllListeners();
     };
-  }, [chatId, interlocutorId, setCurrentActiveChatId, dispatch]);
+  }, [
+    chatId,
+    interlocutorId,
+    token,
+    setCurrentActiveChatId,
+    dispatch,
+    getMessages,
+  ]);
 
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
   const participantId = useReduxSelector(

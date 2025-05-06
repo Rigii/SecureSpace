@@ -25,3 +25,7 @@ export const deleteChatRoom = createAction<IDeleteChatRoom>(
 export const addMessageToChatRoom = createAction<IChatMessage>(
   'anonymousUser/addMessageToChatRoom',
 );
+
+export const addMessagesToChatRoom = createAction<IChatMessage[]>(
+  'anonymousUser/addMessagesToChatRoom',
+);
