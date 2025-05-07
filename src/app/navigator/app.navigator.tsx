@@ -20,6 +20,7 @@ import {CreateChatRoom} from '../../components/create-update-chat/create-update-
 import ChatRoomScreen from '../../screens/chat/chat-room-screen/room-screen';
 import {CombinedBarHome} from '../../screens/home/home';
 import {CombinedChatListScreen} from '../../screens/chat/chat-entry/chat-entry-screen';
+import {useReduxSelector} from '../store/store';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -43,7 +44,10 @@ export const Home = () => {
 };
 
 export const AppNavigationContainer = () => {
-  const isAuthenticated = true;
+  const {token} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
+  console.log(333333, token);
   const navigationRef = useNavigationContainerRef();
 
   return (
@@ -64,7 +68,7 @@ export const AppNavigationContainer = () => {
             {props => (
               <PrivateRoute
                 {...props}
-                isAuthenticated={isAuthenticated}
+                isAuthenticated={!!token}
                 redirectAuthRoute={manualEncryptionScreenRoutes.registerLogin}
                 component={CombinedBarHome}
               />

@@ -9,6 +9,8 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {ChatIcon, HomeIcon, LogoutSmallIcon} from '../../../assets/icons';
 import DropdownButton from '../../modal-side-bar/modal-bar';
 import {ITopBarMenuActions} from '../../../HOC/combined-component/combined-component';
+import {useDispatch} from 'react-redux';
+import {logOut} from '../../../app/store/state/userState/userAction';
 
 const TopBar = ({
   currentScreen,
@@ -18,6 +20,11 @@ const TopBar = ({
   menuActions?: ITopBarMenuActions[];
 }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
+
+  const onLogOut = () => {
+    dispatch(logOut());
+  };
 
   const toggleRedirectChatHome = () => {
     if (currentScreen === manualEncryptionScreenRoutes.chatList) {
@@ -48,7 +55,7 @@ const TopBar = ({
         {menuActions && <DropdownButton data={menuActions} />}
 
         <View className="flex-row gap-4">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onLogOut}>
             <LogoutSmallIcon />
           </TouchableOpacity>
 

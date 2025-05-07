@@ -8,3 +8,5 @@ export const setUser = createAction<Partial<IUserAccount> | null>(
 export const setSecurityData = createAction<Partial<ISecurityData> | null>(
   'anonymousUser/setSecurityData',
 );
+
+export const logOut = createAction('anonymousUser/logOut');
