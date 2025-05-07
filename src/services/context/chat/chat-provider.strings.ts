@@ -14,4 +14,6 @@ export const strings = {
   chatInvitationDeclined: 'Invitation Declined',
   chatInvitationAccepted: 'Invitation Accepted',
   errorFetchingMessages: 'Error fetching messages:',
+  errorLeavingChatRoom: 'Error leaving chat room:',
+  enterYourMessage: 'Enter your message',
 };

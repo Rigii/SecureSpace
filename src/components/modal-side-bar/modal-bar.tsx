@@ -1,31 +1,29 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, FlatList} from 'react-native';
 import {SidebarIcon} from '../../assets/icons';
-import {ISidebarDropdownDataSet} from './modal-bar.types';
-import {sidebarModalSets} from './modal-bar.constants';
 import {TextNormal} from '../text-titles/text-styled';
-import {TManualEncryptionScreens} from '../../app/navigator/screens';
 import ModalPopup from '../modal-popup/modal-popup';
+import {ITopBarMenuActions} from '../../HOC/combined-component/combined-component';
 
 export interface ISidebarProps {
-  currentScreen: TManualEncryptionScreens;
+  data: ITopBarMenuActions[];
 }
 
-const DropdownButton: React.FC<ISidebarProps> = ({currentScreen}) => {
+const DropdownButton: React.FC<ISidebarProps> = ({data}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleSidebarPress = () => {
     setIsDropdownOpen(prev => !prev);
   };
 
-  if (!sidebarModalSets[currentScreen as keyof typeof sidebarModalSets]) {
+  if (!data) {
     return null;
   }
 
   const optionsListComponent = (
     <FlatList
-      data={sidebarModalSets[currentScreen as keyof typeof sidebarModalSets]}
-      renderItem={({item}: {item: ISidebarDropdownDataSet}) => (
+      data={data}
+      renderItem={({item}: {item: ITopBarMenuActions}) => (
         <TouchableOpacity
           className="flex-row items-center mb-2"
           onPress={() => {

@@ -1,15 +1,22 @@
 import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, SafeAreaView} from 'react-native';
 import {
   RootStackParamList,
   TManualEncryptionScreens,
   manualEncryptionScreenRoutes,
-} from '../../app/navigator/screens';
+} from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {ChatIcon, HomeIcon, LogoutSmallIcon} from '../../assets/icons';
-import DropdownButton from '../modal-side-bar/modal-bar';
+import {ChatIcon, HomeIcon, LogoutSmallIcon} from '../../../assets/icons';
+import DropdownButton from '../../modal-side-bar/modal-bar';
+import {ITopBarMenuActions} from '../../../HOC/combined-component/combined-component';
 
-const TopBar = ({currentScreen}: {currentScreen: TManualEncryptionScreens}) => {
+const TopBar = ({
+  currentScreen,
+  menuActions,
+}: {
+  currentScreen: TManualEncryptionScreens;
+  menuActions?: ITopBarMenuActions[];
+}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const toggleRedirectChatHome = () => {
@@ -36,17 +43,19 @@ const TopBar = ({currentScreen}: {currentScreen: TManualEncryptionScreens}) => {
   };
 
   return (
-    <View className="relative flex-row items-center justify-between px-4 py-3">
-      <DropdownButton currentScreen={currentScreen} />
+    <SafeAreaView className="bg-gray-900 overflow-auto">
+      <View className="relative flex-row items-center justify-between px-4 py-3">
+        {menuActions && <DropdownButton data={menuActions} />}
 
-      <View className="flex-row gap-4">
-        <TouchableOpacity>
-          <LogoutSmallIcon />
-        </TouchableOpacity>
+        <View className="flex-row gap-4">
+          <TouchableOpacity>
+            <LogoutSmallIcon />
+          </TouchableOpacity>
 
-        {rightButtonRedirectionComponent()}
+          {rightButtonRedirectionComponent()}
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

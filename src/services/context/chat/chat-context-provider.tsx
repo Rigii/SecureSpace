@@ -38,6 +38,7 @@ export const ChatSocketProviderContext = createContext<{
     message: string;
     chatRoomId: string;
   }) => void;
+  leaveRoomLocal: ({chatRoomId}: {chatRoomId: string}) => void;
 }>({
   socket: null,
   messages: [],
@@ -46,6 +47,7 @@ export const ChatSocketProviderContext = createContext<{
   handleDeclineChatRoomInvitation: () => {},
   handleSendChatRoomMessage: () => {},
   setCurrentActiveChatId: () => {},
+  leaveRoomLocal: () => {},
 });
 
 export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
@@ -157,7 +159,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     }
   };
 
-  const deleteRoomLocal = ({chatRoomId}: {chatRoomId: string}) => {
+  const leaveRoomLocal = ({chatRoomId}: {chatRoomId: string}) => {
     dispatch(deleteChatRoom({chatRoomId}));
   };
 
@@ -207,7 +209,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       interlocutorId,
     });
 
-    deleteRoomLocal({chatRoomId: chatId});
+    leaveRoomLocal({chatRoomId: chatId});
     ErrorNotificationHandler({
       type: EPopupType.INFO,
       text1: strings.chatInvitationDeclined,
@@ -219,6 +221,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       value={{
         socket,
         messages,
+        leaveRoomLocal,
         setCurrentActiveChatId,
         handleCreateChat,
         handleJoinChat,

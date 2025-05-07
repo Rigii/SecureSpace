@@ -4,6 +4,28 @@ import {CreateChatAccount} from '../create-chat-account';
 import {ChatEntryScreenState} from './chat-entry-screen.state';
 import {chatData} from './chat-rooms.mocked';
 import ChatList from '../chat-list/chat-list';
+import {combineWithBarHOC} from '../../../HOC/combined-component/combined-component';
+
+const actions = [
+  {
+    id: 'chatListSearch',
+    label: 'Search',
+    icon: '',
+    action: () => null,
+  },
+  {
+    id: 'chatListCreateRoom',
+    label: 'Create Room',
+    icon: '',
+    action: () => null,
+  },
+  {
+    id: 'chatListSettings',
+    label: 'Account & Settings',
+    icon: '',
+    action: () => null,
+  },
+];
 
 const ChatListScreen: React.FC = () => {
   const {publicChatKey} = ChatEntryScreenState();
@@ -15,4 +37,6 @@ const ChatListScreen: React.FC = () => {
   );
 };
 
-export default ChatListScreen;
+export const CombinedChatListScreen = combineWithBarHOC(ChatListScreen, {
+  actions,
+});

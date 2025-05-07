@@ -1,9 +1,7 @@
 import React, {useCallback, useContext, useEffect} from 'react';
 import {View, FlatList, SafeAreaView} from 'react-native';
 import {useReduxSelector} from '../../../app/store/store';
-import {ChatMessage} from './components/chat-message.component';
 import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
-import ChatInput from './components/chat-input.component';
 import {connectUserChatNotificationsSocket} from '../../../services/sockets/chat/chat.socket';
 import {strings} from '../../../services/context/chat/chat-provider.strings';
 import {socketEvents} from '../../../services/context/chat/chat-context.constants';
@@ -14,19 +12,28 @@ import {
   addMessagesToChatRoom,
 } from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
+import ComponentsTopBar from '../../../components/top-bar/components-top-bar/components-top-bar';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../../../app/navigator/screens';
+import {ChatMessage} from '../../../components/chat-room-components/chat-message.component';
+import ChatInput from '../../../components/chat-room-components/chat-input.component';
 
 interface IChatRoomScreen {
   chatId: string;
 }
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
-  const {setCurrentActiveChatId} = useContext(ChatSocketProviderContext);
+  const {setCurrentActiveChatId, leaveRoomLocal} = useContext(
+    ChatSocketProviderContext,
+  );
   const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
   const {interlocutorId} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const dispatch = useDispatch();
 
   const getMessages = useCallback(async () => {
@@ -149,8 +156,58 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
       new Date(b.created).getTime() - new Date(a.created).getTime(),
   );
 
+  const leaveChatRoom = async () => {
+    try {
+      await leaveRoomLocal({chatRoomId: chatId});
+      navigation.goBack();
+    } catch (error) {
+      console.log(strings.errorLeavingChatRoom);
+    }
+  };
+
+  const chatRoomOptions = [
+    {
+      id: 'roomInfo',
+      label: 'Room Info',
+      icon: '',
+      action: () => null,
+    },
+    {
+      id: 'roomSearch',
+      label: 'Search',
+      icon: '',
+      action: () => null,
+    },
+    {
+      id: 'roomMute',
+      label: 'Mute',
+      icon: '',
+      action: () => null,
+    },
+    {
+      id: 'roomLeave',
+      label: 'Leave',
+      icon: '',
+      action: leaveChatRoom,
+    },
+    {
+      id: 'roomReport',
+      label: 'Report',
+      icon: '',
+      action: () => null,
+    },
+    {
+      id: 'roomDelete',
+      label: 'Delete',
+      icon: '',
+      action: () => null,
+    },
+  ];
+
   return (
     <View className="flex-1">
+      <ComponentsTopBar settingsData={chatRoomOptions} />
+
       <FlatList
         data={sortedByDateMessages}
         keyExtractor={item => item.id}
@@ -165,7 +222,10 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         showsVerticalScrollIndicator={false}
       />
       <SafeAreaView>
-        <ChatInput chatId={chatId} />
+        <ChatInput
+          chatId={chatId}
+          inputPlaceholder={strings.enterYourMessage}
+        />
       </SafeAreaView>
     </View>
   );
