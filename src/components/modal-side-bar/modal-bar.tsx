@@ -7,9 +7,10 @@ import {ITopBarMenuActions} from '../../HOC/combined-component/combined-componen
 
 export interface ISidebarProps {
   data: ITopBarMenuActions[];
+  popupClassName?: string;
 }
 
-const DropdownButton: React.FC<ISidebarProps> = ({data}) => {
+const DropdownButton: React.FC<ISidebarProps> = ({data, popupClassName}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleSidebarPress = () => {
@@ -45,7 +46,7 @@ const DropdownButton: React.FC<ISidebarProps> = ({data}) => {
       </TouchableOpacity>
       <ModalPopup
         content={optionsListComponent}
-        wrapperClass="absolute top-32 left-4 bg-gray-900 p-3 rounded-lg w-48"
+        wrapperClass={`absolute top-32 bg-gray-900 p-3 rounded-lg w-48 ${popupClassName}`}
         isOpen={isDropdownOpen}
         setisModalOpen={setIsDropdownOpen}
       />

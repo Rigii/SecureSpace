@@ -21,15 +21,16 @@ const ComponentsTopBar = ({
   return (
     <SafeAreaView className="bg-gray-900 overflow-auto">
       <View className="relative flex-row items-center justify-between px-4 py-3">
-        <DropdownButton data={settingsData} />
-
-        <View className="flex-row gap-4">
-          <TouchableOpacity>
-            <LogoutSmallIcon />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={navigateBack}>
-            <BackIcon />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={navigateBack}>
+          <BackIcon />
+        </TouchableOpacity>
+        <View className="flex-row">
+          <View className="mr-3">
+            <TouchableOpacity>
+              <LogoutSmallIcon />
+            </TouchableOpacity>
+          </View>
+          <DropdownButton data={settingsData} popupClassName="right-4" />
         </View>
       </View>
     </SafeAreaView>
