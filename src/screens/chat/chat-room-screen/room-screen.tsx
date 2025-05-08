@@ -23,7 +23,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
       <ComponentsTopBar settingsData={chatRoomOptions} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{flex: 1}}
+        className="flex-1 mt-3"
         keyboardVerticalOffset={100}>
         <FlatList
           data={messages}
@@ -42,7 +42,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
           )}
           showsVerticalScrollIndicator={false}
           getItemLayout={(_, index) => ({
-            length: 900,
+            length: 2000,
             offset: 80 * index,
             index,
           })}

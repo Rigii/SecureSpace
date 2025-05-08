@@ -83,7 +83,7 @@ export const TextButton = ({
   return (
     <TouchableOpacity {...props} style={style} onPress={onCurrentPress}>
       <Text
-        className={`text-light-blue text-center font-extrabold text-base ${className}`}>
+        className={`text-yellow-600 opacity-60 text-center font-extrabold text-base ${className}`}>
         {children}
       </Text>
     </TouchableOpacity>
