@@ -34,22 +34,13 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
 
   const dispatch = useDispatch();
 
-  const onLeaveChatRoom = async () => {
-    try {
-      await leaveChatRoom({chatRoomId: chatId});
-      navigation.goBack();
-    } catch (error) {
-      console.log(strings.errorLeavingChatRoom);
-    }
-  };
-
   useEffect(() => {
     if (!flatListRef.current || messages.length < 1) {
       return;
     }
 
     flatListRef.current.scrollToEnd({animated: true});
-  }, [messages.length]);
+  }, [messages]);
 
   useEffect(() => {
     setCurrentActiveChatId(chatId);
@@ -111,6 +102,15 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     };
     getMessages();
   }, [chatId, dispatch, setCurrentActiveChatId, token]);
+
+  const onLeaveChatRoom = async () => {
+    try {
+      await leaveChatRoom({chatRoomId: chatId});
+      navigation.goBack();
+    } catch (error) {
+      console.log(strings.errorLeavingChatRoom);
+    }
+  };
 
   const chatRoomOptions = [
     {

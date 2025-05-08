@@ -42,7 +42,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
           )}
           showsVerticalScrollIndicator={false}
           getItemLayout={(_, index) => ({
-            length: 80,
+            length: 900,
             offset: 80 * index,
             index,
           })}

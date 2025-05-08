@@ -6,16 +6,23 @@ import {LogoutSmallIcon} from '../../../assets/icons';
 import DropdownButton from '../../modal-side-bar/modal-bar';
 import {BackIcon} from '../../../assets/icons/backIcon';
 import {ISidebarDropdownDataSet} from '../../modal-side-bar/modal-bar.types';
+import {useDispatch} from 'react-redux';
+import {logOut} from '../../../app/store/state/userState/userAction';
 
 const ComponentsTopBar = ({
   settingsData,
 }: {
   settingsData: ISidebarDropdownDataSet[];
 }) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const navigateBack = () => {
     navigation.goBack();
+  };
+
+  const onLogOut = () => {
+    dispatch(logOut());
   };
 
   return (
@@ -26,7 +33,7 @@ const ComponentsTopBar = ({
         </TouchableOpacity>
         <View className="flex-row">
           <View className="mr-3">
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onLogOut}>
               <LogoutSmallIcon />
             </TouchableOpacity>
           </View>
