@@ -16,6 +16,7 @@ const ChatInput: React.FC<IChatInput> = ({chatId, inputPlaceholder}) => {
 
   const onSendMessage = () => {
     if (currentMessage.trim() === '') return;
+
     handleSendChatRoomMessage({message: currentMessage, chatRoomId: chatId});
     setCurrentMessage('');
   };

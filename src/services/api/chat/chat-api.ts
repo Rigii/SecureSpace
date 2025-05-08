@@ -33,4 +33,4 @@ export const getChatRoomMessages = async ({
   roomId: string;
   pagination?: {page: number; limit: number};
   token: string;
-}) => postData(token, GET_ROOM_MESSAGES_URL, {roomId, ...pagination});
+}) => postData(token, GET_ROOM_MESSAGES_URL, {roomId, pagination});

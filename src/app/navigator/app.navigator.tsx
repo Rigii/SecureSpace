@@ -47,7 +47,6 @@ export const AppNavigationContainer = () => {
   const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
-  console.log(333333, token);
   const navigationRef = useNavigationContainerRef();
 
   return (

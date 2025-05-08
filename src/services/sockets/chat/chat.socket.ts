@@ -85,6 +85,18 @@ export const joinChatRoomSocket = (
   });
 };
 
+export const leaveChatRoomSocket = (
+  socket: Socket | null,
+  chatData: {chatId: string; interlocutorId: string},
+) => {
+  if (!socket) {
+    console.error(strings.wSConnectionNotEstablished);
+    return;
+  }
+
+  socket.emit(socketMessageNamespaces.LEAVE_CHAT, chatData);
+};
+
 export const declineChatRoomInvitationSocket = (
   socket: Socket | null,
   chatData: {chatId: string; interlocutorId: string},

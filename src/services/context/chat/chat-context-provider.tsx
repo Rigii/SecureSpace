@@ -5,6 +5,7 @@ import {
   createChatRoomSocket,
   declineChatRoomInvitationSocket,
   joinChatRoomSocket,
+  leaveChatRoomSocket,
   sendChatRoomMessage,
 } from '../../sockets/chat/chat.socket';
 import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
@@ -38,7 +39,7 @@ export const ChatSocketProviderContext = createContext<{
     message: string;
     chatRoomId: string;
   }) => void;
-  leaveRoomLocal: ({chatRoomId}: {chatRoomId: string}) => void;
+  leaveChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
 }>({
   socket: null,
   messages: [],
@@ -47,7 +48,7 @@ export const ChatSocketProviderContext = createContext<{
   handleDeclineChatRoomInvitation: () => {},
   handleSendChatRoomMessage: () => {},
   setCurrentActiveChatId: () => {},
-  leaveRoomLocal: () => {},
+  leaveChatRoom: () => {},
 });
 
 export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
@@ -149,18 +150,29 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   }, [currentActiveChatId, dispatch, interlocutorId, token]);
 
   const handleCreateChat = (chatData: ICreateChatRoom) => {
-    if (socket) {
-      createChatRoomSocket(socket, chatData);
-
-      /* TODO: Uncomment this when the server is ready to handle chat creation */
-      // dispatch(addNewChatRoom(chatData));
-    } else {
+    if (!socket) {
       console.error(strings.socketIsNotConnected);
+      return;
     }
+    createChatRoomSocket(socket, chatData);
+    /* TODO: Uncomment this when the server is ready to handle chat creation */
+    // dispatch(addNewChatRoom(chatData));
   };
 
   const leaveRoomLocal = ({chatRoomId}: {chatRoomId: string}) => {
     dispatch(deleteChatRoom({chatRoomId}));
+  };
+
+  const leaveChatRoom = ({chatRoomId}: {chatRoomId: string}) => {
+    if (!socket) {
+      console.error(strings.socketIsNotConnected);
+      return;
+    }
+
+    const chatData = {chatId: chatRoomId, interlocutorId};
+    leaveChatRoomSocket(socket, chatData);
+    leaveRoomLocal({chatRoomId});
+    setCurrentActiveChatId(null);
   };
 
   const handleJoinChat = ({chatId}: {chatId: string}) => {
@@ -200,6 +212,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       senderId: interlocutorId,
       senderName: email,
     };
+
     sendChatRoomMessage(socket, messageData);
   };
 
@@ -221,7 +234,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       value={{
         socket,
         messages,
-        leaveRoomLocal,
+        leaveChatRoom,
         setCurrentActiveChatId,
         handleCreateChat,
         handleJoinChat,
