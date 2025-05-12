@@ -4,7 +4,7 @@ import {CreateChatAccount} from '../create-chat-account';
 import {ChatEntryScreenState} from './chat-entry-screen.state';
 import {chatData} from './chat-rooms.mocked';
 import ChatList from '../chat-list/chat-list';
-import {combineWithBarHOC} from '../../../HOC/combined-component/combined-component';
+import {combineWithBarHOC} from '../../../HOC/combined-bar-component/combined-component';
 
 const actions = [
   {

@@ -8,7 +8,7 @@ import {
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {ChatIcon, HomeIcon, LogoutSmallIcon} from '../../../assets/icons';
 import DropdownButton from '../../modal-side-bar/modal-bar';
-import {ITopBarMenuActions} from '../../../HOC/combined-component/combined-component';
+import {ITopBarMenuActions} from '../../../HOC/combined-bar-component/combined-component';
 import {useDispatch} from 'react-redux';
 import {logOut} from '../../../app/store/state/userState/userAction';
 
