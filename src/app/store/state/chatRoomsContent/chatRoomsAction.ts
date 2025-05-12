@@ -3,7 +3,7 @@ import {
   IChatMessage,
   IChatRoom,
   IChatRooms,
-  IDeleteChatRoom,
+  IdeleteChatRoomLocalData,
 } from './chatRoomsState.types';
 
 export const addUserChatRooms = createAction<IChatRooms>(
@@ -18,8 +18,8 @@ export const updateChatRoom = createAction<IChatRoom>(
   'anonymousUser/updateChatRoom',
 );
 
-export const deleteChatRoom = createAction<IDeleteChatRoom>(
-  'anonymousUser/deleteChatRoom',
+export const deleteChatRoomLocalData = createAction<IdeleteChatRoomLocalData>(
+  'anonymousUser/deleteChatRoomLocalData',
 );
 
 export const addMessageToChatRoom = createAction<IChatMessage>(

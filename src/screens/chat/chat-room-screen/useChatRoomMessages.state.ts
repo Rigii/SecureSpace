@@ -17,7 +17,7 @@ interface IChatRoomMessagesState {
 export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   const flatListRef = useRef<FlatList>(null);
 
-  const {setCurrentActiveChatId, leaveChatRoom} = useContext(
+  const {setCurrentActiveChatId, leaveChatRoom, deleteChatRoom} = useContext(
     ChatSocketProviderContext,
   );
   const {token} = useReduxSelector(
@@ -112,6 +112,16 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     }
   };
 
+  const onDeleteChatRoom = async () => {
+    // TODO: add confirmation modal
+    try {
+      await deleteChatRoom({chatRoomId: chatId});
+      navigation.goBack();
+    } catch (error) {
+      console.log(strings.errorDeletingChatRoom);
+    }
+  };
+
   const chatRoomOptions = [
     {
       id: 'roomInfo',
@@ -147,7 +157,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       id: 'roomDelete',
       label: 'Delete',
       icon: '',
-      action: () => null,
+      action: onDeleteChatRoom,
     },
   ];
 

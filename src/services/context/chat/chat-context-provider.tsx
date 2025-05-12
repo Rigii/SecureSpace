@@ -4,6 +4,7 @@ import {
   connectUserChatNotificationsSocket,
   createChatRoomSocket,
   declineChatRoomInvitationSocket,
+  deleteChatRoomSocket,
   joinChatRoomSocket,
   leaveChatRoomSocket,
   sendChatRoomMessage,
@@ -20,7 +21,7 @@ import {getChatRoomsData} from '../../api/chat/chat-api';
 import {useDispatch} from 'react-redux';
 import {
   addNewChatRoom,
-  deleteChatRoom,
+  deleteChatRoomLocalData,
   updateChatRoom,
 } from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {IFetchedChatRoom} from '../../../screens/login-signup/login-sign-up.types';
@@ -40,6 +41,7 @@ export const ChatSocketProviderContext = createContext<{
     chatRoomId: string;
   }) => void;
   leaveChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
+  deleteChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
 }>({
   socket: null,
   messages: [],
@@ -49,6 +51,7 @@ export const ChatSocketProviderContext = createContext<{
   handleSendChatRoomMessage: () => {},
   setCurrentActiveChatId: () => {},
   leaveChatRoom: () => {},
+  deleteChatRoom: () => {},
 });
 
 export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
@@ -160,7 +163,25 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   };
 
   const leaveRoomLocal = ({chatRoomId}: {chatRoomId: string}) => {
-    dispatch(deleteChatRoom({chatRoomId}));
+    dispatch(deleteChatRoomLocalData({chatRoomId}));
+  };
+
+  const deleteChatRoom = ({chatRoomId}: {chatRoomId: string}) => {
+    const chatRoom = userChatRooms[chatRoomId];
+    if (!chatRoom) {
+      console.error(strings.chatRoomNotFound);
+      return;
+    }
+    if (!socket) {
+      console.error(strings.socketIsNotConnected);
+      return;
+    }
+
+    deleteChatRoomSocket(socket, {
+      roomId: chatRoomId,
+      interlocutorId,
+    });
+    leaveRoomLocal({chatRoomId});
   };
 
   const leaveChatRoom = ({chatRoomId}: {chatRoomId: string}) => {
@@ -234,6 +255,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       value={{
         socket,
         messages,
+        deleteChatRoom,
         leaveChatRoom,
         setCurrentActiveChatId,
         handleCreateChat,

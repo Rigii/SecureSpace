@@ -16,4 +16,6 @@ export const strings = {
   errorFetchingMessages: 'Error fetching messages:',
   errorLeavingChatRoom: 'Error leaving chat room:',
   enterYourMessage: 'Enter your message',
+  chatRoomNotFound: 'Chat room not found',
+  errorDeletingChatRoom: 'Error deleting chat room:',
 };

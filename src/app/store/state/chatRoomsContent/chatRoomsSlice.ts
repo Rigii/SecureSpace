@@ -3,14 +3,14 @@ import {
   IChatRoom,
   IChatRooms,
   IChatMessage,
-  IDeleteChatRoom,
+  IdeleteChatRoomLocalData,
 } from './chatRoomsState.types';
 import {
   addMessageToChatRoom,
   addMessagesToChatRoom,
   addNewChatRoom,
   addUserChatRooms,
-  deleteChatRoom,
+  deleteChatRoomLocalData,
   updateChatRoom,
 } from './chatRoomsAction';
 
@@ -46,8 +46,8 @@ export const chatRoomsReducer = createSlice({
     );
 
     builder.addCase(
-      deleteChatRoom,
-      (state, action: PayloadAction<IDeleteChatRoom>) => {
+      deleteChatRoomLocalData,
+      (state, action: PayloadAction<IdeleteChatRoomLocalData>) => {
         delete state[action?.payload?.chatRoomId];
       },
     );
