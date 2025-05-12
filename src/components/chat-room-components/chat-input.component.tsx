@@ -1,21 +1,22 @@
 import React, {useContext} from 'react';
 import {SafeAreaView} from 'react-native';
-import {EnvelopeIcon} from '../../../../assets/icons/evenlopeIcon';
-import {Input, KeyboardTypes} from '../../../../components/input';
-import {strings} from '../../chat.strings';
-import {ChatSocketProviderContext} from '../../../../services/context/chat/chat-context-provider';
+import {EnvelopeIcon} from '../../assets/icons/evenlopeIcon';
+import {ChatSocketProviderContext} from '../../services/context/chat/chat-context-provider';
+import {Input, KeyboardTypes} from '../input';
 
 interface IChatInput {
   chatId: string;
+  inputPlaceholder?: string;
 }
 
-const ChatInput: React.FC<IChatInput> = ({chatId}) => {
+const ChatInput: React.FC<IChatInput> = ({chatId, inputPlaceholder}) => {
   const {handleSendChatRoomMessage} = useContext(ChatSocketProviderContext);
 
   const [currentMessage, setCurrentMessage] = React.useState<string>('');
 
   const onSendMessage = () => {
     if (currentMessage.trim() === '') return;
+
     handleSendChatRoomMessage({message: currentMessage, chatRoomId: chatId});
     setCurrentMessage('');
   };
@@ -27,7 +28,7 @@ const ChatInput: React.FC<IChatInput> = ({chatId}) => {
         onBlur={() => null}
         onChange={setCurrentMessage}
         name="room-message"
-        placeholder={strings.enterYourMessage}
+        placeholder={inputPlaceholder}
         keyboardType={KeyboardTypes.default}
         className="h-fit pl-3 pr-10 py-2 bg-white rounded-lg shadow-sm w-full"
         inputClassName="h-fit max-h-60 pb-2 pr-4"

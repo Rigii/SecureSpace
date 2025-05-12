@@ -12,15 +12,15 @@ import {PrivateRoute} from './privateRoute';
 import {RootStackParamList, manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
 import {OnboardingFlow} from '../../screens/onboarding/onboarding';
-import TopSidebar from '../../components/screen-wrapper/top-sidebar';
-import ChatListScreen from '../../screens/chat/chat-entry/chat-entry-screen';
 import {Text} from 'react-native-svg';
 import {View} from 'react-native';
 import {ThemedButton} from '../../components/themed-button';
-import {useState} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {CreateChatRoom} from '../../components/create-update-chat/create-update-chat';
 import ChatRoomScreen from '../../screens/chat/chat-room-screen/room-screen';
+import {CombinedBarHome} from '../../screens/home/home';
+import {CombinedChatListScreen} from '../../screens/chat/chat-entry/chat-entry-screen';
+import {useReduxSelector} from '../store/store';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -44,33 +44,35 @@ export const Home = () => {
 };
 
 export const AppNavigationContainer = () => {
-  const isAuthenticated = false;
+  const {token} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
   const navigationRef = useNavigationContainerRef();
-  const [currentRoute, setCurrentRoute] = useState<string | null>(null);
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer
-        ref={navigationRef}
-        onStateChange={() =>
-          setCurrentRoute(navigationRef.getCurrentRoute()?.name || null)
-        }>
-        <TopSidebar currentRoute={currentRoute} />
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name={manualEncryptionScreenRoutes.root}>
+          {/* <Stack.Screen name={manualEncryptionScreenRoutes.root}>
             {props => (
               <PrivateRoute
                 {...props}
                 isAuthenticated={isAuthenticated}
                 redirectAuthRoute={manualEncryptionScreenRoutes.registerLogin}
-                component={Home}
+                component={CombinedBarHome}
+              />
+            )}
+          </Stack.Screen> */}
+          <Stack.Screen name={manualEncryptionScreenRoutes.home}>
+            {props => (
+              <PrivateRoute
+                {...props}
+                isAuthenticated={!!token}
+                redirectAuthRoute={manualEncryptionScreenRoutes.registerLogin}
+                component={CombinedBarHome}
               />
             )}
           </Stack.Screen>
-          <Stack.Screen
-            name={manualEncryptionScreenRoutes.home}
-            component={Home}
-          />
           <Stack.Screen
             name={manualEncryptionScreenRoutes.registerLogin}
             component={LoginSignUpUser}
@@ -85,7 +87,7 @@ export const AppNavigationContainer = () => {
           />
           <Stack.Screen
             name={manualEncryptionScreenRoutes.chatList}
-            component={ChatListScreen}
+            component={CombinedChatListScreen}
           />
           <Stack.Screen name={manualEncryptionScreenRoutes.chatRoom}>
             {props => <ChatRoomScreen chatId={props.route.params.chatId} />}

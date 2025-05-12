@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {strings} from '../../../constants/strings/onboarding.strings';
 import {Keyboard, FlatList, TouchableWithoutFeedback, View} from 'react-native';
-import {Title1} from '../../../components/title';
+import {Title1} from '../../../components/text-titles/title';
 import {Input, KeyboardTypes} from '../../../components/input';
 import {ThemedButton} from '../../../components/themed-button';
 import {IUserData} from '../onboarding.types';

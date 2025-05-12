@@ -4,7 +4,7 @@ import Svg, {Path, Circle, SvgProps} from 'react-native-svg';
 export const EnvelopeIcon = (props?: SvgProps): ReactElement => (
   <Svg width="48" height="48" viewBox="0 0 48 48" fill="none" {...props}>
     {/* Background Circle */}
-    <Circle cx="24" cy="24" r="24" fill="#00C6FF" />
+    <Circle cx="24" cy="24" r="24" fill="#CE8946" />
 
     {/* Envelope Outer Rectangle */}
     <Path

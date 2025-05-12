@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {ThemedButton} from '../../components/themed-button';
-import {Title1, Title3} from '../../components/title';
+import {Title1, Title3} from '../../components/text-titles/title';
 import {strings} from './chat.strings';
 import {useReduxSelector} from '../../app/store/store';
 import {createChatUserApi} from '../../services/api/chat/chat-api';

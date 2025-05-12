@@ -1,7 +1,7 @@
 import React from 'react';
 import {strings} from '../../../constants/strings/onboarding.strings';
 import {Keyboard, TouchableWithoutFeedback, View} from 'react-native';
-import {Title1, Title3} from '../../../components/title';
+import {Title1, Title3} from '../../../components/text-titles/title';
 import {Input, KeyboardTypes} from '../../../components/input';
 import {FormikErrors, FormikTouched} from 'formik';
 import {ThemedButton} from '../../../components/themed-button';

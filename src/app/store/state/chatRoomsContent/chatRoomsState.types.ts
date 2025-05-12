@@ -5,7 +5,7 @@ export interface IChatRooms {
   [key: string]: IChatRoom;
 }
 
-export interface IDeleteChatRoom {
+export interface IdeleteChatRoomLocalData {
   chatRoomId: string;
 }
 

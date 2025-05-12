@@ -7,4 +7,6 @@ export const strings = {
   roomInvitationDeclinedDone: 'Chat room invitation declined successfully:',
   errorRoomInvitationDeclined: 'Error. Chat room invitation is not declined:',
   sendingChatRoomMessageError: 'Error sending chat room message:',
+  roomDeleted: 'Chat room deleted successfully:',
+  errorDeletingChatRoom: 'Error deleting chat room:',
 };

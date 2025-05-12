@@ -1,7 +1,7 @@
 import React from 'react';
 import {strings} from '../../../constants/strings/onboarding.strings';
 import {View} from 'react-native';
-import {Title1, Title2} from '../../../components/title';
+import {Title1, Title2} from '../../../components/text-titles/title';
 import {ThemedButton} from '../../../components/themed-button';
 
 export const WelcomeAboard = ({

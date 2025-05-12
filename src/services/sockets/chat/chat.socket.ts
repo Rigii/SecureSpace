@@ -1,6 +1,6 @@
 import {BASE_URL_LOCAL} from '@env';
 import {io, Socket} from 'socket.io-client';
-import {IChatMessage, ICreateChatRoom} from './chat-api.types';
+import {IChatMessage, ICreateChatRoom, IDeleteChatRoom} from './chat-api.types';
 import {strings} from './chat-sockets.strings';
 
 const CHAT_ROOM_URL = '/chat_room';
@@ -11,7 +11,7 @@ export const socketMessageNamespaces = {
   INVITE_CHAT_PARTICIPANTS: 'invite_chat_participants',
   ADD_CHAT_PARTICIPANTS: 'add_chat_participants',
   FIND_ALL_USER_CHAT_ROOMS: 'find_all_user_chats',
-  REMOVE_CHAT: 'remove_chat',
+  DELETE_CHAT_ROOM: 'delete_chat_room',
   JOIN_CHAT: 'join_chat',
   DECLINE_CHAT: 'decline_chat',
   LEAVE_CHAT: 'leave_chat',
@@ -25,6 +25,8 @@ export const chatEvents = {
   CREATE_CHAT_ERROR: 'create_chat_error',
   JOIN_CHAT_SUCCESS: 'join_chat_success',
   JOIN_CHAT_ERROR: 'join_chat_error',
+  DELETE_CHAT_ROOM_SUCCESS: 'delete_chat_room_success',
+  DELETE_CHAT_ROOM_ERROR: 'delete_chat_room_error',
   DECLINE_CHAT_INVITATION_SUCCESS: 'decline_chat_invitation_success',
   DECLINE_CHAT_INVITATION_ERROR: 'decline_chat_invitation_error',
   ROOM_MESSAGE_SENT: 'room_message_sent',
@@ -63,6 +65,25 @@ export const createChatRoomSocket = (
   });
 };
 
+export const deleteChatRoomSocket = (
+  socket: Socket,
+  chatData: IDeleteChatRoom,
+) => {
+  if (!socket) {
+    console.error(strings.wSConnectionNotEstablished);
+    return;
+  }
+  socket.emit(socketMessageNamespaces.DELETE_CHAT_ROOM, chatData);
+
+  socket.on(chatEvents.DELETE_CHAT_ROOM_SUCCESS, data => {
+    console.log(strings.roomDeleted, data);
+  });
+
+  socket.on(chatEvents.DELETE_CHAT_ROOM_ERROR, error => {
+    console.error(strings.errorDeletingChatRoom, error);
+  });
+};
+
 export const joinChatRoomSocket = (
   socket: Socket | null,
   chatData: {userChatIds: string[]; interlocutorId: string},
@@ -83,6 +104,18 @@ export const joinChatRoomSocket = (
     console.error(strings.joiningRoomError, error);
     throw new Error(error);
   });
+};
+
+export const leaveChatRoomSocket = (
+  socket: Socket | null,
+  chatData: {chatId: string; interlocutorId: string},
+) => {
+  if (!socket) {
+    console.error(strings.wSConnectionNotEstablished);
+    return;
+  }
+
+  socket.emit(socketMessageNamespaces.LEAVE_CHAT, chatData);
 };
 
 export const declineChatRoomInvitationSocket = (

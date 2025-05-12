@@ -1,5 +1,5 @@
 import React from 'react';
-import {Title1, Title2} from '../../title';
+import {Title1, Title2} from '../../text-titles/title';
 import {View} from 'react-native';
 import {Input, KeyboardTypes} from '../../input';
 import {ThemedButton} from '../../themed-button';

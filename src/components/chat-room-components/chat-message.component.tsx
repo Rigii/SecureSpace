@@ -26,7 +26,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       <View
         className={`max-w-[80%] px-4 py-2 rounded-2xl shadow-sm ${
           isOwnMessage
-            ? 'bg-blue-500 rounded-tr-none'
+            ? 'bg-yellow-600 opacity-60 rounded-tr-none'
             : 'bg-gray-200 rounded-tl-none'
         }`}>
         <Text

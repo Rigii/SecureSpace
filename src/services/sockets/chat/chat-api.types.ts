@@ -26,3 +26,8 @@ export interface IChatMessage {
   senderId: string;
   senderName: string;
 }
+
+export interface IDeleteChatRoom {
+  roomId: string;
+  interlocutorId: string;
+}

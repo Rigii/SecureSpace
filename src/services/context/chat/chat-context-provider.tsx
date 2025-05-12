@@ -4,7 +4,9 @@ import {
   connectUserChatNotificationsSocket,
   createChatRoomSocket,
   declineChatRoomInvitationSocket,
+  deleteChatRoomSocket,
   joinChatRoomSocket,
+  leaveChatRoomSocket,
   sendChatRoomMessage,
 } from '../../sockets/chat/chat.socket';
 import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
@@ -19,7 +21,7 @@ import {getChatRoomsData} from '../../api/chat/chat-api';
 import {useDispatch} from 'react-redux';
 import {
   addNewChatRoom,
-  deleteChatRoom,
+  deleteChatRoomLocalData,
   updateChatRoom,
 } from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {IFetchedChatRoom} from '../../../screens/login-signup/login-sign-up.types';
@@ -38,6 +40,8 @@ export const ChatSocketProviderContext = createContext<{
     message: string;
     chatRoomId: string;
   }) => void;
+  leaveChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
+  deleteChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
 }>({
   socket: null,
   messages: [],
@@ -46,6 +50,8 @@ export const ChatSocketProviderContext = createContext<{
   handleDeclineChatRoomInvitation: () => {},
   handleSendChatRoomMessage: () => {},
   setCurrentActiveChatId: () => {},
+  leaveChatRoom: () => {},
+  deleteChatRoom: () => {},
 });
 
 export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
@@ -147,18 +153,47 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   }, [currentActiveChatId, dispatch, interlocutorId, token]);
 
   const handleCreateChat = (chatData: ICreateChatRoom) => {
-    if (socket) {
-      createChatRoomSocket(socket, chatData);
-
-      /* TODO: Uncomment this when the server is ready to handle chat creation */
-      // dispatch(addNewChatRoom(chatData));
-    } else {
+    if (!socket) {
       console.error(strings.socketIsNotConnected);
+      return;
     }
+    createChatRoomSocket(socket, chatData);
+    /* TODO: Uncomment this when the server is ready to handle chat creation */
+    // dispatch(addNewChatRoom(chatData));
   };
 
-  const deleteRoomLocal = ({chatRoomId}: {chatRoomId: string}) => {
-    dispatch(deleteChatRoom({chatRoomId}));
+  const leaveRoomLocal = ({chatRoomId}: {chatRoomId: string}) => {
+    dispatch(deleteChatRoomLocalData({chatRoomId}));
+  };
+
+  const deleteChatRoom = ({chatRoomId}: {chatRoomId: string}) => {
+    const chatRoom = userChatRooms[chatRoomId];
+    if (!chatRoom) {
+      console.error(strings.chatRoomNotFound);
+      return;
+    }
+    if (!socket) {
+      console.error(strings.socketIsNotConnected);
+      return;
+    }
+
+    deleteChatRoomSocket(socket, {
+      roomId: chatRoomId,
+      interlocutorId,
+    });
+    leaveRoomLocal({chatRoomId});
+  };
+
+  const leaveChatRoom = ({chatRoomId}: {chatRoomId: string}) => {
+    if (!socket) {
+      console.error(strings.socketIsNotConnected);
+      return;
+    }
+
+    const chatData = {chatId: chatRoomId, interlocutorId};
+    leaveChatRoomSocket(socket, chatData);
+    leaveRoomLocal({chatRoomId});
+    setCurrentActiveChatId(null);
   };
 
   const handleJoinChat = ({chatId}: {chatId: string}) => {
@@ -198,6 +233,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       senderId: interlocutorId,
       senderName: email,
     };
+
     sendChatRoomMessage(socket, messageData);
   };
 
@@ -207,7 +243,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       interlocutorId,
     });
 
-    deleteRoomLocal({chatRoomId: chatId});
+    leaveRoomLocal({chatRoomId: chatId});
     ErrorNotificationHandler({
       type: EPopupType.INFO,
       text1: strings.chatInvitationDeclined,
@@ -219,6 +255,8 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       value={{
         socket,
         messages,
+        deleteChatRoom,
+        leaveChatRoom,
         setCurrentActiveChatId,
         handleCreateChat,
         handleJoinChat,
