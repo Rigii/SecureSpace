@@ -7,8 +7,19 @@ import {
   IChatRoomId,
   IInvitations,
 } from '../../../app/store/state/userChatAccount/userChatAccount.types';
+import {
+  RootStackParamList,
+  manualEncryptionScreenRoutes,
+} from '../../../app/navigator/screens';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {ITopBarMenuActions} from '../../../HOC/combined-bar-component/combined-component';
 
-export const ChatEntryScreenState = () => {
+export const ChatEntryScreenState = ({
+  injectActions,
+}: {
+  injectActions?: ((actions: ITopBarMenuActions[]) => void) | undefined;
+}) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
   const {id, token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
@@ -16,6 +27,34 @@ export const ChatEntryScreenState = () => {
   const {chatAccountId, publicChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
+
+  useEffect(() => {
+    const onCreateChatRoom = () => {
+      navigation.navigate(manualEncryptionScreenRoutes.createChatRoom);
+    };
+
+    const menuActions = [
+      {
+        id: 'chatListSearch',
+        label: 'Search',
+        icon: '',
+        action: () => null,
+      },
+      {
+        id: 'chatListCreateRoom',
+        label: 'Create Room',
+        icon: '',
+        action: onCreateChatRoom,
+      },
+      {
+        id: 'chatListSettings',
+        label: 'Account & Settings',
+        icon: '',
+        action: () => null,
+      },
+    ];
+    injectActions?.(menuActions);
+  }, [injectActions, navigation]);
 
   useEffect(() => {
     async function fetchData() {

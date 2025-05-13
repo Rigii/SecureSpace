@@ -21,6 +21,7 @@ import ChatRoomScreen from '../../screens/chat/chat-room-screen/room-screen';
 import {CombinedBarHome} from '../../screens/home/home';
 import {CombinedChatListScreen} from '../../screens/chat/chat-entry/chat-entry-screen';
 import {useReduxSelector} from '../store/store';
+import {UploadKey} from '../../screens/upload-keys/upload-keys';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -47,29 +48,25 @@ export const AppNavigationContainer = () => {
   const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
+  const {devicePrivateKey} = useReduxSelector(
+    state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
+  );
+
+  const initialComponent = devicePrivateKey ? CombinedBarHome : UploadKey;
+
   const navigationRef = useNavigationContainerRef();
 
   return (
     <SafeAreaProvider>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          {/* <Stack.Screen name={manualEncryptionScreenRoutes.root}>
-            {props => (
-              <PrivateRoute
-                {...props}
-                isAuthenticated={isAuthenticated}
-                redirectAuthRoute={manualEncryptionScreenRoutes.registerLogin}
-                component={CombinedBarHome}
-              />
-            )}
-          </Stack.Screen> */}
           <Stack.Screen name={manualEncryptionScreenRoutes.home}>
             {props => (
               <PrivateRoute
                 {...props}
                 isAuthenticated={!!token}
                 redirectAuthRoute={manualEncryptionScreenRoutes.registerLogin}
-                component={CombinedBarHome}
+                component={initialComponent}
               />
             )}
           </Stack.Screen>
