@@ -68,7 +68,7 @@ export const sidebarModalSets = {
     },
     {
       id: 'homeSettings',
-      label: 'Settings',
+      label: 'Account & Settings',
       icon: '',
       action: () => null,
     },
