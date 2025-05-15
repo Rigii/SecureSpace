@@ -1,21 +1,30 @@
 import React from 'react';
+import {useReduxSelector} from '../store/store';
+import {CombinedBarHome} from '../../screens/home/home';
+import {manualEncryptionScreenRoutes} from './screens';
 
 export const PrivateRoute: React.FC<{
-  isAuthenticated: boolean;
   navigation: any;
   redirectAuthRoute: string;
-  component: React.FC;
-}> = ({
-  isAuthenticated,
-  navigation,
-  redirectAuthRoute,
-  component: Component,
-}) => {
+}> = ({navigation, redirectAuthRoute}) => {
+  const {devicePrivateKey} = useReduxSelector(
+    state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
+  );
+  const {token} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
+
+  // const component = devicePrivateKey ? <CombinedBarHome /> : <UploadKey />;
+
   React.useEffect(() => {
-    if (!isAuthenticated) {
+    if (!token) {
       navigation.navigate(redirectAuthRoute);
     }
-  }, [isAuthenticated, navigation, redirectAuthRoute]);
 
-  return isAuthenticated ? <Component /> : null;
+    if (token && !devicePrivateKey) {
+      navigation.navigate(manualEncryptionScreenRoutes.uploadKey);
+    }
+  }, [devicePrivateKey, navigation, redirectAuthRoute, token]);
+
+  return token ? <CombinedBarHome /> : null;
 };

@@ -67,4 +67,3 @@ export const getSecretKeychain = async ({
     throw error;
   }
 };
-//"devicePrivateKey-Valakardinextra@asd.as"

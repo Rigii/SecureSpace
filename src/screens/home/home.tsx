@@ -17,7 +17,6 @@ export const Home: React.FC<{
   injectActions?: (actions: ITopBarMenuActions[]) => void;
 }> = ({injectActions}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
   useEffect(() => {
     const navigateSettings = () => {
       navigation.navigate(manualEncryptionScreenRoutes.accountSettings);

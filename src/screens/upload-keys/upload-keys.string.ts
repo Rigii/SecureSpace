@@ -5,4 +5,5 @@ export const strings = {
   yourKeyPassword: 'Your key password',
   getKey: 'Get key',
   settings: 'Settings',
+  noDeviceKeyData: 'No device key',
 };

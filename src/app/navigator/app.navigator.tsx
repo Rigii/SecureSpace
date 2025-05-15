@@ -13,22 +13,12 @@ import {CreateChatRoom} from '../../components/create-update-chat/create-update-
 import ChatRoomScreen from '../../screens/chat/chat-room-screen/room-screen';
 import {CombinedBarHome} from '../../screens/home/home';
 import {CombinedChatListScreen} from '../../screens/chat/chat-entry/chat-entry-screen';
-import {useReduxSelector} from '../store/store';
-import {UploadKey} from '../../screens/upload-keys/upload-keys';
 import {AccountSetttings} from '../../screens/account-settings/account-settings';
+import {UploadKey} from '../../screens/upload-keys/upload-keys';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigationContainer = () => {
-  const {token} = useReduxSelector(
-    state => state.anonymousUserReducer.userAccountData,
-  );
-  const {devicePrivateKey} = useReduxSelector(
-    state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
-  );
-
-  const initialComponent = devicePrivateKey ? CombinedBarHome : UploadKey;
-
   const navigationRef = useNavigationContainerRef();
 
   return (
@@ -39,15 +29,17 @@ export const AppNavigationContainer = () => {
             {props => (
               <PrivateRoute
                 {...props}
-                isAuthenticated={!!token}
                 redirectAuthRoute={manualEncryptionScreenRoutes.registerLogin}
-                component={initialComponent}
               />
             )}
           </Stack.Screen>
           <Stack.Screen
             name={manualEncryptionScreenRoutes.registerLogin}
             component={LoginSignUpUser}
+          />
+          <Stack.Screen
+            name={manualEncryptionScreenRoutes.root}
+            component={CombinedBarHome}
           />
           <Stack.Screen
             name={manualEncryptionScreenRoutes.onboarding}
@@ -64,6 +56,10 @@ export const AppNavigationContainer = () => {
           <Stack.Screen
             name={manualEncryptionScreenRoutes.accountSettings}
             component={AccountSetttings}
+          />
+          <Stack.Screen
+            name={manualEncryptionScreenRoutes.uploadKey}
+            component={UploadKey}
           />
           <Stack.Screen name={manualEncryptionScreenRoutes.chatRoom}>
             {props => <ChatRoomScreen chatId={props.route.params.chatId} />}

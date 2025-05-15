@@ -18,13 +18,19 @@ import {
   RootStackParamList,
   manualEncryptionScreenRoutes,
 } from '../../app/navigator/screens';
-// import {useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
+import {addPgpDeviceKeyData} from '../../app/store/state/userState/userAction';
+import {IDeviceKeyData} from '../../app/store/state/userState/userState.types';
 
 export const UploadKey = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
 
   const {email} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
+  );
+  const {pgpDeviceKeyData} = useReduxSelector(
+    state => state.anonymousUserReducer.securityData,
   );
   const [keyPassword, setKeyPassword] = React.useState<string>('');
   const [passwordError, setError] = React.useState<string>('');
@@ -35,7 +41,6 @@ export const UploadKey = () => {
   const navigateSettings = () =>
     navigation.navigate(manualEncryptionScreenRoutes.accountSettings);
 
-  // const dispatch = useDispatch();
   const onSubmit = async () => {
     try {
       const keysData = await getSecretKeychain({
@@ -43,11 +48,22 @@ export const UploadKey = () => {
         encryptKeyDataPassword: keyPassword,
         email,
       });
-      console.log(22222222, keysData);
-      //   const {} = keysData;
-      //   dispatch()
+
+      if (keysData === null) {
+        throw new Error(strings.noDeviceKeyData);
+      }
+      const newPgpDeviceKeyData = {
+        ...pgpDeviceKeyData,
+        devicePrivateKey: keysData,
+        approved: true,
+      } as IDeviceKeyData;
+
+      dispatch(addPgpDeviceKeyData({pgpDeviceKeyData: newPgpDeviceKeyData}));
+
+      navigation.navigate(manualEncryptionScreenRoutes.root);
       setError('');
     } catch (error) {
+      console.error(error);
       const currentError = error as Error;
       setError(currentError.message);
       ErrorNotificationHandler({

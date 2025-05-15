@@ -15,6 +15,7 @@ import {clearEncryptionData} from '../../../app/store/state/manualEncryption/upd
 import {resetForm} from '../../../app/store/state/onboardingState/onboardingSlice';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ESecureStoredKeys} from '../../../services/async-secure-storage/secure-storage-services';
 
 const ComponentsTopBar = ({
   settingsData,
@@ -38,7 +39,7 @@ const ComponentsTopBar = ({
     await dispatch(clearEncryptionData());
     await dispatch(resetForm());
 
-    await EncryptedStorage.clear();
+    await EncryptedStorage.removeItem(ESecureStoredKeys.anonymousUser); // do not use EncryptedStorage.clear(); while in IOS simulator it's clear also keychains
     await AsyncStorage.clear();
   };
 

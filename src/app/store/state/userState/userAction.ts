@@ -11,4 +11,8 @@ export const setSecurityData = createAction<Partial<ISecurityData> | null>(
 
 export const clearUser = createAction('anonymousUser/clearUser');
 
+export const addPgpDeviceKeyData = createAction<Partial<ISecurityData> | null>(
+  'anonymousUser/addPgpDeviceKeyData',
+);
+
 export const logOut = createAction('anonymousUser/logOut');
