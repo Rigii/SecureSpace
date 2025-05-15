@@ -8,6 +8,7 @@ import {
   updateUserChatsAccountSlice,
   addInvitation,
   createUserChatsAccount,
+  clearChatAccountData,
 } from './userChatAccountAction';
 
 const initialState: IUserChatAccount = {
@@ -48,6 +49,10 @@ export const userChatAccountReducer = createSlice({
         }
       },
     );
+
+    builder.addCase(clearChatAccountData, () => {
+      return initialState;
+    });
 
     // builder.addCase(
     //   addActiveChatRoom,

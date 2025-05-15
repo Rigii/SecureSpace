@@ -7,3 +7,7 @@ export const updateManualEncryptionDataAction = createAction(
     payload: data,
   }),
 );
+
+export const clearEncryptionData = createAction(
+  'anonymousUser/clearEncryptionData',
+);

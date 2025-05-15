@@ -1,6 +1,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {ISecurityData, IUserAccount, IUserState} from './userState.types';
-import {setUser, setSecurityData, logOut} from './userAction';
+import {setUser, setSecurityData, logOut, clearUser} from './userAction';
 
 const initialState: IUserState = {
   userAccountData: {
@@ -47,6 +47,10 @@ export const anonymousUserSlice = createSlice({
         state.userAccountData = newUser;
       },
     );
+
+    builder.addCase(clearUser, () => {
+      return initialState;
+    });
 
     builder.addCase(
       setSecurityData,

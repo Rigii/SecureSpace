@@ -21,3 +21,7 @@ export const addInvitation = createAction<IInvitations>(
 export const addActiveChatRoom = createAction<IChatRoomId>(
   'anonymousUser/addActiveChatRoom',
 );
+
+export const clearChatAccountData = createAction(
+  'anonymousUser/clearChatAccountData',
+);

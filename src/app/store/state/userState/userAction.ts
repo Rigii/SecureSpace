@@ -9,4 +9,6 @@ export const setSecurityData = createAction<Partial<ISecurityData> | null>(
   'anonymousUser/setSecurityData',
 );
 
+export const clearUser = createAction('anonymousUser/clearUser');
+
 export const logOut = createAction('anonymousUser/logOut');

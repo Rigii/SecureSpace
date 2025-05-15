@@ -13,9 +13,16 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../services/ErrorNotificationHandler';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  RootStackParamList,
+  manualEncryptionScreenRoutes,
+} from '../../app/navigator/screens';
 // import {useDispatch} from 'react-redux';
 
 export const UploadKey = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const {email} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
@@ -25,7 +32,10 @@ export const UploadKey = () => {
     Keyboard.dismiss();
   };
 
-  //   const dispatch = useDispatch();
+  const navigateSettings = () =>
+    navigation.navigate(manualEncryptionScreenRoutes.accountSettings);
+
+  // const dispatch = useDispatch();
   const onSubmit = async () => {
     try {
       const keysData = await getSecretKeychain({
@@ -71,6 +81,13 @@ export const UploadKey = () => {
           onPress={onSubmit}
           classCustomBody="w-80"
         />
+        <View className="mt-3">
+          <ThemedButton
+            text={strings.settings}
+            theme="lightBordered"
+            onPress={navigateSettings}
+          />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );

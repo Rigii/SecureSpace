@@ -1,5 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {fetchApplicationRestrictions} from './restrictionAction';
+import {
+  clearRestrictions,
+  fetchApplicationRestrictions,
+} from './restrictionAction';
 import {IAEncryptionLimits} from './application-restrictions.types';
 
 export interface IRestrictionsState {
@@ -37,6 +40,9 @@ export const applicationRestrictionsSlice = createSlice({
           return;
         }
         state.restrictionsError = action.payload as string;
+      })
+      .addCase(clearRestrictions, () => {
+        return initialState;
       });
   },
 });

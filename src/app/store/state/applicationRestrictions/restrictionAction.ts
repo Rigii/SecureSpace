@@ -1,4 +1,4 @@
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import {createAction, createAsyncThunk} from '@reduxjs/toolkit';
 import {strings} from '../../../../constants/strings/encryption-decryption.strings';
 import {locallyManualEncryptionDecryptionRestrictions} from '../../../../services/async-secure-storage/async-storage-service';
 // import {GetApplicationRestrictions} from '../../../../utilities/functionsAdapter/functionsAdapter';
@@ -15,6 +15,10 @@ const GeMockedApplicationRestrictions = () => ({
     messageSymbolLimitPremium: 3,
   },
 });
+
+export const clearRestrictions = createAction(
+  'anonymousUser/clearRestrictions',
+);
 
 export const fetchApplicationRestrictions = createAsyncThunk(
   'appRestrictions/fetchRestrictions',

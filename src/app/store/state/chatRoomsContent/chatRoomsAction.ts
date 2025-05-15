@@ -29,3 +29,7 @@ export const addMessageToChatRoom = createAction<IChatMessage>(
 export const addMessagesToChatRoom = createAction<IChatMessage[]>(
   'anonymousUser/addMessagesToChatRoom',
 );
+
+export const clearChatRoomData = createAction(
+  'anonymousUser/clearChatRoomData',
+);

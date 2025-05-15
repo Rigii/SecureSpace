@@ -1,5 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {updateManualEncryptionDataAction} from './updateManualEncryptionAction';
+import {
+  clearEncryptionData,
+  updateManualEncryptionDataAction,
+} from './updateManualEncryptionAction';
 import {IManualEncryptionState} from './types';
 import {EExpiry} from '../../../types/encrypt.types';
 
@@ -24,6 +27,9 @@ export const manualEncryptionDataSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(updateManualEncryptionDataAction, (state, action) => {
       return {...state, ...action.payload};
+    });
+    builder.addCase(clearEncryptionData, () => {
+      return initialState;
     });
   },
 });

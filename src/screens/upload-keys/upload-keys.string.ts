@@ -4,4 +4,5 @@ export const strings = {
     'To access your secure data please upload private keys',
   yourKeyPassword: 'Your key password',
   getKey: 'Get key',
+  settings: 'Settings',
 };
