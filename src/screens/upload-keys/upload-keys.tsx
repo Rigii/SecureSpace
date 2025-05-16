@@ -13,17 +13,28 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../services/ErrorNotificationHandler';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {
   RootStackParamList,
   manualEncryptionScreenRoutes,
 } from '../../app/navigator/screens';
 import {useDispatch} from 'react-redux';
+import OpenPGP from 'react-native-fast-openpgp';
+
 import {addPgpDeviceKeyData} from '../../app/store/state/userState/userAction';
 import {IDeviceKeyData} from '../../app/store/state/userState/userState.types';
 
 export const UploadKey = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'uploadKey'>>();
+
+  const {fetchedAllUserDevicePublicKeys} = route.params;
+
   const dispatch = useDispatch();
 
   const {email} = useReduxSelector(
@@ -41,6 +52,19 @@ export const UploadKey = () => {
   const navigateSettings = () =>
     navigation.navigate(manualEncryptionScreenRoutes.accountSettings);
 
+  const checkPrivatePublickKeysCompatabillity = async ({
+    publicKey,
+    privateKey,
+  }: {
+    publicKey: string;
+    privateKey: string;
+  }) => {
+    const publicKeyMetadata = await OpenPGP.getPublicKeyMetadata(publicKey);
+    const privateKeyMetadata = await OpenPGP.getPrivateKeyMetadata(privateKey);
+
+    return publicKeyMetadata.keyID === privateKeyMetadata.keyID;
+  };
+
   const onSubmit = async () => {
     try {
       const keysData = await getSecretKeychain({
@@ -52,13 +76,28 @@ export const UploadKey = () => {
       if (keysData === null) {
         throw new Error(strings.noDeviceKeyData);
       }
+
+      const compatiblePublicKeyData = fetchedAllUserDevicePublicKeys.find(
+        keyData =>
+          checkPrivatePublickKeysCompatabillity({
+            privateKey: keysData,
+            publicKey: keyData.public_key,
+          }),
+      );
+      if (!compatiblePublicKeyData) {
+        return;
+      }
+
       const newPgpDeviceKeyData = {
         ...pgpDeviceKeyData,
         devicePrivateKey: keysData,
+        keyUUID: compatiblePublicKeyData.id,
+        date: compatiblePublicKeyData.created,
+        email: email,
         approved: true,
-      } as IDeviceKeyData;
+      } as unknown as IDeviceKeyData;
 
-      dispatch(addPgpDeviceKeyData({pgpDeviceKeyData: newPgpDeviceKeyData}));
+      dispatch(addPgpDeviceKeyData(newPgpDeviceKeyData));
 
       navigation.navigate(manualEncryptionScreenRoutes.root);
       setError('');

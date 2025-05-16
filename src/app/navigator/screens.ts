@@ -37,7 +37,17 @@ export type RootStackParamList = {
   chatList: undefined;
   chatRoom: {chatId: string; participantId: string};
   accountSettings: undefined;
-  uploadKey: undefined;
+  uploadKey: {
+    fetchedAllUserDevicePublicKeys: {
+      account_id: string;
+      approved: boolean;
+      created: Date;
+      id: string;
+      os: string;
+      public_key: string;
+      updated: Date;
+    }[];
+  };
 };
 
 export type TManualEncryptionScreens =

@@ -1,5 +1,10 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {ISecurityData, IUserAccount, IUserState} from './userState.types';
+import {
+  IDeviceKeyData,
+  ISecurityData,
+  IUserAccount,
+  IUserState,
+} from './userState.types';
 import {
   setUser,
   setSecurityData,
@@ -56,13 +61,10 @@ export const anonymousUserSlice = createSlice({
 
     builder.addCase(
       addPgpDeviceKeyData,
-      (state, action: PayloadAction<Partial<ISecurityData> | null>) => {
+      (state, action: PayloadAction<IDeviceKeyData>) => {
         state.securityData = {
           ...state.securityData,
-          pgpDeviceKeyData: {
-            ...state.securityData.pgpDeviceKeyData,
-            ...action.payload,
-          },
+          pgpDeviceKeyData: action.payload,
         };
       },
     );

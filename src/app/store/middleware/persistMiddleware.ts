@@ -14,7 +14,7 @@ const persistMiddleware = createListenerMiddleware();
 
 const saveAnonymousUser = async (listenerApi: any) => {
   const state = listenerApi.getState() as RootState;
-  console.log(777777, 'SAVE', state.anonymousUserReducer);
+
   try {
     await saveSecureStorageData<IUserState>({
       key: ESecureStoredKeys.anonymousUser,

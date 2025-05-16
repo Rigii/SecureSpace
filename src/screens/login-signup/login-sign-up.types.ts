@@ -233,9 +233,19 @@ export interface IFetchedUserAuthData {
     title: string;
     updated: Date;
     user_chat_account: IFetchedUserChatAccount;
-    data_secrets: any;
+    data_secrets: {securePlaces: any; user_public_keys: IDataSecrets[]};
   };
   token: string;
+}
+
+export interface IDataSecrets {
+  account_id: string;
+  approved: boolean;
+  created: Date;
+  updated: Date;
+  id: string;
+  os: string;
+  public_key: string;
 }
 
 export interface IFetchedInvitations {

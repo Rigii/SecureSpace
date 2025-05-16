@@ -12,10 +12,14 @@ import {setUser} from '../../app/store/state/userState/userAction';
 import {updateUserChatsAccountSlice} from '../../app/store/state/userChatAccount/userChatAccountAction';
 import {addUserChatRooms} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {useReduxSelector} from '../../app/store/store';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
   const [isLoading] = useState(false);
+  const {devicePrivateKey} = useReduxSelector(
+    state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
+  );
   const dispatch = useDispatch();
 
   const onForgotPassword = () => setMode(EAuthMode.resetPassword);
@@ -45,6 +49,15 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       return;
       // Redirect here
     }
+
+    if (!devicePrivateKey) {
+      const fetchedAllUserDevicePublicKeys =
+        user.user_info?.data_secrets.user_public_keys;
+      navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
+        fetchedAllUserDevicePublicKeys,
+      });
+      return;
+    }
     navigation.navigate(manualEncryptionScreenRoutes.home);
   };
 
@@ -63,6 +76,8 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       const user = responce.data.user as IFetchedUserAuthData;
       const userChats = user?.user_info?.user_chat_account;
       const token = responce.data.token;
+      const userSecurityData = user.user_info?.data_secrets;
+
       const userData = {
         id: user.id,
         role: user.role,
@@ -73,22 +88,10 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         portraitUri: user.user_info?.portrait_uri as string,
         title: user.user_info?.title as string,
         phoneNumber: user.user_info?.phone_number as string,
+        securePlaces: userSecurityData.securePlaces,
       };
-      dispatch(setUser(userData));
 
-      const userSecurityData = user.user_info?.data_secrets;
-      console.log(11111, userSecurityData);
-      // dispatch(
-      //   setSecurityData({
-      //     pgpDeviceKeyData: {
-      //       devicePrivateKey: userSecurityData.,
-      //       keyUUID: '',
-      //       date: null,
-      //       email: '',
-      //       approved: false,
-      //     },
-      //   }),
-      // );
+      dispatch(setUser(userData));
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {

@@ -1,7 +1,6 @@
 import React from 'react';
 import {useReduxSelector} from '../store/store';
 import {CombinedBarHome} from '../../screens/home/home';
-import {manualEncryptionScreenRoutes} from './screens';
 
 export const PrivateRoute: React.FC<{
   navigation: any;
@@ -17,10 +16,6 @@ export const PrivateRoute: React.FC<{
   React.useEffect(() => {
     if (!token) {
       navigation.navigate(redirectAuthRoute);
-    }
-
-    if (token && isOnboardingDone && !devicePrivateKey) {
-      navigation.navigate(manualEncryptionScreenRoutes.uploadKey);
     }
   }, [
     devicePrivateKey,
