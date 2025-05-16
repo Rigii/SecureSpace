@@ -233,6 +233,7 @@ export interface IFetchedUserAuthData {
     title: string;
     updated: Date;
     user_chat_account: IFetchedUserChatAccount;
+    data_secrets: any;
   };
   token: string;
 }

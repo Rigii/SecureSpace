@@ -74,8 +74,21 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         title: user.user_info?.title as string,
         phoneNumber: user.user_info?.phone_number as string,
       };
-
       dispatch(setUser(userData));
+
+      const userSecurityData = user.user_info?.data_secrets;
+      console.log(11111, userSecurityData);
+      // dispatch(
+      //   setSecurityData({
+      //     pgpDeviceKeyData: {
+      //       devicePrivateKey: userSecurityData.,
+      //       keyUUID: '',
+      //       date: null,
+      //       email: '',
+      //       approved: false,
+      //     },
+      //   }),
+      // );
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {

@@ -10,21 +10,25 @@ export const PrivateRoute: React.FC<{
   const {devicePrivateKey} = useReduxSelector(
     state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
   );
-  const {token} = useReduxSelector(
+  const {token, isOnboardingDone} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
-
-  // const component = devicePrivateKey ? <CombinedBarHome /> : <UploadKey />;
 
   React.useEffect(() => {
     if (!token) {
       navigation.navigate(redirectAuthRoute);
     }
 
-    if (token && !devicePrivateKey) {
+    if (token && isOnboardingDone && !devicePrivateKey) {
       navigation.navigate(manualEncryptionScreenRoutes.uploadKey);
     }
-  }, [devicePrivateKey, navigation, redirectAuthRoute, token]);
+  }, [
+    devicePrivateKey,
+    isOnboardingDone,
+    navigation,
+    redirectAuthRoute,
+    token,
+  ]);
 
   return token ? <CombinedBarHome /> : null;
 };
