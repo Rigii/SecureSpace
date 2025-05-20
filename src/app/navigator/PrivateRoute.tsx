@@ -1,21 +1,29 @@
 import React from 'react';
+import {useReduxSelector} from '../store/store';
+import {CombinedBarHome} from '../../screens/home/home';
 
 export const PrivateRoute: React.FC<{
-  isAuthenticated: boolean;
   navigation: any;
   redirectAuthRoute: string;
-  component: React.FC;
-}> = ({
-  isAuthenticated,
-  navigation,
-  redirectAuthRoute,
-  component: Component,
-}) => {
+}> = ({navigation, redirectAuthRoute}) => {
+  const {devicePrivateKey} = useReduxSelector(
+    state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
+  );
+  const {token, isOnboardingDone} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
+
   React.useEffect(() => {
-    if (!isAuthenticated) {
+    if (!token) {
       navigation.navigate(redirectAuthRoute);
     }
-  }, [isAuthenticated, navigation, redirectAuthRoute]);
+  }, [
+    devicePrivateKey,
+    isOnboardingDone,
+    navigation,
+    redirectAuthRoute,
+    token,
+  ]);
 
-  return isAuthenticated ? <Component /> : null;
+  return token ? <CombinedBarHome /> : null;
 };

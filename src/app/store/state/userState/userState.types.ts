@@ -28,13 +28,7 @@ export interface ISecurityData {
         };
         securePlaceRadius: string;
       }[];
-  pgpDeviceKeyData: {
-    devicePrivateKey: string;
-    keyUUID: string;
-    date: Timestamp | null;
-    email: string;
-    approved: boolean;
-  };
+  pgpDeviceKeyData: IDeviceKeyData;
   deviceIdentifyer: {
     os: string;
     date: Timestamp | null;
@@ -44,4 +38,12 @@ export interface ISecurityData {
 export interface IUserState {
   userAccountData: IUserAccount;
   securityData: ISecurityData;
+}
+
+export interface IDeviceKeyData {
+  devicePrivateKey: string;
+  keyUUID: string;
+  date: Timestamp | null;
+  email: string;
+  approved: boolean;
 }

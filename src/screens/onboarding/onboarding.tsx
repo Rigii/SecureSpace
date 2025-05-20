@@ -31,6 +31,10 @@ import {DownloadKey} from './onboarding-cases/download-key';
 import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
 import {updateFormField} from '../../app/store/state/onboardingState/onboardingSlice';
 import {FormikActions} from 'formik';
+import {
+  EKeychainSectets,
+  storeSecretKeychain,
+} from '../../services/secrets-keychains/store-secret-keychain';
 
 export const OnboardingFlow = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -57,7 +61,7 @@ export const OnboardingFlow = () => {
       email,
       uuid: keyUUID,
       privateKey: devicePrivateKey,
-      sertificateDataPassword: password,
+      encryptKeyDataPassword: password,
     });
   };
 
@@ -97,6 +101,15 @@ export const OnboardingFlow = () => {
       if (!response.data?.newPublicKeysData?.id) {
         throw new Error('PGP Key id is not awailable');
       }
+
+      /* Storing Master Private Key in the Keychain */
+      await storeSecretKeychain({
+        email: userAccountData.email,
+        password: values.keyPassword,
+        publicKeyDbUuid: response.data?.newPublicKeysData?.id,
+        devicePrivateKey: userKeys.privateKey,
+        type: EKeychainSectets.devicePrivateKey,
+      });
 
       if (values.saveKeyOnDevice) {
         await saveKeyOnDevice({

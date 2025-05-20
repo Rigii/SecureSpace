@@ -21,18 +21,17 @@ export const combineWithBarHOC = (
   options?: WithTopBarOptions,
 ) => {
   const EnhancedComponent: React.FC<any> = props => {
+    const [actions, setActions] = React.useState(options?.actions || []);
+
     const route = useRoute();
     const currentScreen = route.name as TManualEncryptionScreens;
 
     return (
       <>
         <SafeAreaView className="bg-gray-900 overflow-auto">
-          <TopBar
-            currentScreen={currentScreen}
-            menuActions={options?.actions}
-          />
+          <TopBar currentScreen={currentScreen} menuActions={actions} />
         </SafeAreaView>
-        <WrappedComponent {...props} />
+        <WrappedComponent {...props} injectActions={setActions} />
       </>
     );
   };

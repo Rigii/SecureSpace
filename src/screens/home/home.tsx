@@ -6,42 +6,57 @@ import {
 } from '../../app/navigator/screens';
 import {View} from 'react-native';
 import {ThemedButton} from '../../components/themed-button';
-import {combineWithBarHOC} from '../../HOC/combined-component/combined-component';
+import {
+  ITopBarMenuActions,
+  combineWithBarHOC,
+} from '../../HOC/combined-bar-component/combined-component';
+import {useEffect} from 'react';
+import {strings} from './home.strings';
 
-const actions = [
-  {
-    id: 'homeSearch',
-    label: 'Search',
-    icon: '',
-    action: () => console.log('Search'),
-  },
-  {
-    id: 'homeSettings',
-    label: 'Settings',
-    icon: '',
-    action: () => console.log('Settings'),
-  },
-  {
-    id: 'homeStorage',
-    label: 'Storage',
-    icon: '',
-    action: () => console.log('Storage'),
-  },
-  {
-    id: 'homeCreateDocument',
-    label: 'Create Document',
-    icon: '',
-    action: () => console.log('Create Document'),
-  },
-];
-
-export const Home = () => {
+export const Home: React.FC<{
+  injectActions?: (actions: ITopBarMenuActions[]) => void;
+}> = ({injectActions}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    const navigateSettings = () => {
+      navigation.navigate(manualEncryptionScreenRoutes.accountSettings);
+    };
+
+    const dropdownActions = [
+      {
+        id: 'homeSearch',
+        label: strings.search,
+        icon: '',
+        action: () => console.log(strings.search),
+      },
+      {
+        id: 'homeSettings',
+        label: strings.accountSettings,
+        icon: '',
+        action: navigateSettings,
+      },
+      {
+        id: 'homeStorage',
+        label: strings.storage,
+        icon: '',
+        action: () => console.log(strings.storage),
+      },
+      {
+        id: 'homeCreateDocument',
+        label: strings.createDocument,
+        icon: '',
+        action: () => console.log(strings.createDocument),
+      },
+    ];
+
+    injectActions?.(dropdownActions);
+  }, [injectActions, navigation]);
 
   return (
     <View>
       <ThemedButton
-        text={'Chat List'}
+        text={strings.chatList}
         onPress={() =>
           navigation.navigate(manualEncryptionScreenRoutes.chatList)
         }
@@ -51,4 +66,4 @@ export const Home = () => {
   );
 };
 
-export const CombinedBarHome = combineWithBarHOC(Home, {actions});
+export const CombinedBarHome = combineWithBarHOC(Home);

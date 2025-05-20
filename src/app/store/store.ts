@@ -8,9 +8,6 @@ import userChatAccountReducer from './state/userChatAccount/userChatAccountSlice
 import restrictionsReducer, {
   IRestrictionsState,
 } from './state/applicationRestrictions/restrictionsSlice';
-import paymentSettingsReducer, {
-  IPaymentSettings,
-} from './state/paymentSettings/paymentSettingsSlice';
 import manualEncryptionDataReducer from './state/manualEncryption/manualEncryptionSlice';
 import {IManualEncryptionState} from './state/manualEncryption/types';
 import {TypedUseSelectorHook, useSelector} from 'react-redux';
@@ -50,7 +47,6 @@ const rootReducer = combineReducers({
     anonymousUserReducer,
   ),
   restrictionsReducer,
-  paymentSettingsReducer,
   manualEncryptionDataReducer,
   onboardingFormReducer,
 });
@@ -77,7 +73,6 @@ export interface IState {
   userChatAccountReducer: IUserChatAccount;
   anonymousUserReducer: IUserState;
   restrictionsReducer: IRestrictionsState;
-  paymentSettingsReducer: IPaymentSettings;
   manualEncryptionDataReducer: IManualEncryptionState;
   onboardingFormReducer: IOnboardingFormValues;
 }

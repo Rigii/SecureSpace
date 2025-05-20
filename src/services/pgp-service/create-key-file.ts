@@ -1,32 +1,23 @@
-import OpenPGP from 'react-native-fast-openpgp';
 import RNFS from 'react-native-fs';
+import {encryptPrivateKeyBlock} from './encrypt-pkey-block';
 
 export const generateDeviceDataKeyFile = async ({
   email,
   uuid,
   privateKey,
-  sertificateDataPassword,
+  encryptKeyDataPassword,
 }: {
   email: string;
   uuid: string;
   privateKey: string;
-  sertificateDataPassword: string;
+  encryptKeyDataPassword: string;
 }) => {
-  const certificate = `
-  -----BEGIN PGP PRIVATE KEY BLOCK-----
-  Version: OpenPGP.js v5.0.0
-
-  Comment: Email=${email}
-  Comment: UUID=${uuid}
-
-  ${privateKey}
-  -----END PGP PRIVATE KEY BLOCK-----
-  `;
-
-  const encryptedData = await OpenPGP.encryptSymmetric(
-    certificate,
-    sertificateDataPassword,
-  );
+  const encryptedData = await encryptPrivateKeyBlock({
+    email,
+    uuid,
+    privateKey,
+    encryptKeyDataPassword,
+  });
 
   const path = `${RNFS.DocumentDirectoryPath}/secure_device_data_key.pgp`;
 

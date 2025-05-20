@@ -45,3 +45,9 @@ export interface IDataSecretsAPI {
 }
 
 export type TOnboardingUserAPI = IUserOnboardingAPI & IDataSecretsAPI;
+
+export interface IDeleeteUserAccountAPI {
+  accountId: string;
+  interlocutorId: string;
+  email: string;
+}

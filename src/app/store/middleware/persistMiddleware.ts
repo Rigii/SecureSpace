@@ -1,6 +1,9 @@
 import {createListenerMiddleware} from '@reduxjs/toolkit';
 import {RootState} from '../store';
-import {setSecurityData} from '../state/userState/userAction';
+import {
+  addPgpDeviceKeyData,
+  setSecurityData,
+} from '../state/userState/userAction';
 import {
   ESecureStoredKeys,
   saveSecureStorageData,
@@ -9,21 +12,27 @@ import {IUserState} from '../state/userState/userState.types';
 
 const persistMiddleware = createListenerMiddleware();
 
+const saveAnonymousUser = async (listenerApi: any) => {
+  const state = listenerApi.getState() as RootState;
+
+  try {
+    await saveSecureStorageData<IUserState>({
+      key: ESecureStoredKeys.anonymousUser,
+      data: state.anonymousUserReducer,
+    });
+  } catch (error) {
+    console.error('Error saving anonymous user to secure storage:', error);
+  }
+};
+
 persistMiddleware.startListening({
   actionCreator: setSecurityData,
-  effect: async (action, listenerApi) => {
-    const state = listenerApi.getState() as RootState;
-    const anonymousUserData = state.anonymousUserReducer;
+  effect: async (_, api) => saveAnonymousUser(api),
+});
 
-    try {
-      await saveSecureStorageData<IUserState>({
-        key: ESecureStoredKeys.anonymousUser,
-        data: anonymousUserData,
-      });
-    } catch (error) {
-      console.error('Error saving anonymous user to AsyncStorage:', error);
-    }
-  },
+persistMiddleware.startListening({
+  actionCreator: addPgpDeviceKeyData,
+  effect: async (_, api) => saveAnonymousUser(api),
 });
 
 export default persistMiddleware;

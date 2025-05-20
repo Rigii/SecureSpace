@@ -44,7 +44,7 @@ const getButtonStyle = (
       body: `${styles.defaultButtonStyle} ${styles.lightBordered} ${
         disabled && 'border-disabled-gray'
       }`,
-      text: styles.defaultButtonText,
+      text: styles.bronzeText,
     },
   };
 

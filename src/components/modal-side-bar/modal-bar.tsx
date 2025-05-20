@@ -3,7 +3,7 @@ import {View, TouchableOpacity, FlatList} from 'react-native';
 import {SidebarIcon} from '../../assets/icons';
 import {TextNormal} from '../text-titles/text-styled';
 import ModalPopup from '../modal-popup/modal-popup';
-import {ITopBarMenuActions} from '../../HOC/combined-component/combined-component';
+import {ITopBarMenuActions} from '../../HOC/combined-bar-component/combined-component';
 
 export interface ISidebarProps {
   data: ITopBarMenuActions[];

@@ -10,6 +10,7 @@ import {
   addMessagesToChatRoom,
   addNewChatRoom,
   addUserChatRooms,
+  clearChatRoomData,
   deleteChatRoomLocalData,
   updateChatRoom,
 } from './chatRoomsAction';
@@ -79,6 +80,10 @@ export const chatRoomsReducer = createSlice({
         chatRoom.messages = [...chatRoom.messages, action.payload];
       },
     );
+
+    builder.addCase(clearChatRoomData, () => {
+      return initialState;
+    });
   },
 });
 
