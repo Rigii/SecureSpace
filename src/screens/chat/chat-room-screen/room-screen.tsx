@@ -12,7 +12,7 @@ interface IChatRoomScreen {
 }
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
-  useChatRoomSocketState({chatId});
+  const {publicKeys} = useChatRoomSocketState({chatId});
   const {participantId, chatRoomOptions, messages, flatListRef} =
     useChatRoomMessagesState({
       chatId,
@@ -48,7 +48,11 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
           })}
         />
       </KeyboardAvoidingView>
-      <ChatInput chatId={chatId} inputPlaceholder={strings.enterYourMessage} />
+      <ChatInput
+        chatId={chatId}
+        inputPlaceholder={strings.enterYourMessage}
+        publicKeys={publicKeys}
+      />
     </View>
   );
 };

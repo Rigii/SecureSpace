@@ -1,30 +1,57 @@
-# XCODE build issues 
-Current Device MacBook M1
+# Базовый образ с Node.js LTS (Alpine для минимального размера)
 
-## Errors
+FROM node:18-alpine AS builder
 
-### Command PhaseScriptExecution failed with a nonzero exit code
+# Установка зависимых пакетов (включая git для npm-зависимостей)
 
-(xcode m1 Intermediates.noindex/Pods.build/Debug-iphonesimulator/hermes-engine.build/Script-46EB2E00021610.sh: line 9: /Users/user/.nvm/versions/node/v21.6.1/bin/node: No such file or directory)
+RUN apk add --no-cache git
 
-- `npx react-native upgrade` (root folder)
-- del: Pods and build folders, .xcode.env.local, Podfile.lock (`rm -rf Pods, ...`)
-- Install pods with Bundle: `bundle install` `bundle exec pod install`
+# Создание рабочей директории
 
+WORKDIR /usr/src/app
 
-If Above solutions doesen't helped (resolved my issue 16.05.2024, current Node v18.15.0):
+# Копируем только файлы зависимостей для кэширования
 
-- remove ios folder
-- create new react-native project with sane name
-- relocate ios folder from the current project
+COPY package\*.json ./
 
-Current RN instructions:
+# Установка зависимостей (чистка кэша для уменьшения размера)
 
-  Run instructions for Android:
-    • Have an Android emulator running (quickest way to get started), or a device connected.
-    • cd "/Users/jakobs/Documents/Projects/SecureSpace/SecureSpaceApplicaton" && npx react-native run-android
-  
-  Run instructions for iOS:
-    • cd "/Users/jakobs/Documents/Projects/SecureSpace/SecureSpaceApplicaton/ios"
+RUN npm ci --only=production=false && \
+ npm cache clean --force
 
-N.B! Some libs could be needed to be updated or reinstalled. 
+# Копируем все исходные файлы
+
+COPY . .
+
+# Сборка проекта (удаление исходников после сборки)
+
+RUN npm run build && \
+ rm -rf src node_modules && \
+ npm ci --only=production && \
+ npm cache clean --force
+
+# Финальный образ (мульти-стадия сборка для уменьшения размера)
+
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+
+# Копируем только необходимое из builder-стадии
+
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/package.json ./
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Оптимизация для production
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Защита от running as root
+
+USER node
+
+# Открываем порт и запускаем приложение
+
+EXPOSE ${PORT}
+CMD ["node", "dist/main.js"]

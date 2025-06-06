@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
 import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
 import {connectUserChatNotificationsSocket} from '../../../services/sockets/chat/chat.socket';
@@ -12,6 +12,7 @@ interface IChatRoomSocketState {
 }
 
 export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
+  const [publicKeys, setPublicKeys] = useState<string[]>([]);
   const dispatch = useDispatch();
 
   const {interlocutorId} = useReduxSelector(
@@ -32,9 +33,13 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       console.log(`${strings.disconnectedChatWithId} ${chatId}`);
     });
 
-    currentChatSocket.on(socketEvents.USER_JOINED_CHAT, () => {
-      console.log(`${strings.disconnectedChatWithId} ${chatId}`);
-    });
+    currentChatSocket.on(
+      socketEvents.JOIN_CHAT_SUCCESS,
+      ({message, data}: {message: string; data: string[]}) => {
+        console.log(`${message}`);
+        setPublicKeys(data);
+      },
+    );
 
     currentChatSocket.on(socketEvents.USER_LEFT_CHAT, () => {
       console.log(`${strings.disconnectedChatWithId} ${chatId}`);
@@ -77,5 +82,5 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
     };
   }, [chatId, interlocutorId, dispatch]);
 
-  return {};
+  return {publicKeys};
 };
