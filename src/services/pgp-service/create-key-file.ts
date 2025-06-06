@@ -18,7 +18,6 @@ export const generateDeviceDataKeyFile = async ({
     privateKey,
     encryptKeyDataPassword,
   });
-
   const path = `${RNFS.DocumentDirectoryPath}/secure_device_data_key.pgp`;
 
   await RNFS.writeFile(path, encryptedData, 'utf8');

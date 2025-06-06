@@ -74,24 +74,37 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       }
 
       const user = responce.data.user as IFetchedUserAuthData;
-      const userChats = user?.user_info?.user_chat_account;
-      const token = responce.data.token;
-      const userSecurityData = user.user_info?.data_secrets;
-
-      const userData = {
+      const fetchedUserData = {
         id: user.id,
         role: user.role,
         created: user.created,
         isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
         email: user.email,
-        token,
+        token: '',
         portraitUri: user.user_info?.portrait_uri as string,
         title: user.user_info?.title as string,
         phoneNumber: user.user_info?.phone_number as string,
-        securePlaces: userSecurityData.securePlaces,
+        securePlaces: null,
       };
 
-      dispatch(setUser(userData));
+      if (!user.user_info) {
+        dispatch(setUser(fetchedUserData));
+
+        navigation.navigate(manualEncryptionScreenRoutes.onboarding);
+        return;
+      }
+
+      const userChats = user?.user_info?.user_chat_account;
+      const token = responce.data.token;
+      const userSecurityData = user.user_info?.data_secrets;
+
+      const fullUserData = {
+        ...fetchedUserData,
+        token,
+        securePlaces: userSecurityData?.securePlaces || null,
+      };
+
+      dispatch(setUser(fullUserData));
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {
