@@ -67,7 +67,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       const {data} = await registerSignInUserApi(signInData, isSignUp);
       const user = data.user;
 
-      if (user && !user.email_verified) {
+      if (!user.email_verified) {
         ErrorNotificationHandler({
           text1: strings.confirmYourEmail,
           text2: strings.emailLinkPrevioslySent,

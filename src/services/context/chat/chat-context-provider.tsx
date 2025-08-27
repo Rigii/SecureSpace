@@ -12,7 +12,7 @@ import {
 import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
 import {useReduxSelector} from '../../../app/store/store';
 import {strings} from './chat-provider.strings';
-import {socketEvents} from './chat-context.constants';
+import {socketEventStatus} from './chat-context.constants';
 import {
   EPopupType,
   ErrorNotificationHandler,
@@ -77,16 +77,16 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     if (!interlocutorId) return;
     const newSocket = connectUserChatNotificationsSocket(interlocutorId);
 
-    newSocket.on(socketEvents.CONNECT, () => {
+    newSocket.on(socketEventStatus.CONNECT, () => {
       console.log(strings.connectedChatServer);
     });
 
-    newSocket.on(socketEvents.NEW_MESSAGE, (message: string) => {
+    newSocket.on(socketEventStatus.NEW_MESSAGE, (message: string) => {
       setMessages(prevMessages => [...prevMessages, message]);
     });
 
     newSocket.on(
-      socketEvents.CHAT_ROOM_MESSAGE,
+      socketEventStatus.CHAT_ROOM_MESSAGE,
       (message: {chatId: string; chatName: string; message: string}) => {
         if (currentActiveChatId === message.chatId) {
           return;
@@ -98,49 +98,52 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       },
     );
 
-    newSocket.on(socketEvents.USER_CHAT_INVITATION, async (message: any) => {
-      console.log(strings.userChatInvitation, message);
-      ErrorNotificationHandler({
-        type: EPopupType.INFO,
-        text1: `${strings.newRoomInvitation} ${message.chatName}`,
-        text2: strings.findRoomInChatList,
-      });
+    newSocket.on(
+      socketEventStatus.USER_CHAT_INVITATION,
+      async (message: any) => {
+        console.log(strings.userChatInvitation, message);
+        ErrorNotificationHandler({
+          type: EPopupType.INFO,
+          text1: `${strings.newRoomInvitation} ${message.chatName}`,
+          text2: strings.findRoomInChatList,
+        });
 
-      // Get chat room data from the Socket message (no extra server call)
-      const responce = await getChatRoomsData({
-        token,
-        roomIds: [message?.chatId],
-      });
-      if (!responce?.data) {
-        return;
-      }
+        // Get chat room data from the Socket message (no extra server call)
+        const responce = await getChatRoomsData({
+          token,
+          roomIds: [message?.chatId],
+        });
+        if (!responce?.data) {
+          return;
+        }
 
-      const chatData = responce.data[0] as IFetchedChatRoom;
+        const chatData = responce.data[0] as IFetchedChatRoom;
 
-      const chatRoomData = {
-        id: chatData.id,
-        password: '',
-        chatName: chatData.chat_name,
-        chatType: chatData.chat_type,
-        ownerId: chatData.owner_id,
-        moderatorIds: chatData.moderator_ids,
-        usersData: chatData.users_data,
-        invitedUserIds: chatData.invited_user_ids,
-        messageDurationHours: chatData.message_duration_hours,
-        chatMediaStorageUrl: chatData.chat_media_storage_url,
-        chatIconUrl: chatData.chat_icon_url,
-        availabilityAreaData: chatData.availability_area_data,
-        messages: chatData.messages,
-      };
+        const chatRoomData = {
+          id: chatData.id,
+          password: '',
+          chatName: chatData.chat_name,
+          chatType: chatData.chat_type,
+          ownerId: chatData.owner_id,
+          moderatorIds: chatData.moderator_ids,
+          usersData: chatData.users_data,
+          invitedUserIds: chatData.invited_user_ids,
+          messageDurationHours: chatData.message_duration_hours,
+          chatMediaStorageUrl: chatData.chat_media_storage_url,
+          chatIconUrl: chatData.chat_icon_url,
+          availabilityAreaData: chatData.availability_area_data,
+          messages: chatData.messages,
+        };
 
-      dispatch(addNewChatRoom(chatRoomData));
-    });
+        dispatch(addNewChatRoom(chatRoomData));
+      },
+    );
 
-    newSocket.on(socketEvents.DISCONNECT, () => {
+    newSocket.on(socketEventStatus.DISCONNECT, () => {
       console.log(strings.disconnectedChatServer);
     });
 
-    newSocket.on(socketEvents.ERROR, (error: any) => {
+    newSocket.on(socketEventStatus.ERROR, (error: any) => {
       console.error(strings.socketError, error);
     });
 

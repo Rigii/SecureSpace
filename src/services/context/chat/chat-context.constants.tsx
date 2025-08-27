@@ -1,4 +1,4 @@
-export const socketEvents = {
+export const socketEventStatus = {
   CONNECT: 'connect',
   DISCONNECT: 'disconnect',
   NEW_MESSAGE: 'newMessage',
@@ -6,6 +6,7 @@ export const socketEvents = {
   USER_CHAT_INVITATION: 'user_chat_invitation',
   CHAT_ROOM_MESSAGE: 'chat_room_message',
   JOIN_CHAT_SUCCESS: 'join_chat_success',
+  JOIN_CHAT_ERROR: 'join_chat_success',
   USER_LEFT_CHAT: 'user_left_chat',
 };
 

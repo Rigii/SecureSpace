@@ -3,7 +3,7 @@ import {useReduxSelector} from '../../../app/store/store';
 import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
 import {connectUserChatNotificationsSocket} from '../../../services/sockets/chat/chat.socket';
 import {strings} from '../../../services/context/chat/chat-provider.strings';
-import {socketEvents} from '../../../services/context/chat/chat-context.constants';
+import {socketEventStatus} from '../../../services/context/chat/chat-context.constants';
 import {useDispatch} from 'react-redux';
 import {addMessageToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 
@@ -25,28 +25,34 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       [chatId],
     );
 
-    currentChatSocket.on(socketEvents.CONNECT, () => {
+    // DEV //: Подписка на все события через перехватчик
+    // currentChatSocket.onAny((event, ...args) => {
+    //   console.log(77777, 'Получено событие:', event, args);
+    // });
+
+    currentChatSocket.on(socketEventStatus.CONNECT, () => {
       console.log(`${strings.connectedChatWithId} ${chatId}`);
     });
 
-    currentChatSocket.on(socketEvents.DISCONNECT, () => {
+    currentChatSocket.on(socketEventStatus.DISCONNECT, () => {
       console.log(`${strings.disconnectedChatWithId} ${chatId}`);
     });
 
     currentChatSocket.on(
-      socketEvents.JOIN_CHAT_SUCCESS,
+      socketEventStatus.JOIN_CHAT_SUCCESS,
       ({message, data}: {message: string; data: string[]}) => {
         console.log(`${message}`);
+
         setPublicKeys(data);
       },
     );
 
-    currentChatSocket.on(socketEvents.USER_LEFT_CHAT, () => {
+    currentChatSocket.on(socketEventStatus.USER_LEFT_CHAT, () => {
       console.log(`${strings.disconnectedChatWithId} ${chatId}`);
     });
 
     currentChatSocket.on(
-      socketEvents.CHAT_ROOM_MESSAGE,
+      socketEventStatus.CHAT_ROOM_MESSAGE,
       (messageObject: {
         id: string;
         participantId: string;
