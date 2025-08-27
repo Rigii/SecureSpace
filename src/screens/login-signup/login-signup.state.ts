@@ -96,7 +96,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       }
 
       const userChats = user?.user_info?.user_chat_account;
-      const token = user.token;
+      const token = data.token;
       const userSecurityData = user.user_info?.data_secrets;
 
       const fullUserData = {
