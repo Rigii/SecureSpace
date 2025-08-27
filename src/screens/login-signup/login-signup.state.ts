@@ -65,8 +65,9 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     try {
       const isSignUp = mode === EAuthMode.signUp;
       const {data} = await registerSignInUserApi(signInData, isSignUp);
+      const user = data.user;
 
-      if (!data.email_verified) {
+      if (user && !user.email_verified) {
         ErrorNotificationHandler({
           text1: strings.confirmYourEmail,
           text2: strings.emailLinkPrevioslySent,
@@ -74,7 +75,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         return;
       }
 
-      const user = data.user as IFetchedUserAuthData;
       const fetchedUserData = {
         id: user.id,
         role: user.role,
@@ -96,7 +96,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       }
 
       const userChats = user?.user_info?.user_chat_account;
-      const token = data.token;
+      const token = user.token;
       const userSecurityData = user.user_info?.data_secrets;
 
       const fullUserData = {

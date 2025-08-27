@@ -1,4 +1,4 @@
-import {BASE_URL_LOCAL} from '@env';
+import {BASE_URL} from '@env';
 import {io, Socket} from 'socket.io-client';
 import {IChatMessage, ICreateChatRoom, IDeleteChatRoom} from './chat-api.types';
 import {strings} from './chat-sockets.strings';
@@ -39,7 +39,7 @@ export const connectUserChatNotificationsSocket = (
   userIdChannel: string,
   roomIds?: string[],
 ): Socket => {
-  return io(`${BASE_URL_LOCAL}${CHAT_ROOM_URL}`, {
+  return io(`${BASE_URL}${CHAT_ROOM_URL}`, {
     query: {userId: userIdChannel, roomIds},
     transports: ['websocket'],
     reconnection: true,

@@ -1,4 +1,4 @@
-import {BASE_URL, BASE_URL_LOCAL} from '@env';
+import {BASE_URL} from '@env';
 import axios, {AxiosPromise} from 'axios';
 // import {store} from './redux/store';
 
@@ -8,6 +8,7 @@ export const getInstance = (token: string) => {
   const instance = axios.create({
     baseURL: `${BASE_URL}`,
     timeout: 15000,
+    responseType: 'json',
   });
 
   instance.interceptors.response.use((response: any) => {
@@ -41,28 +42,28 @@ export const fetchData = (
   params?: {},
   isFullPath?: boolean,
 ) => {
-  const url = !isFullPath ? `${BASE_URL_LOCAL}${requestUrl}` : requestUrl;
+  const url = !isFullPath ? `${BASE_URL}${requestUrl}` : requestUrl;
   return getInstance(token).get(url, {params});
 };
 
 export const deleteData = (token: string, requestUrl: string, params?: {}) => {
-  return getInstance(token).delete(`${BASE_URL_LOCAL}${requestUrl}`, {
+  return getInstance(token).delete(`${BASE_URL}${requestUrl}`, {
     data: params,
   });
 };
 
 export const patchData = (token: string, requestUrl: string, payload: any) => {
-  return getInstance(token).patch(`${BASE_URL_LOCAL}${requestUrl}`, payload);
+  return getInstance(token).patch(`${BASE_URL}${requestUrl}`, payload);
 };
 
 export const putData = (token: string, requestUrl: string, payload: any) => {
-  return getInstance(token).put(`${BASE_URL_LOCAL}${requestUrl}`, payload);
+  return getInstance(token).put(`${BASE_URL}${requestUrl}`, payload);
 };
 
 export const postData = (token: string, requestUrl: string, payload: any) => {
-  return getInstance(token).post(`${BASE_URL_LOCAL}${requestUrl}`, payload);
+  return getInstance(token).post(`${BASE_URL}${requestUrl}`, payload);
 };
 
 export const getData = (token: string, requestUrl: string, payload: any) => {
-  return getInstance(token).post(`${BASE_URL_LOCAL}${requestUrl}`, payload);
+  return getInstance(token).post(`${BASE_URL}${requestUrl}`, payload);
 };
