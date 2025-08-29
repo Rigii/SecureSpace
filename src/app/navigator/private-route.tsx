@@ -9,7 +9,7 @@ export const PrivateRoute: React.FC<{
   const {devicePrivateKey} = useReduxSelector(
     state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
   );
-  const {token, isOnboardingDone} = useReduxSelector(
+  const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
 
@@ -17,13 +17,7 @@ export const PrivateRoute: React.FC<{
     if (!token) {
       navigation.navigate(redirectAuthRoute);
     }
-  }, [
-    devicePrivateKey,
-    isOnboardingDone,
-    navigation,
-    redirectAuthRoute,
-    token,
-  ]);
+  }, [devicePrivateKey, navigation, redirectAuthRoute, token]);
 
   return token ? <CombinedBarHome /> : null;
 };

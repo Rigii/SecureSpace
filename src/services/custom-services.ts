@@ -17,6 +17,15 @@ export const isJSON = (data: any) => {
   }
 };
 
+export const parseJSONDataSafe = (data: any) => {
+  try {
+    JSON.parse(data as string);
+    return JSON.parse(data as string);
+  } catch {
+    return data;
+  }
+};
+
 export const isDarkMode = () => {
   const colorScheme = Appearance.getColorScheme();
 

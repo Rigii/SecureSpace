@@ -3,19 +3,38 @@ import {SafeAreaView} from 'react-native';
 import {EnvelopeIcon} from '../../assets/icons/evenlopeIcon';
 import {ChatSocketProviderContext} from '../../services/context/chat/chat-context-provider';
 import {Input, KeyboardTypes} from '../input';
+import {strings} from '../create-update-chat/create-chat-form.strings';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../services/ErrorNotificationHandler';
 
 interface IChatInput {
   chatId: string;
+  publicKeys: string[] | [];
   inputPlaceholder?: string;
 }
 
-const ChatInput: React.FC<IChatInput> = ({chatId, inputPlaceholder}) => {
+const ChatInput: React.FC<IChatInput> = ({
+  chatId,
+  inputPlaceholder,
+  publicKeys,
+}) => {
   const {handleSendChatRoomMessage} = useContext(ChatSocketProviderContext);
 
   const [currentMessage, setCurrentMessage] = React.useState<string>('');
 
   const onSendMessage = () => {
     if (currentMessage.trim() === '') return;
+
+    if (publicKeys.length === 0) {
+      ErrorNotificationHandler({
+        text1: strings.noPBKeysReenterRoom,
+        type: EPopupType.ERROR,
+      });
+
+      return;
+    }
 
     handleSendChatRoomMessage({message: currentMessage, chatRoomId: chatId});
     setCurrentMessage('');

@@ -4,7 +4,6 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {PrivateRoute} from './privateRoute';
 import {RootStackParamList, manualEncryptionScreenRoutes} from './screens';
 import {LoginSignUpUser} from '../../screens/login-signup/login-signup.screen';
 import {OnboardingFlow} from '../../screens/onboarding/onboarding';
@@ -15,6 +14,7 @@ import {CombinedBarHome} from '../../screens/home/home';
 import {CombinedChatListScreen} from '../../screens/chat/chat-entry/chat-entry-screen';
 import {AccountSetttings} from '../../screens/account-settings/account-settings';
 import {UploadKey} from '../../screens/upload-keys/upload-keys';
+import {PrivateRoute} from './private-route';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

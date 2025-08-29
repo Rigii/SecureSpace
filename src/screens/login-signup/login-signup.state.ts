@@ -64,34 +64,48 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const loginSignUp = async (signInData: {email: string; password: string}) => {
     try {
       const isSignUp = mode === EAuthMode.signUp;
-      const responce = await registerSignInUserApi(signInData, isSignUp);
+      const {data} = await registerSignInUserApi(signInData, isSignUp);
+      const user = data.user;
 
-      if (isSignUp) {
+      if (!user.email_verified) {
         ErrorNotificationHandler({
           text1: strings.confirmYourEmail,
-          text2: strings.emailLinkSent,
+          text2: strings.emailLinkPrevioslySent,
         });
+        return;
       }
 
-      const user = responce.data.user as IFetchedUserAuthData;
-      const userChats = user?.user_info?.user_chat_account;
-      const token = responce.data.token;
-      const userSecurityData = user.user_info?.data_secrets;
-
-      const userData = {
+      const fetchedUserData = {
         id: user.id,
         role: user.role,
         created: user.created,
         isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
         email: user.email,
-        token,
+        token: '',
         portraitUri: user.user_info?.portrait_uri as string,
         title: user.user_info?.title as string,
         phoneNumber: user.user_info?.phone_number as string,
-        securePlaces: userSecurityData.securePlaces,
+        securePlaces: null,
       };
 
-      dispatch(setUser(userData));
+      if (!user.user_info) {
+        dispatch(setUser(fetchedUserData));
+
+        navigation.navigate(manualEncryptionScreenRoutes.onboarding);
+        return;
+      }
+
+      const userChats = user?.user_info?.user_chat_account;
+      const token = data.token;
+      const userSecurityData = user.user_info?.data_secrets;
+
+      const fullUserData = {
+        ...fetchedUserData,
+        token,
+        securePlaces: userSecurityData?.securePlaces || null,
+      };
+
+      dispatch(setUser(fullUserData));
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {

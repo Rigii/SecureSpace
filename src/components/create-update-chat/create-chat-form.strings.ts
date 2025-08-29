@@ -19,4 +19,5 @@ export const strings = {
   awailabilityAddress: 'Awailability Address',
   publicChatKeyMissing:
     'Public chat key is missing. Please create chat account',
+  noPBKeysReenterRoom: 'No public keys available. Please reenter chat room',
 };
