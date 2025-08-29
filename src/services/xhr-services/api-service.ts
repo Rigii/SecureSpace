@@ -4,6 +4,8 @@ import axios, {AxiosPromise} from 'axios';
 
 export type IResponse<T> = AxiosPromise<T>;
 
+console.log(3333333, BASE_URL);
+
 export const getInstance = (token: string) => {
   const instance = axios.create({
     baseURL: `${BASE_URL}`,
