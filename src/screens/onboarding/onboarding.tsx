@@ -12,11 +12,6 @@ import {
   setSecurityData,
   setUser,
 } from '../../app/store/state/userState/userAction';
-import {
-  RootStackParamList,
-  manualEncryptionScreenRoutes,
-} from '../../app/navigator/screens';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {postOnboardingDataApi} from '../../services/api/user/user.api';
 import {useReduxSelector} from '../../app/store/store';
 import {
@@ -44,7 +39,6 @@ export const OnboardingFlow = () => {
   );
   const formState = useReduxSelector(state => state.onboardingFormReducer);
   const dispatch = useDispatch();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const saveKeyOnDevice = async ({
     email,
@@ -137,6 +131,7 @@ export const OnboardingFlow = () => {
         setUser({
           title: values.titleForm,
           name: values.name,
+          token: userAccountData.token,
         }),
       );
 
@@ -171,14 +166,15 @@ export const OnboardingFlow = () => {
     swiperRef?.current?.scrollBy(1, true);
   };
 
-  if (isSubmitted) {
-    return (
-      <WelcomeAboard
-        navigateToMain={() =>
-          navigation.navigate(manualEncryptionScreenRoutes.home)
-        }
-      />
+  const navigateToMain = () =>
+    dispatch(
+      setUser({
+        isOnboardingDone: true,
+      }),
     );
+
+  if (isSubmitted) {
+    return <WelcomeAboard navigateToMain={navigateToMain} />;
   }
 
   return (

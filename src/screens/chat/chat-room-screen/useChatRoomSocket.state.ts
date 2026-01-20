@@ -25,9 +25,8 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       [chatId],
     );
 
-    // DEV //: Подписка на все события через перехватчик
+    // TODO: All room events notifications handling. Use state object to manage active/blocked events.
     // currentChatSocket.onAny((event, ...args) => {
-    //   console.log(77777, 'Получено событие:', event, args);
     // });
 
     currentChatSocket.on(socketEventStatus.CONNECT, () => {

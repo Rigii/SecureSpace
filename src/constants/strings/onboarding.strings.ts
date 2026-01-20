@@ -14,7 +14,7 @@ export const strings = {
   delete: 'Delete',
   radius: 'Radius in meters',
   welcomeAboard: 'Welcome on board!',
-  allmoustDone: 'Allmoust Done',
+  allmostDone: 'Allmost Done',
   pleaseSaveYourKey:
     'Download and store your key safe, to be able restore or use your encrypted data with other devices',
   saveYourKey: 'Save Your Key',
@@ -28,13 +28,4 @@ export const strings = {
   missis: 'Ms.',
   other: 'Other',
   addingPlaceError: 'Adding place error',
-  // phoneHolder: '+xxxxxxxxxxxx',
-  // youRegistered: 'You registered!',
-  // protectYourShelter: 'Protect Your Shelter, add secure settings',
-  // hereInitialSecure: 'Here You can set your initial secure presets',
-  // confirmYourDevice: 'Confirm Your device',
-  // confirmPhoneNumber: 'Confirm Your phone number (optional)',
-  // addImergencyPassword:
-  //   'Add Your first, second and third password for the imergency case',
-  // addYourPlaces: 'Add your confident places',
 };

@@ -81,7 +81,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         created: user.created,
         isOnboardingDone: user.user_info?.is_onboarding_done as boolean,
         email: user.email,
-        token: '',
+        token: data?.token || '',
         portraitUri: user.user_info?.portrait_uri as string,
         title: user.user_info?.title as string,
         phoneNumber: user.user_info?.phone_number as string,
@@ -96,12 +96,11 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       }
 
       const userChats = user?.user_info?.user_chat_account;
-      const token = data.token;
+
       const userSecurityData = user.user_info?.data_secrets;
 
       const fullUserData = {
         ...fetchedUserData,
-        token,
         securePlaces: userSecurityData?.securePlaces || null,
       };
 

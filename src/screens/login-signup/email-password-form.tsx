@@ -1,11 +1,11 @@
 import React from 'react';
-import {strings} from '../../constants/strings/login-signup.strings';
 import {Input, KeyboardTypes} from '../../components/input';
 import {ThemedButton} from '../../components/themed-button';
 import {View} from 'react-native';
 import {Formik} from 'formik';
 import {EAuthMode, ILoginFormValues} from './login-sign-up.types';
 import * as Yup from 'yup';
+import {strings} from './login-signup.strings';
 
 export const EmailPasswordForm: React.FC<{
   loginSignUp: ({
@@ -19,11 +19,18 @@ export const EmailPasswordForm: React.FC<{
 }> = ({loginSignUp, mode}) => {
   const SignUpSchema = Yup.object().shape({
     password: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('Required'),
-    email: Yup.string().email('Invalid email').required('Required'),
+      .min(2, strings.tooShort)
+      .max(50, strings.tooLong)
+      .required(strings.required),
+    email: Yup.string().email(strings.invalidEmail).required(strings.required),
   });
+
+  const createEmailChangeHandler = (handleChange: any) => {
+    return (text: string) => {
+      const lowerCaseText = text.toLowerCase();
+      handleChange('email')(lowerCaseText);
+    };
+  };
 
   return (
     <Formik<ILoginFormValues>
@@ -32,7 +39,7 @@ export const EmailPasswordForm: React.FC<{
       enableReinitialize={true}
       isInitialValid={false}
       validationSchema={SignUpSchema}
-      initialValues={{email: 'Valakardin@asd.as', password: '123456'}}
+      initialValues={{email: '', password: ''}}
       onSubmit={values => {
         loginSignUp({email: values.email, password: values.password});
       }}>
@@ -42,7 +49,7 @@ export const EmailPasswordForm: React.FC<{
             <Input
               isError={!!errors.email && touched.email}
               value={values.email}
-              onChange={handleChange('email')}
+              onChange={createEmailChangeHandler(handleChange)}
               name="email"
               placeholder={strings.emailHolder}
               keyboardType={KeyboardTypes.emailAddress}
