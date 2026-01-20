@@ -46,7 +46,7 @@ const TopBar = ({
 
   const toggleRedirectChatHome = () => {
     if (currentScreen === manualEncryptionScreenRoutes.chatList) {
-      navigation.navigate(manualEncryptionScreenRoutes.home);
+      navigation.navigate(manualEncryptionScreenRoutes.root);
       return;
     }
     navigation.navigate(manualEncryptionScreenRoutes.chatList);

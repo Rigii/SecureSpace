@@ -59,7 +59,7 @@ export const sidebarModalSets = {
       action: () => null,
     },
   ],
-  [manualEncryptionScreenRoutes.home]: [
+  [manualEncryptionScreenRoutes.root]: [
     {
       id: 'homeSearch',
       label: 'Search',

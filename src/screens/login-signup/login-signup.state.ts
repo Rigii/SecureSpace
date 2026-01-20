@@ -58,7 +58,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       });
       return;
     }
-    navigation.navigate(manualEncryptionScreenRoutes.home);
+    navigation.navigate(manualEncryptionScreenRoutes.root);
   };
 
   const loginSignUp = async (signInData: {email: string; password: string}) => {
