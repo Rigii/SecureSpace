@@ -73,7 +73,8 @@ export const CreateChatRoom: React.FC = () => {
         chatIconUrl: '',
       };
 
-      handleCreateChat(postChatRoomData);
+      await handleCreateChat(postChatRoomData);
+      navigation.goBack();
     } catch (e) {}
   };
 
@@ -174,6 +175,7 @@ export const CreateChatRoom: React.FC = () => {
                 availabilityAreaRadius={values.availabilityAreaRadius}
                 touched={touched}
                 errors={errors}
+                onNextPage={onNextPage}
                 handleChange={handleFieldChange}
                 onUpdatePlaceCoordinates={onUpdatePlaceCoordinates}
               />

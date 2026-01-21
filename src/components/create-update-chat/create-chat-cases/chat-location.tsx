@@ -16,6 +16,7 @@ export const ChatLocationRestrictions: React.FC<{
   availabilityAreaRadius: string;
   touched: FormikTouched<ICreateRoomFormValues>;
   errors: FormikErrors<ICreateRoomFormValues>;
+  onNextPage: () => void;
   onUpdatePlaceCoordinates: (
     value: GooglePlaceData | null,
     detail: GooglePlaceDetail | null,
@@ -25,6 +26,7 @@ export const ChatLocationRestrictions: React.FC<{
   availabilityAreaRadius,
   touched,
   errors,
+  onNextPage,
   handleChange,
   onUpdatePlaceCoordinates,
 }) => {
@@ -56,7 +58,7 @@ export const ChatLocationRestrictions: React.FC<{
         text={strings.next}
         disabled={!!errors.availabilityAreaData}
         theme="filled"
-        onPress={() => null}
+        onPress={onNextPage}
         classCustomBody="w-80"
       />
     </View>

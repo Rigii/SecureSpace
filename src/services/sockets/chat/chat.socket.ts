@@ -1,7 +1,14 @@
 import {BASE_URL} from '@env';
 import {io, Socket} from 'socket.io-client';
-import {IChatMessage, ICreateChatRoom, IDeleteChatRoom} from './chat-api.types';
+import {
+  IChatMessage,
+  IChatRoomSocketResponse,
+  ICreateChatRoom,
+  IDeleteChatRoom,
+} from './chat-api.types';
 import {strings} from './chat-sockets.strings';
+import {ErrorNotificationHandler} from '../../ErrorNotificationHandler';
+import {IChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
 
 const CHAT_ROOM_URL = '/chat_room';
 
@@ -49,19 +56,30 @@ export const connectUserChatNotificationsSocket = (
 export const createChatRoomSocket = (
   socket: Socket,
   chatData: ICreateChatRoom,
-) => {
-  if (!socket) {
-    console.error(strings.wSConnectionNotEstablished);
-    return;
-  }
-  socket.emit(socketMessageNamespaces.CREATE_CHAT, chatData);
+): Promise<IChatRoom | null> => {
+  return new Promise((resolve, reject) => {
+    if (!socket) {
+      reject(new Error(strings.wSConnectionNotEstablished));
+      return;
+    }
 
-  socket.on(chatEvents.CREATE_CHAT_SUCCESS, data => {
-    console.log(strings.chatRooomCreated, data);
-  });
+    socket.emit(
+      socketMessageNamespaces.CREATE_CHAT,
+      chatData,
+      (response: IChatRoomSocketResponse) => {
+        if (!response.success) {
+          ErrorNotificationHandler({
+            text1: strings.errorChatRooomCreation,
+            text2: response.message,
+          });
 
-  socket.on(chatEvents.CREATE_CHAT_ERROR, error => {
-    console.error(strings.errorChatRooomCreation, error);
+          reject(new Error(response.message));
+          return;
+        }
+
+        resolve(response.room);
+      },
+    );
   });
 };
 

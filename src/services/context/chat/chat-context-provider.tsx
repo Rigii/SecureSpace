@@ -155,14 +155,17 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     };
   }, [currentActiveChatId, dispatch, interlocutorId, token]);
 
-  const handleCreateChat = (chatData: ICreateChatRoom) => {
+  const handleCreateChat = async (chatData: ICreateChatRoom) => {
     if (!socket) {
       console.error(strings.socketIsNotConnected);
       return;
     }
-    createChatRoomSocket(socket, chatData);
-    /* TODO: Uncomment this when the server is ready to handle chat creation */
-    // dispatch(addNewChatRoom(chatData));
+    const room = await createChatRoomSocket(socket, chatData);
+
+    if (!room) {
+      return;
+    }
+    dispatch(addNewChatRoom(room));
   };
 
   const leaveRoomLocal = ({chatRoomId}: {chatRoomId: string}) => {
