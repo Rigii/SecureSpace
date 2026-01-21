@@ -7,7 +7,10 @@ import {
   IDeleteChatRoom,
 } from './chat-api.types';
 import {strings} from './chat-sockets.strings';
-import {ErrorNotificationHandler} from '../../ErrorNotificationHandler';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../ErrorNotificationHandler';
 import {IChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
 
 const CHAT_ROOM_URL = '/chat_room';
@@ -36,8 +39,8 @@ export const chatEvents = {
   DELETE_CHAT_ROOM_ERROR: 'delete_chat_room_error',
   DECLINE_CHAT_INVITATION_SUCCESS: 'decline_chat_invitation_success',
   DECLINE_CHAT_INVITATION_ERROR: 'decline_chat_invitation_error',
-  ROOM_MESSAGE_SENT: 'room_message_sent',
-  ROOM_MESSAGE_FAILED: 'room_message_failed',
+  // ROOM_MESSAGE_SENT: 'room_message_sent',
+  // ROOM_MESSAGE_FAILED: 'room_message_failed',
   ROOM_MESSAGE_RECEIVED: 'room_message_received',
   ROOM_MESSAGE_SEEN: 'room_message_seen',
 };
@@ -71,6 +74,7 @@ export const createChatRoomSocket = (
           ErrorNotificationHandler({
             text1: strings.errorChatRooomCreation,
             text2: response.message,
+            type: EPopupType.ERROR,
           });
 
           reject(new Error(response.message));
@@ -167,15 +171,19 @@ export const sendChatRoomMessage = (
     return;
   }
 
-  socket.emit(socketMessageNamespaces.CHAT_ROOM_MESSAGE, messageData);
-
-  socket.on(chatEvents.ROOM_MESSAGE_SENT, data => {
-    console.log(strings.roomInvitationDeclinedDone, data);
-    return data;
-  });
-
-  socket.on(chatEvents.ROOM_MESSAGE_FAILED, error => {
-    console.error(strings.sendingChatRoomMessageError, error);
-    throw new Error(error);
-  });
+  socket.emit(
+    socketMessageNamespaces.CHAT_ROOM_MESSAGE,
+    messageData,
+    (response: {success: boolean; message?: string}) => {
+      if (!response.success) {
+        console.error(response.message);
+        ErrorNotificationHandler({
+          text1: strings.errorChatRooomCreation,
+          text2: response.message,
+          type: EPopupType.ERROR,
+        });
+        return;
+      }
+    },
+  );
 };

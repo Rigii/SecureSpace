@@ -25,10 +25,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       [chatId],
     );
 
-    // TODO: All room events notifications handling. Use state object to manage active/blocked events.
-    // currentChatSocket.onAny((event, ...args) => {
-    // });
-
     currentChatSocket.on(socketEventStatus.CONNECT, () => {
       console.log(`${strings.connectedChatWithId} ${chatId}`);
     });

@@ -25,7 +25,9 @@ const ChatInput: React.FC<IChatInput> = ({
   const [currentMessage, setCurrentMessage] = React.useState<string>('');
 
   const onSendMessage = () => {
-    if (currentMessage.trim() === '') return;
+    if (currentMessage.trim() === '') {
+      return;
+    }
 
     if (publicKeys.length === 0) {
       ErrorNotificationHandler({
