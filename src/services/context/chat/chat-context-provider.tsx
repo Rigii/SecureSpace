@@ -74,7 +74,9 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!interlocutorId) return;
+    if (!interlocutorId) {
+      return;
+    }
     const newSocket = connectUserChatNotificationsSocket(interlocutorId);
 
     newSocket.on(socketEventStatus.CONNECT, () => {

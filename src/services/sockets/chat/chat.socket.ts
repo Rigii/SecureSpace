@@ -39,9 +39,6 @@ export const chatEvents = {
   DELETE_CHAT_ROOM_ERROR: 'delete_chat_room_error',
   DECLINE_CHAT_INVITATION_SUCCESS: 'decline_chat_invitation_success',
   DECLINE_CHAT_INVITATION_ERROR: 'decline_chat_invitation_error',
-  // ROOM_MESSAGE_SENT: 'room_message_sent',
-  // ROOM_MESSAGE_FAILED: 'room_message_failed',
-  ROOM_MESSAGE_RECEIVED: 'room_message_received',
   ROOM_MESSAGE_SEEN: 'room_message_seen',
 };
 
@@ -170,6 +167,7 @@ export const sendChatRoomMessage = (
     console.error(strings.wSConnectionNotEstablished);
     return;
   }
+  console.log(22222222222);
 
   socket.emit(
     socketMessageNamespaces.CHAT_ROOM_MESSAGE,
