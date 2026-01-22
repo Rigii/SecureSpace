@@ -8,6 +8,7 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../services/ErrorNotificationHandler';
+import {encryptMessageForMultipleRecipients} from '../../services/pgp-encryption-service/encrypt-decrypt-message';
 
 interface IChatInput {
   chatId: string;
@@ -24,7 +25,7 @@ const ChatInput: React.FC<IChatInput> = ({
 
   const [currentMessage, setCurrentMessage] = React.useState<string>('');
 
-  const onSendMessage = () => {
+  const onSendMessage = async () => {
     if (currentMessage.trim() === '') {
       return;
     }
@@ -38,7 +39,12 @@ const ChatInput: React.FC<IChatInput> = ({
       return;
     }
 
-    handleSendChatRoomMessage({message: currentMessage, chatRoomId: chatId});
+    const encryptedMessage = await encryptMessageForMultipleRecipients({
+      message: currentMessage,
+      publicKeys,
+    });
+
+    handleSendChatRoomMessage({message: encryptedMessage, chatRoomId: chatId});
     setCurrentMessage('');
   };
 

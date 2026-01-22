@@ -9,6 +9,10 @@ import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../../app/navigator/screens';
 import {FlatList} from 'react-native';
+import {
+  decryptMessage,
+  isEncryptedMessage,
+} from '../../../services/pgp-encryption-service/encrypt-decrypt-message';
 
 interface IChatRoomMessagesState {
   chatId: string;
@@ -25,8 +29,8 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   );
 
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
-  const participantId = useReduxSelector(
-    state => state.userChatAccountReducer.interlocutorId,
+  const {interlocutorId, privateChatKey, publicChatKey} = useReduxSelector(
+    state => state.userChatAccountReducer,
   );
   const {messages} = userChatRooms[chatId] || {messages: []};
 
@@ -91,7 +95,26 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
         };
 
         const sortedMessages = sortMessages(responceMessages);
-        dispatch(addMessagesToChatRoom(sortedMessages));
+
+        const decryptedMessages = await Promise.all(
+          sortedMessages.map(async message => {
+            if (!isEncryptedMessage(message.message)) {
+              return message;
+            }
+
+            const decryptedMessage = await decryptMessage({
+              privateKey: privateChatKey,
+              passphrase: '',
+              encryptedMessage: message.message,
+            });
+
+            return {
+              ...message,
+              message: decryptedMessage,
+            };
+          }),
+        );
+        dispatch(addMessagesToChatRoom(decryptedMessages));
 
         return () => {
           setCurrentActiveChatId(null);
@@ -101,7 +124,14 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       }
     };
     getMessages();
-  }, [chatId, dispatch, setCurrentActiveChatId, token]);
+  }, [
+    chatId,
+    privateChatKey,
+    token,
+    dispatch,
+    setCurrentActiveChatId,
+    publicChatKey,
+  ]);
 
   const onLeaveChatRoom = async () => {
     try {
@@ -163,7 +193,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
 
   return {
     messages,
-    participantId,
+    participantId: interlocutorId,
     chatRoomOptions,
     flatListRef,
   };

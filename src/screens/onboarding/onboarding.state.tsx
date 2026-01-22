@@ -14,10 +14,10 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../services/ErrorNotificationHandler';
-import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
+import {generatePGPKeyPair} from '../../services/pgp-encryption-service/generate-keys';
 import {getTime} from 'date-fns';
 import {Platform} from 'react-native';
-import {generateDeviceDataKeyFile} from '../../services/pgp-service/create-key-file';
+import {generateDeviceDataKeyFile} from '../../services/pgp-encryption-service/create-key-file';
 import {DownloadKey} from './onboarding-cases/download-key';
 import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
 
