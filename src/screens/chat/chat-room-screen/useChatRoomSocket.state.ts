@@ -6,6 +6,11 @@ import {strings} from '../../../services/context/chat/chat-provider.strings';
 import {socketEventStatus} from '../../../services/context/chat/chat-context.constants';
 import {useDispatch} from 'react-redux';
 import {addMessageToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {decryptMessage} from '../../../services/pgp-encryption-service/encrypt-decrypt-message';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../../services/ErrorNotificationHandler';
 
 interface IChatRoomSocketState {
   chatId: string;
@@ -15,7 +20,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const [publicKeys, setPublicKeys] = useState<string[]>([]);
   const dispatch = useDispatch();
 
-  const {interlocutorId} = useReduxSelector(
+  const {interlocutorId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
 
@@ -48,7 +53,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
 
     currentChatSocket.on(
       socketEventStatus.CHAT_ROOM_MESSAGE,
-      (messageObject: {
+      async (messageObject: {
         id: string;
         participantId: string;
         senderNikName: string;
@@ -60,20 +65,40 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         created: string;
         updated: string;
       }) => {
-        const storeData: IChatMessage = {
-          id: messageObject.id,
-          message: messageObject.message,
-          created: new Date(messageObject.created).toLocaleString(),
-          updated: new Date(messageObject.updated).toLocaleString(),
-          senderNikName: messageObject.senderNikName,
-          participantId: messageObject.participantId,
-          chatRoomId: messageObject.chatRoomId,
-          isAdmin: false,
-          mediaUrl: messageObject.mediaUrl,
-          voiceMessageUrl: messageObject.voiceMessageUrl,
-        };
+        try {
+          const storeData: IChatMessage = {
+            id: messageObject.id,
+            message: messageObject.message,
+            created: new Date(messageObject.created).toLocaleString(),
+            updated: new Date(messageObject.updated).toLocaleString(),
+            senderNikName: messageObject.senderNikName,
+            participantId: messageObject.participantId,
+            chatRoomId: messageObject.chatRoomId,
+            isAdmin: false,
+            mediaUrl: messageObject.mediaUrl,
+            voiceMessageUrl: messageObject.voiceMessageUrl,
+          };
 
-        dispatch(addMessageToChatRoom(storeData));
+          if (!privateChatKey) {
+            throw new Error(strings.noPrivateChatKeyFound);
+          }
+
+          const decryptedMessage = await decryptMessage({
+            privateKey: privateChatKey,
+            passphrase: '',
+            encryptedMessage: storeData.message,
+          });
+
+          dispatch(
+            addMessageToChatRoom({...storeData, message: decryptedMessage}),
+          );
+        } catch (error) {
+          const currentError = error as Error;
+          ErrorNotificationHandler({
+            text1: currentError.message || strings.messageDisplayError,
+            type: EPopupType.ERROR,
+          });
+        }
       },
     );
 
@@ -81,7 +106,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       currentChatSocket.disconnect();
       currentChatSocket.removeAllListeners();
     };
-  }, [chatId, interlocutorId, dispatch]);
+  }, [chatId, interlocutorId, privateChatKey, dispatch]);
 
   return {publicKeys};
 };

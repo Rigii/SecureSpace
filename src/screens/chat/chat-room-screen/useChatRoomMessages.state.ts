@@ -9,6 +9,14 @@ import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../../app/navigator/screens';
 import {FlatList} from 'react-native';
+import {
+  decryptMessage,
+  isEncryptedMessage,
+} from '../../../services/pgp-encryption-service/encrypt-decrypt-message';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../../services/ErrorNotificationHandler';
 
 interface IChatRoomMessagesState {
   chatId: string;
@@ -25,8 +33,8 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   );
 
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
-  const participantId = useReduxSelector(
-    state => state.userChatAccountReducer.interlocutorId,
+  const {interlocutorId, privateChatKey} = useReduxSelector(
+    state => state.userChatAccountReducer,
   );
   const {messages} = userChatRooms[chatId] || {messages: []};
 
@@ -91,17 +99,44 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
         };
 
         const sortedMessages = sortMessages(responceMessages);
-        dispatch(addMessagesToChatRoom(sortedMessages));
+
+        const decryptedMessages = await Promise.all(
+          sortedMessages.map(async message => {
+            if (!isEncryptedMessage(message.message)) {
+              return message;
+            }
+
+            if (!privateChatKey) {
+              throw new Error(strings.noPrivateChatKeyFound);
+            }
+
+            const decryptedMessage = await decryptMessage({
+              privateKey: privateChatKey,
+              passphrase: '',
+              encryptedMessage: message.message,
+            });
+
+            return {
+              ...message,
+              message: decryptedMessage,
+            };
+          }),
+        );
+        dispatch(addMessagesToChatRoom(decryptedMessages));
 
         return () => {
           setCurrentActiveChatId(null);
         };
       } catch (error) {
-        console.log(strings.errorFetchingMessages, error);
+        const currentError = error as Error;
+        ErrorNotificationHandler({
+          text1: currentError.message || strings.messageDisplayError,
+          type: EPopupType.ERROR,
+        });
       }
     };
     getMessages();
-  }, [chatId, dispatch, setCurrentActiveChatId, token]);
+  }, [chatId, privateChatKey, token, dispatch, setCurrentActiveChatId]);
 
   const onLeaveChatRoom = async () => {
     try {
@@ -163,7 +198,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
 
   return {
     messages,
-    participantId,
+    participantId: interlocutorId,
     chatRoomOptions,
     flatListRef,
   };

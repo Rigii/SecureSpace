@@ -11,7 +11,7 @@ import {
 } from '../../services/ErrorNotificationHandler';
 import {AxiosError} from 'axios';
 import {IHttpExceptionResponse} from '../../services/xhr-services/xhr.types';
-import {generatePGPKeyPair} from '../../services/pgp-service/generate-keys';
+import {generatePGPKeyPair} from '../../services/pgp-encryption-service/generate-keys';
 import {useDispatch} from 'react-redux';
 import {createUserChatsAccount} from '../../app/store/state/userChatAccount/userChatAccountAction';
 import {IInvitations} from '../../app/store/state/userChatAccount/userChatAccount.types';

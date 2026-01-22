@@ -167,7 +167,6 @@ export const sendChatRoomMessage = (
     console.error(strings.wSConnectionNotEstablished);
     return;
   }
-  console.log(22222222222);
 
   socket.emit(
     socketMessageNamespaces.CHAT_ROOM_MESSAGE,
