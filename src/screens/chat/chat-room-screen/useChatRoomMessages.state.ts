@@ -29,7 +29,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   );
 
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
-  const {interlocutorId, privateChatKey, publicChatKey} = useReduxSelector(
+  const {interlocutorId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
   const {messages} = userChatRooms[chatId] || {messages: []};
@@ -124,14 +124,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       }
     };
     getMessages();
-  }, [
-    chatId,
-    privateChatKey,
-    token,
-    dispatch,
-    setCurrentActiveChatId,
-    publicChatKey,
-  ]);
+  }, [chatId, privateChatKey, token, dispatch, setCurrentActiveChatId]);
 
   const onLeaveChatRoom = async () => {
     try {

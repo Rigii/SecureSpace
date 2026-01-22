@@ -6,6 +6,7 @@ import {strings} from '../../../services/context/chat/chat-provider.strings';
 import {socketEventStatus} from '../../../services/context/chat/chat-context.constants';
 import {useDispatch} from 'react-redux';
 import {addMessageToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {decryptMessage} from '../../../services/pgp-encryption-service/encrypt-decrypt-message';
 
 interface IChatRoomSocketState {
   chatId: string;
@@ -15,7 +16,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const [publicKeys, setPublicKeys] = useState<string[]>([]);
   const dispatch = useDispatch();
 
-  const {interlocutorId} = useReduxSelector(
+  const {interlocutorId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
 
@@ -48,7 +49,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
 
     currentChatSocket.on(
       socketEventStatus.CHAT_ROOM_MESSAGE,
-      (messageObject: {
+      async (messageObject: {
         id: string;
         participantId: string;
         senderNikName: string;
@@ -73,7 +74,15 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
           voiceMessageUrl: messageObject.voiceMessageUrl,
         };
 
-        dispatch(addMessageToChatRoom(storeData));
+        const decryptedMessage = await decryptMessage({
+          privateKey: privateChatKey,
+          passphrase: '',
+          encryptedMessage: storeData.message,
+        });
+
+        dispatch(
+          addMessageToChatRoom({...storeData, message: decryptedMessage}),
+        );
       },
     );
 
@@ -81,7 +90,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       currentChatSocket.disconnect();
       currentChatSocket.removeAllListeners();
     };
-  }, [chatId, interlocutorId, dispatch]);
+  }, [chatId, interlocutorId, privateChatKey, dispatch]);
 
   return {publicKeys};
 };
