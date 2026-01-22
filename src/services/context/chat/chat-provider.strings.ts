@@ -13,9 +13,11 @@ export const strings = {
   findRoomInChatList: 'You could find it in the chat list',
   chatInvitationDeclined: 'Invitation Declined',
   chatInvitationAccepted: 'Invitation Accepted',
-  errorFetchingMessages: 'Error fetching messages:',
+  messageDisplayError: 'Messages display error',
   errorLeavingChatRoom: 'Error leaving chat room:',
   enterYourMessage: 'Enter your message',
   chatRoomNotFound: 'Chat room not found',
   errorDeletingChatRoom: 'Error deleting chat room:',
+  noPrivateChatKeyFound:
+    "Can't decrypt the messages. No private chat key found",
 };

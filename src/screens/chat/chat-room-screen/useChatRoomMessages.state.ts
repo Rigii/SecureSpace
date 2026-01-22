@@ -13,6 +13,10 @@ import {
   decryptMessage,
   isEncryptedMessage,
 } from '../../../services/pgp-encryption-service/encrypt-decrypt-message';
+import {
+  EPopupType,
+  ErrorNotificationHandler,
+} from '../../../services/ErrorNotificationHandler';
 
 interface IChatRoomMessagesState {
   chatId: string;
@@ -102,6 +106,10 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
               return message;
             }
 
+            if (!privateChatKey) {
+              throw new Error(strings.noPrivateChatKeyFound);
+            }
+
             const decryptedMessage = await decryptMessage({
               privateKey: privateChatKey,
               passphrase: '',
@@ -120,7 +128,11 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           setCurrentActiveChatId(null);
         };
       } catch (error) {
-        console.log(strings.errorFetchingMessages, error);
+        const currentError = error as Error;
+        ErrorNotificationHandler({
+          text1: currentError.message || strings.messageDisplayError,
+          type: EPopupType.ERROR,
+        });
       }
     };
     getMessages();
