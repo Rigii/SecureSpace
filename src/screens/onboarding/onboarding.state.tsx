@@ -97,8 +97,8 @@ export const useOnboardingFlowState = () => {
       await storeSecretKeychain({
         email: userAccountData.email,
         password: values.keyPassword,
-        publicKeyDbUuid: response.data?.newPublicKeysData?.id,
-        devicePrivateKey: userKeys.privateKey,
+        uuid: response.data?.newPublicKeysData?.id,
+        privateKey: userKeys.privateKey,
         type: EKeychainSectets.devicePrivateKey,
       });
 

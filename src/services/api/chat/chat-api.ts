@@ -1,3 +1,4 @@
+import {IInvitations} from '../../../app/store/state/userChatAccount/userChatAccount.types';
 import {postData} from '../../xhr-services/api-service';
 
 const CREATE_CHAT_USER_URL = '/chat/create-chat-user';
@@ -12,7 +13,17 @@ export const createChatUserApi = async (
     publicChatKey: string;
   },
   token: string,
-) => postData(token, CREATE_CHAT_USER_URL, chatUserData);
+): Promise<{
+  data: {
+    public_chat_key: string;
+    chat_account_id: string;
+    interlocutor_id: string;
+    created: Date;
+    updated: Date;
+    email: string;
+    invitations: IInvitations[];
+  };
+}> => postData(token, CREATE_CHAT_USER_URL, chatUserData);
 
 export const getChatUserApi = async (ownerId: string, token: string) =>
   postData(token, GET_CHAT_USER_URL, {ownerId});

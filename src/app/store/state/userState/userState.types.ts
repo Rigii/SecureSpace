@@ -42,6 +42,7 @@ export interface IUserState {
 
 export interface IDeviceKeyData {
   devicePrivateKey: string;
+  devicePublicKey?: string;
   keyUUID: string;
   date: Timestamp | null;
   email: string;

@@ -15,6 +15,10 @@ import {generatePGPKeyPair} from '../../services/pgp-encryption-service/generate
 import {useDispatch} from 'react-redux';
 import {createUserChatsAccount} from '../../app/store/state/userChatAccount/userChatAccountAction';
 import {IInvitations} from '../../app/store/state/userChatAccount/userChatAccount.types';
+import {
+  EKeychainSectets,
+  storeSecretKeychain,
+} from '../../services/secrets-keychains/store-secret-keychain';
 
 export const CreateChatAccount = () => {
   const {token, id, email, name} = useReduxSelector(
@@ -34,6 +38,14 @@ export const CreateChatAccount = () => {
         {ownerEmail: email, ownerId: id, publicChatKey: userKeys.publicKey},
         token,
       );
+
+      await storeSecretKeychain({
+        email: email,
+        password: '',
+        uuid: response.data.interlocutor_id,
+        privateKey: userKeys.privateKey,
+        type: EKeychainSectets.chatPrivateKey,
+      });
 
       const storeData = {
         interlocutorId: response.data.interlocutor_id as string,

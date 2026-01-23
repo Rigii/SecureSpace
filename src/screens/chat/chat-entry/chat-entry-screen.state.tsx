@@ -13,6 +13,10 @@ import {
 } from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {ITopBarMenuActions} from '../../../HOC/combined-bar-component/combined-component';
+import {
+  EKeychainSectets,
+  getSecretKeychain,
+} from '../../../services/secrets-keychains/store-secret-keychain';
 
 export const ChatEntryScreenState = ({
   injectActions,
@@ -63,6 +67,13 @@ export const ChatEntryScreenState = ({
       }
 
       const response = await getChatUserApi(id, token);
+
+      const currentPublicKey = await getSecretKeychain({
+        type: EKeychainSectets.chatPrivateKey,
+        encryptKeyDataPassword: '',
+        email: response.data.email,
+      });
+
       const storeData = {
         interlocutorId: response.data.interlocutor_id as string,
         chatAccountId: response.data.chat_account_id as string,
@@ -71,7 +82,7 @@ export const ChatEntryScreenState = ({
         email: response.data.email as string,
         chatRoomIds: response.data.chat_room_ids as IChatRoomId[],
         invitations: response.data.invitations as IInvitations[],
-        publicChatKey: response.data.public_chat_key as string,
+        publicChatKey: currentPublicKey,
       };
 
       dispatch(updateUserChatsAccountSlice(storeData));

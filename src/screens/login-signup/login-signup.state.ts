@@ -105,6 +105,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       };
 
       dispatch(setUser(fullUserData));
+      //TODO: Get user chat key file data
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {
