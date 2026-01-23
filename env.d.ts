@@ -11,4 +11,7 @@ declare module '@env' {
   export const PUSHER_APP_ID: string;
   export const PUSHER_APP_KEY: string;
   export const PUSHER_AUTH_ENDPOINT: string;
+  export const APP_NAME: string;
+  export const MODE: string;
+  export const ROOT_DIRECTORY: string;
 }
