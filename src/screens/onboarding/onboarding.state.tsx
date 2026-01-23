@@ -17,7 +17,6 @@ import {
 import {generatePGPKeyPair} from '../../services/pgp-encryption-service/generate-keys';
 import {getTime} from 'date-fns';
 import {Platform} from 'react-native';
-import {generateDeviceDataKeyFile} from '../../services/pgp-encryption-service/create-key-file';
 import {DownloadKey} from './onboarding-cases/download-key';
 import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
 
@@ -25,6 +24,8 @@ import {
   EKeychainSectets,
   storeSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
+import {generateEncryptionKeyFile} from '../../services/file-content/create-key-file';
+import {EAvailableFilePathNames} from '../../services/file-content/types';
 
 export const useOnboardingFlowState = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -46,11 +47,12 @@ export const useOnboardingFlowState = () => {
     keyUUID: string;
     devicePrivateKey: string;
   }) => {
-    await generateDeviceDataKeyFile({
+    await generateEncryptionKeyFile({
       email,
       uuid: keyUUID,
       privateKey: devicePrivateKey,
       encryptKeyDataPassword: password,
+      filePathName: EAvailableFilePathNames.APP_KEYS,
     });
   };
 

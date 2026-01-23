@@ -1,6 +1,6 @@
 import RNFS from 'react-native-fs';
-import {decryptPrivateKeyBlock} from './encrypt-pkey-block';
-import {ICertificateData} from './types';
+import {decryptPrivateKeyBlock} from '../pgp-encryption-service/encrypt-pkey-block';
+import {ICertificateData} from '../pgp-encryption-service/types';
 
 export const readKeyFile = async ({
   filePath,
