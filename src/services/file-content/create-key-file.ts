@@ -2,8 +2,9 @@ import RNFS from 'react-native-fs';
 import {encryptPrivateKeyBlock} from '../pgp-encryption-service/encrypt-pkey-block';
 import {ensureDir, getKeysDir} from './helpers';
 import {EAvailableFilePathNames} from './types';
+import {fileNames} from './constants';
 
-export const generateEncryptionKeyFile = async ({
+export const generateKeyFile = async ({
   email,
   uuid,
   privateKey,
@@ -27,7 +28,7 @@ export const generateEncryptionKeyFile = async ({
     encryptKeyDataPassword,
   });
 
-  const path = `${appKeyDir}/key.pgp`;
+  const path = `${appKeyDir}/${fileNames.KEY_FILE}`;
 
   await RNFS.writeFile(path, encryptedData, 'utf8');
   return path;

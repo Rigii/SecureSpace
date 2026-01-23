@@ -24,7 +24,7 @@ import {
   EKeychainSectets,
   storeSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
-import {generateEncryptionKeyFile} from '../../services/file-content/create-key-file';
+import {generateKeyFile} from '../../services/file-content/create-key-file';
 import {EAvailableFilePathNames} from '../../services/file-content/types';
 
 export const useOnboardingFlowState = () => {
@@ -47,7 +47,7 @@ export const useOnboardingFlowState = () => {
     keyUUID: string;
     devicePrivateKey: string;
   }) => {
-    await generateEncryptionKeyFile({
+    await generateKeyFile({
       email,
       uuid: keyUUID,
       privateKey: devicePrivateKey,
