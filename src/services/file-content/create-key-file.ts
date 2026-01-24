@@ -30,7 +30,7 @@ export const generateKeyFile = async ({
     encryptKeyDataPassword,
   });
 
-  const path = `${appKeyDir}/${keyType ? `${keyType}_` : ''}${
+  const path = `${appKeyDir}/${email}_${keyType ? `${keyType}_` : ''}${
     fileNames.KEY_FILE
   }`;
 
