@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, FlatList, KeyboardAvoidingView, Platform} from 'react-native';
-import {strings} from '../../../services/context/chat/chat-provider.strings';
+import {strings} from '../../../context/chat/chat-provider.strings';
 import ComponentsTopBar from '../../../components/top-bar/components-top-bar/components-top-bar';
 import {ChatMessage} from '../../../components/chat-room-components/chat-message.component';
 import ChatInput from '../../../components/chat-room-components/chat-input.component';

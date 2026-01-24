@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {SafeAreaView} from 'react-native';
 import {EnvelopeIcon} from '../../assets/icons/evenlopeIcon';
-import {ChatSocketProviderContext} from '../../services/context/chat/chat-context-provider';
+import {ChatSocketProviderContext} from '../../context/chat/chat-provider.context';
 import {Input, KeyboardTypes} from '../input';
 import {strings} from '../create-update-chat/create-chat-form.strings';
 import {

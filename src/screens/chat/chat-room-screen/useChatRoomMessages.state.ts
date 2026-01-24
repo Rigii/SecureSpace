@@ -1,8 +1,8 @@
 import {useContext, useEffect, useRef} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
 import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
-import {strings} from '../../../services/context/chat/chat-provider.strings';
-import {ChatSocketProviderContext} from '../../../services/context/chat/chat-context-provider';
+import {strings} from '../../../context/chat/chat-provider.strings';
+import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
 import {useDispatch} from 'react-redux';
 import {addMessagesToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {getChatRoomMessages} from '../../../services/api/chat/chat-api';

@@ -7,7 +7,7 @@ import {Provider} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {Text, View} from 'react-native';
 import {asyncStorageLogger} from '../services/custom-services';
-import {ChatSocketProvider} from '../services/context/chat/chat-context-provider';
+import {ChatSocketProvider} from '../context/chat/chat-provider.context';
 
 (global as any).asyncStorageLogger = asyncStorageLogger; // For asyncStorage debugging
 
