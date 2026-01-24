@@ -4,10 +4,10 @@ import {Title1, Title3} from '../../components/text-titles/title';
 import {strings} from './upload-keys.string';
 import {Input, KeyboardTypes} from '../../components/input';
 import {ThemedButton} from '../../components/themed-button';
-import {
-  EKeychainSectets,
-  getSecretKeychain,
-} from '../../services/secrets-keychains/store-secret-keychain';
+// import {
+//   EKeychainSectets,
+//   getSecretKeychain,
+// } from '../../services/secrets-keychains/store-secret-keychain';
 import {useReduxSelector} from '../../app/store/store';
 import {
   EPopupType,
@@ -28,12 +28,14 @@ import OpenPGP from 'react-native-fast-openpgp';
 
 import {addPgpDeviceKeyData} from '../../app/store/state/userState/userAction';
 import {IDeviceKeyData} from '../../app/store/state/userState/userState.types';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 
 export const UploadKey = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'uploadKey'>>();
 
-  const {fetchedAllUserDevicePublicKeys} = route.params;
+  const {publicKey, keyRecordId, keyRecordDate} = route.params;
 
   const dispatch = useDispatch();
 
@@ -52,14 +54,41 @@ export const UploadKey = () => {
   const navigateSettings = () =>
     navigation.navigate(manualEncryptionScreenRoutes.accountSettings);
 
-  const checkPrivatePublickKeysCompatabillity = async ({
-    publicKey,
+  const pickPrivateKeyFile = async (): Promise<string | null> => {
+    try {
+      const res = await DocumentPicker.pickSingle({
+        type: [DocumentPicker.types.plainText, DocumentPicker.types.allFiles],
+        copyTo: 'cachesDirectory',
+      });
+
+      const fileUri = res.fileCopyUri ?? res.uri;
+
+      if (!fileUri) {
+        throw new Error('Cannot access selected file');
+      }
+
+      const content = await RNFS.readFile(
+        fileUri.replace('file://', ''),
+        'utf8',
+      );
+
+      return content;
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        return null;
+      }
+      throw err;
+    }
+  };
+
+  const checkPrivatePublicKeysCompatabillity = async ({
+    thisPublicKey,
     privateKey,
   }: {
-    publicKey: string;
+    thisPublicKey: string;
     privateKey: string;
   }) => {
-    const publicKeyMetadata = await OpenPGP.getPublicKeyMetadata(publicKey);
+    const publicKeyMetadata = await OpenPGP.getPublicKeyMetadata(thisPublicKey);
     const privateKeyMetadata = await OpenPGP.getPrivateKeyMetadata(privateKey);
 
     return publicKeyMetadata.keyID === privateKeyMetadata.keyID;
@@ -67,32 +96,33 @@ export const UploadKey = () => {
 
   const onSubmit = async () => {
     try {
-      const keysData = await getSecretKeychain({
-        type: EKeychainSectets.devicePrivateKey,
-        encryptKeyDataPassword: keyPassword,
-        email,
-      });
+      const keyData = await pickPrivateKeyFile();
 
-      if (keysData === null) {
+      if (!keyData) {
         throw new Error(strings.noDeviceKeyData);
       }
 
-      const compatiblePublicKeyData = fetchedAllUserDevicePublicKeys.find(
-        keyData =>
-          checkPrivatePublickKeysCompatabillity({
-            privateKey: keysData,
-            publicKey: keyData.public_key,
-          }),
-      );
+      if (keyData === null) {
+        throw new Error(strings.noDeviceKeyData);
+      }
+
+      const compatiblePublicKeyData =
+        (await checkPrivatePublicKeysCompatabillity({
+          privateKey: keyData,
+          thisPublicKey: publicKey,
+        }))
+          ? publicKey
+          : null;
+
       if (!compatiblePublicKeyData) {
         return;
       }
 
       const newPgpDeviceKeyData = {
         ...pgpDeviceKeyData,
-        devicePrivateKey: keysData,
-        keyUUID: compatiblePublicKeyData.id,
-        date: compatiblePublicKeyData.created,
+        devicePrivateKey: keyData,
+        keyUUID: keyRecordId,
+        date: keyRecordDate,
         email: email,
         approved: true,
       } as unknown as IDeviceKeyData;

@@ -39,26 +39,30 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
 
   const onGoogleSignUp = async () => {
     console.log('Check Google Sign Up');
-    // try {
-    //   setLoading(true);
-    //   await signInUser(userAdapter, false);
-    // } catch (error) {
-    //   console.error('Sign Up Error', error);
-    // }
   };
 
-  const proceedUserAuthData = (user: IFetchedUserAuthData) => {
+  const proceedUserAuthData = async (user: IFetchedUserAuthData) => {
     if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
       return;
-      // Redirect here
     }
 
     if (!devicePrivateKey) {
+      const currentKeychainPrivateKey = await getSecretKeychain({
+        type: EKeychainSectets.chatPrivateKey,
+        encryptKeyDataPassword: '',
+        email: user.email,
+      });
+      if (currentKeychainPrivateKey) {
+        return;
+      }
       const fetchedAllUserDevicePublicKeys =
         user.user_info?.data_secrets.user_public_keys;
+
       navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
-        fetchedAllUserDevicePublicKeys,
+        publicKey: fetchedAllUserDevicePublicKeys[0].public_key,
+        keyRecordId: fetchedAllUserDevicePublicKeys[0].id,
+        keyRecordDate: fetchedAllUserDevicePublicKeys[0].created,
       });
       return;
     }

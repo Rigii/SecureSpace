@@ -77,6 +77,15 @@ export const ChatEntryScreenState = ({
           email: response.data.email,
         });
 
+        // if (!currentPrivateKey) {
+        //   navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
+        //     publicKey: response.data.public_chat_key as string,
+        //     keyRecordId: response.data.key_record_id as string,
+        //     keyRecordDate: response.data.key_record_date as string,
+        //   });
+        //   return;
+        // }
+
         const storeData = {
           interlocutorId: response.data.interlocutor_id as string,
           chatAccountId: response.data.chat_account_id as string,
@@ -97,7 +106,7 @@ export const ChatEntryScreenState = ({
     }
 
     fetchData();
-  }, [chatAccountId, id, token, privateChatKey, dispatch]);
+  }, [chatAccountId, id, token, privateChatKey, dispatch, navigation]);
 
   return {accountId: chatAccountId, publicChatKey};
 };
