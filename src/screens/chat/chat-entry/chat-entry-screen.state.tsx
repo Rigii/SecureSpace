@@ -73,7 +73,7 @@ export const ChatEntryScreenState = ({
         encryptKeyDataPassword: '',
         email: response.data.email,
       });
-
+      console.log(11111, currentPublicKey);
       const storeData = {
         interlocutorId: response.data.interlocutor_id as string,
         chatAccountId: response.data.chat_account_id as string,

@@ -60,6 +60,9 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           token,
         });
 
+        if (!roomMessagesResponce?.data || !roomMessagesResponce?.data.length) {
+          return;
+        }
         const responceMessages: IChatMessage[] = roomMessagesResponce?.data.map(
           (messageObject: {
             id: string;
@@ -73,16 +76,16 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
             created: string;
             updated: string;
           }) => ({
-            id: messageObject.id,
-            message: messageObject.message,
-            created: new Date(messageObject.created).toLocaleString(),
-            updated: new Date(messageObject.updated).toLocaleString(),
-            senderNikName: messageObject.senderNikName,
-            participantId: messageObject.participantId,
-            chatRoomId: messageObject.chatRoomId,
+            id: messageObject?.id,
+            message: messageObject?.message,
+            created: new Date(messageObject?.created).toLocaleString(),
+            updated: new Date(messageObject?.updated).toLocaleString(),
+            senderNikName: messageObject?.senderNikName,
+            participantId: messageObject?.participantId,
+            chatRoomId: messageObject?.chatRoomId,
             isAdmin: false,
-            mediaUrl: messageObject.mediaUrl,
-            voiceMessageUrl: messageObject.voiceMessageUrl,
+            mediaUrl: messageObject?.mediaUrl,
+            voiceMessageUrl: messageObject?.voiceMessageUrl,
           }),
         );
 
@@ -129,6 +132,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
         };
       } catch (error) {
         const currentError = error as Error;
+        console.error(currentError);
         ErrorNotificationHandler({
           text1: currentError.message || strings.messageDisplayError,
           type: EPopupType.ERROR,
