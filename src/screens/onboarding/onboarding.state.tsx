@@ -53,6 +53,7 @@ export const useOnboardingFlowState = () => {
       privateKey: devicePrivateKey,
       encryptKeyDataPassword: password,
       filePathName: EAvailableFilePathNames.APP_KEYS,
+      keyType: 'app',
     });
   };
 
