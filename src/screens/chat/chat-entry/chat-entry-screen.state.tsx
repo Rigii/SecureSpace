@@ -69,9 +69,6 @@ export const ChatEntryScreenState = ({
           return;
         }
 
-        if (!chatAccountId) {
-          retrun;
-        }
         const response = await getChatUserApi(id, token);
 
         const currentPrivateKey = await getSecretKeychain({

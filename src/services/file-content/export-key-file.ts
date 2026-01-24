@@ -4,35 +4,58 @@ import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
 import Share from 'react-native-share';
 
-export type ExportResult =
-  | {platform: 'ios'; exported: true}
-  | {platform: 'android'; exported: true; path: string}
+export type TExportResult =
+  | {
+      exported: true;
+      platform: 'ios' | 'android';
+      path: string; // where file lives
+      via: 'user-choice' | 'default';
+    }
   | {exported: false};
 
 export const exportKeyFileWithUserChoice = async (
   localFilePath: string,
   fileName: string,
-): Promise<ExportResult> => {
-  console.log(4444, localFilePath);
-
-  console.log(5555, Platform.OS);
+): Promise<TExportResult> => {
+  // localFilePath is already in default directory
   if (Platform.OS === 'ios') {
-    // iOS: Save to Files dialog
-    await Share.open({
-      url: `file://${localFilePath}`,
-      type: 'text/plain',
-      title: 'Save encrypted key file',
-      saveToFiles: true,
-    });
-    console.log(7777, {platform: 'ios', exported: true});
-    return {platform: 'ios', exported: true};
+    try {
+      await Share.open({
+        url: `file://${localFilePath}`,
+        type: 'text/plain',
+        title: 'Save encrypted key file',
+        saveToFiles: true,
+      });
+
+      // iOS copies the file, original stays
+      return {
+        exported: true,
+        platform: 'ios',
+        path: localFilePath,
+        via: 'user-choice',
+      };
+    } catch (e) {
+      // User canceled share sheet
+      return {
+        exported: true,
+        platform: 'ios',
+        path: localFilePath,
+        via: 'default',
+      };
+    }
   }
 
   // ANDROID
   try {
     const dir = await DocumentPicker.pickDirectory();
+
     if (!dir) {
-      return {exported: false};
+      return {
+        exported: true,
+        platform: 'android',
+        path: localFilePath,
+        via: 'default',
+      };
     }
 
     const content = await RNFS.readFile(localFilePath, 'utf8');
@@ -41,13 +64,19 @@ export const exportKeyFileWithUserChoice = async (
     await RNFS.writeFile(targetPath, content, 'utf8');
 
     return {
-      platform: 'android',
       exported: true,
+      platform: 'android',
       path: targetPath,
+      via: 'user-choice',
     };
   } catch (e) {
     if (DocumentPicker.isCancel(e)) {
-      return {exported: false};
+      return {
+        exported: true,
+        platform: 'android',
+        path: localFilePath,
+        via: 'default',
+      };
     }
     throw e;
   }
