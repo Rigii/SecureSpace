@@ -24,4 +24,5 @@ export const strings = {
   tooLong: 'Too Long!',
   required: 'Required',
   invalidEmail: 'Invalid email',
+  keyExported: 'Key exported:',
 };

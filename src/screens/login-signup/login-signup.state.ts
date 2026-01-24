@@ -13,6 +13,10 @@ import {updateUserChatsAccountSlice} from '../../app/store/state/userChatAccount
 import {addUserChatRooms} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
 import {useReduxSelector} from '../../app/store/store';
+import {
+  EKeychainSectets,
+  getSecretKeychain,
+} from '../../services/secrets-keychains/store-secret-keychain';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
@@ -35,26 +39,30 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
 
   const onGoogleSignUp = async () => {
     console.log('Check Google Sign Up');
-    // try {
-    //   setLoading(true);
-    //   await signInUser(userAdapter, false);
-    // } catch (error) {
-    //   console.error('Sign Up Error', error);
-    // }
   };
 
-  const proceedUserAuthData = (user: IFetchedUserAuthData) => {
+  const proceedUserAuthData = async (user: IFetchedUserAuthData) => {
     if (!user.user_info) {
       navigation.navigate(manualEncryptionScreenRoutes.onboarding);
       return;
-      // Redirect here
     }
 
     if (!devicePrivateKey) {
+      const currentKeychainPrivateKey = await getSecretKeychain({
+        type: EKeychainSectets.chatPrivateKey,
+        encryptKeyDataPassword: '',
+        email: user.email,
+      });
+      if (currentKeychainPrivateKey) {
+        return;
+      }
       const fetchedAllUserDevicePublicKeys =
         user.user_info?.data_secrets.user_public_keys;
+
       navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
-        fetchedAllUserDevicePublicKeys,
+        publicKey: fetchedAllUserDevicePublicKeys[0].public_key,
+        keyRecordId: fetchedAllUserDevicePublicKeys[0].id,
+        keyRecordDate: fetchedAllUserDevicePublicKeys[0].created,
       });
       return;
     }
@@ -105,6 +113,11 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       };
 
       dispatch(setUser(fullUserData));
+      const currentPrivateKey = await getSecretKeychain({
+        type: EKeychainSectets.chatPrivateKey,
+        encryptKeyDataPassword: '',
+        email: user.email,
+      });
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {
@@ -114,6 +127,8 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
           created: userChats?.created,
           updated: userChats?.updated,
           invitations: userChats?.invitations,
+          publicChatKey: userChats?.public_chat_key,
+          privateChatKey: currentPrivateKey,
         };
 
         dispatch(updateUserChatsAccountSlice(chatAccountData));

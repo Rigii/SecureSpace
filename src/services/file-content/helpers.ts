@@ -19,6 +19,7 @@ export const getKeysDir = (
   const dirMap = {
     [EAvailableFilePathNames.APP_KEYS]: getAppKeysDir(uuid),
     [EAvailableFilePathNames.CHAT_KEYS]: getChatKeysDir(uuid),
+    [EAvailableFilePathNames.LIBRARY]: getUserKeysDir(uuid),
   };
 
   return dirMap[filePathName];

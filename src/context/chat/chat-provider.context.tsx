@@ -8,23 +8,23 @@ import {
   joinChatRoomSocket,
   leaveChatRoomSocket,
   sendChatRoomMessage,
-} from '../../sockets/chat/chat.socket';
-import {ICreateChatRoom} from '../../sockets/chat/chat-api.types';
-import {useReduxSelector} from '../../../app/store/store';
+} from '../../services/sockets/chat/chat.socket';
+import {ICreateChatRoom} from '../../services/sockets/chat/chat-api.types';
+import {useReduxSelector} from '../../app/store/store';
 import {strings} from './chat-provider.strings';
-import {socketEventStatus} from './chat-context.constants';
+import {socketEventStatus} from './chat-provider.constants';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../ErrorNotificationHandler';
-import {getChatRoomsData} from '../../api/chat/chat-api';
+} from '../../services/ErrorNotificationHandler';
+import {getChatRoomsData} from '../../services/api/chat/chat-api';
 import {useDispatch} from 'react-redux';
 import {
   addNewChatRoom,
   deleteChatRoomLocalData,
   updateChatRoom,
-} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
-import {IFetchedChatRoom} from '../../../screens/login-signup/login-sign-up.types';
+} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {IFetchedChatRoom} from '../../screens/login-signup/login-sign-up.types';
 
 export const ChatSocketProviderContext = createContext<{
   socket: Socket | null;

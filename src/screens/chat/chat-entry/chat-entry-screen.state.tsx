@@ -13,6 +13,12 @@ import {
 } from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {ITopBarMenuActions} from '../../../HOC/combined-bar-component/combined-component';
+import {
+  EKeychainSectets,
+  getSecretKeychain,
+} from '../../../services/secrets-keychains/store-secret-keychain';
+import {menuActionIds} from './constants';
+import {strings} from './strings';
 
 export const ChatEntryScreenState = ({
   injectActions,
@@ -24,7 +30,7 @@ export const ChatEntryScreenState = ({
   const {id, token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
-  const {chatAccountId, publicChatKey} = useReduxSelector(
+  const {chatAccountId, publicChatKey, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
 
@@ -35,20 +41,20 @@ export const ChatEntryScreenState = ({
 
     const menuActions = [
       {
-        id: 'chatListSearch',
-        label: 'Search',
+        id: menuActionIds.SEARCH,
+        label: strings.search,
         icon: '',
         action: () => null,
       },
       {
-        id: 'chatListCreateRoom',
-        label: 'Create Room',
+        id: menuActionIds.CREATE_ROOM,
+        label: strings.createRoom,
         icon: '',
         action: onCreateChatRoom,
       },
       {
-        id: 'chatListSettings',
-        label: 'Account & Settings',
+        id: menuActionIds.SETTINGS,
+        label: strings.settings,
         icon: '',
         action: () => null,
       },
@@ -58,27 +64,40 @@ export const ChatEntryScreenState = ({
 
   useEffect(() => {
     async function fetchData() {
-      if (!!chatAccountId && !!publicChatKey) {
-        return;
+      try {
+        if (!!chatAccountId && !!privateChatKey) {
+          return;
+        }
+
+        const response = await getChatUserApi(id, token);
+
+        const currentPrivateKey = await getSecretKeychain({
+          type: EKeychainSectets.chatPrivateKey,
+          encryptKeyDataPassword: '',
+          email: response.data.email,
+        });
+
+        const storeData = {
+          interlocutorId: response.data.interlocutor_id as string,
+          chatAccountId: response.data.chat_account_id as string,
+          created: response.data.created as Date,
+          updated: response.data.updated as Date,
+          email: response.data.email as string,
+          chatRoomIds: response.data.chat_room_ids as IChatRoomId[],
+          invitations: response.data.invitations as IInvitations[],
+          publicChatKey: response.data.public_chat_key as string,
+          privateChatKey: currentPrivateKey,
+        };
+
+        dispatch(updateUserChatsAccountSlice(storeData));
+      } catch (error) {
+        const currentError = error as Error;
+        console.error(currentError);
       }
-
-      const response = await getChatUserApi(id, token);
-      const storeData = {
-        interlocutorId: response.data.interlocutor_id as string,
-        chatAccountId: response.data.chat_account_id as string,
-        created: response.data.created as Date,
-        updated: response.data.updated as Date,
-        email: response.data.email as string,
-        chatRoomIds: response.data.chat_room_ids as IChatRoomId[],
-        invitations: response.data.invitations as IInvitations[],
-        publicChatKey: response.data.public_chat_key as string,
-      };
-
-      dispatch(updateUserChatsAccountSlice(storeData));
     }
 
     fetchData();
-  }, [chatAccountId, id, token, publicChatKey, dispatch]);
+  }, [chatAccountId, id, token, privateChatKey, dispatch, navigation]);
 
   return {accountId: chatAccountId, publicChatKey};
 };

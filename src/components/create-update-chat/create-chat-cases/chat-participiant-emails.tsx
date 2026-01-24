@@ -33,9 +33,10 @@ export const ChatParticipiantEmails: React.FC<{
     if (inputIndex === undefined || !name) {
       return;
     }
+    const lowerCasedValue = value.toLowerCase();
     updateEmailArray(array => {
       const newArray = [...array];
-      newArray[inputIndex] = value;
+      newArray[inputIndex] = lowerCasedValue;
       if (array.length <= inputIndex + 1 && array.length < 3) {
         return [...newArray, ''];
       }

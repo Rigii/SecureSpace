@@ -38,15 +38,9 @@ export type RootStackParamList = {
   chatRoom: {chatId: string; participantId: string};
   accountSettings: undefined;
   uploadKey: {
-    fetchedAllUserDevicePublicKeys: {
-      account_id: string;
-      approved: boolean;
-      created: Date;
-      id: string;
-      os: string;
-      public_key: string;
-      updated: Date;
-    }[];
+    publicKey: string;
+    keyRecordId: string;
+    keyRecordDate?: string;
   };
 };
 

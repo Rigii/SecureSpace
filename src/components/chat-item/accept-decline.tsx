@@ -3,7 +3,7 @@ import {View, TouchableOpacity} from 'react-native';
 import {AcceptIcon} from '../../assets/icons/acceptIcon';
 import {DeclineIcon} from '../../assets/icons/declineIcon';
 import {TextNormal} from '../text-titles/text-styled';
-import {ChatSocketProviderContext} from '../../services/context/chat/chat-context-provider';
+import {ChatSocketProviderContext} from '../../context/chat/chat-provider.context';
 
 interface AcceptDeclineProps {
   chatId: string;

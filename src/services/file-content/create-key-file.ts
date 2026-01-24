@@ -10,12 +10,14 @@ export const generateKeyFile = async ({
   privateKey,
   encryptKeyDataPassword,
   filePathName,
+  keyType,
 }: {
   email: string;
   uuid: string;
   privateKey: string;
   encryptKeyDataPassword: string;
   filePathName: EAvailableFilePathNames;
+  keyType?: 'app' | 'chat';
 }) => {
   const appKeyDir = getKeysDir(uuid, filePathName);
 
@@ -28,7 +30,9 @@ export const generateKeyFile = async ({
     encryptKeyDataPassword,
   });
 
-  const path = `${appKeyDir}/${fileNames.KEY_FILE}`;
+  const path = `${appKeyDir}/${email}_${keyType ? `${keyType}_` : ''}${
+    fileNames.KEY_FILE
+  }`;
 
   await RNFS.writeFile(path, encryptedData, 'utf8');
   return path;

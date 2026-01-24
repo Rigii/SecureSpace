@@ -1,8 +1,8 @@
 import {useContext, useEffect, useRef} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
 import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
-import {strings} from '../../../services/context/chat/chat-provider.strings';
-import {ChatSocketProviderContext} from '../../../services/context/chat/chat-context-provider';
+import {strings} from '../../../context/chat/chat-provider.strings';
+import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
 import {useDispatch} from 'react-redux';
 import {addMessagesToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
@@ -60,6 +60,9 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           token,
         });
 
+        if (!roomMessagesResponce?.data || !roomMessagesResponce?.data.length) {
+          return;
+        }
         const responceMessages: IChatMessage[] = roomMessagesResponce?.data.map(
           (messageObject: {
             id: string;
@@ -73,16 +76,16 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
             created: string;
             updated: string;
           }) => ({
-            id: messageObject.id,
-            message: messageObject.message,
-            created: new Date(messageObject.created).toLocaleString(),
-            updated: new Date(messageObject.updated).toLocaleString(),
-            senderNikName: messageObject.senderNikName,
-            participantId: messageObject.participantId,
-            chatRoomId: messageObject.chatRoomId,
+            id: messageObject?.id,
+            message: messageObject?.message,
+            created: new Date(messageObject?.created).toLocaleString(),
+            updated: new Date(messageObject?.updated).toLocaleString(),
+            senderNikName: messageObject?.senderNikName,
+            participantId: messageObject?.participantId,
+            chatRoomId: messageObject?.chatRoomId,
             isAdmin: false,
-            mediaUrl: messageObject.mediaUrl,
-            voiceMessageUrl: messageObject.voiceMessageUrl,
+            mediaUrl: messageObject?.mediaUrl,
+            voiceMessageUrl: messageObject?.voiceMessageUrl,
           }),
         );
 
@@ -105,7 +108,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
             if (!isEncryptedMessage(message.message)) {
               return message;
             }
-
             if (!privateChatKey) {
               throw new Error(strings.noPrivateChatKeyFound);
             }
@@ -129,6 +131,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
         };
       } catch (error) {
         const currentError = error as Error;
+        console.error(currentError);
         ErrorNotificationHandler({
           text1: currentError.message || strings.messageDisplayError,
           type: EPopupType.ERROR,
@@ -195,7 +198,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       action: onDeleteChatRoom,
     },
   ];
-
   return {
     messages,
     participantId: interlocutorId,
