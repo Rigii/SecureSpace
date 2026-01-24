@@ -69,6 +69,9 @@ export const ChatEntryScreenState = ({
           return;
         }
 
+        if (!chatAccountId) {
+          retrun;
+        }
         const response = await getChatUserApi(id, token);
 
         const currentPrivateKey = await getSecretKeychain({
@@ -76,15 +79,6 @@ export const ChatEntryScreenState = ({
           encryptKeyDataPassword: '',
           email: response.data.email,
         });
-
-        // if (!currentPrivateKey) {
-        //   navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
-        //     publicKey: response.data.public_chat_key as string,
-        //     keyRecordId: response.data.key_record_id as string,
-        //     keyRecordDate: response.data.key_record_date as string,
-        //   });
-        //   return;
-        // }
 
         const storeData = {
           interlocutorId: response.data.interlocutor_id as string,

@@ -1,6 +1,5 @@
 import * as Keychain from 'react-native-keychain';
 import OpenPGP from 'react-native-fast-openpgp';
-import {strings} from './secrets-keychains.strings';
 
 export enum EKeychainSectets {
   devicePrivateKey = 'devicePrivateKey',
@@ -47,7 +46,7 @@ export const getSecretKeychain = async ({
       service: `${type}-${email}`,
     });
     if (!result) {
-      throw new Error(strings.noKeyFound);
+      return '';
     }
 
     const decryptedData = await OpenPGP.decryptSymmetric(
