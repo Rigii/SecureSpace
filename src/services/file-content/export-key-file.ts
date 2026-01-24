@@ -13,6 +13,9 @@ export const exportKeyFileWithUserChoice = async (
   localFilePath: string,
   fileName: string,
 ): Promise<ExportResult> => {
+  console.log(4444, localFilePath);
+
+  console.log(5555, Platform.OS);
   if (Platform.OS === 'ios') {
     // iOS: Save to Files dialog
     await Share.open({
@@ -21,13 +24,16 @@ export const exportKeyFileWithUserChoice = async (
       title: 'Save encrypted key file',
       saveToFiles: true,
     });
-
+    console.log(7777, {platform: 'ios', exported: true});
     return {platform: 'ios', exported: true};
   }
 
   // ANDROID
   try {
     const dir = await DocumentPicker.pickDirectory();
+    if (!dir) {
+      return {exported: false};
+    }
 
     const content = await RNFS.readFile(localFilePath, 'utf8');
     const targetPath = `${dir.uri}/${fileName}`;

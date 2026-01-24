@@ -24,8 +24,7 @@ import {
   EKeychainSectets,
   storeSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
-import {generateKeyFile} from '../../services/file-content/create-key-file';
-import {EAvailableFilePathNames} from '../../services/file-content/types';
+import {saveDeviceKeyWithUserChoice} from '../../services/file-content/save-device-key';
 
 export const useOnboardingFlowState = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -35,27 +34,6 @@ export const useOnboardingFlowState = () => {
   );
   const formState = useReduxSelector(state => state.onboardingFormReducer);
   const dispatch = useDispatch();
-
-  const saveKeyOnDevice = async ({
-    email,
-    password,
-    keyUUID,
-    devicePrivateKey,
-  }: {
-    email: string;
-    password: string;
-    keyUUID: string;
-    devicePrivateKey: string;
-  }) => {
-    await generateKeyFile({
-      email,
-      uuid: keyUUID,
-      privateKey: devicePrivateKey,
-      encryptKeyDataPassword: password,
-      filePathName: EAvailableFilePathNames.APP_KEYS,
-      keyType: 'app',
-    });
-  };
 
   const onSubmit = async (values: IOnboardingFormValues) => {
     const userKeys = await generatePGPKeyPair({
@@ -103,14 +81,14 @@ export const useOnboardingFlowState = () => {
         type: EKeychainSectets.devicePrivateKey,
       });
 
-      if (values.saveKeyOnDevice) {
-        await saveKeyOnDevice({
-          email: userAccountData.email,
-          password: values.keyPassword,
-          keyUUID: response.data?.newPublicKeysData?.id,
-          devicePrivateKey: userKeys.privateKey,
-        });
-      }
+      /* Storing Master Private Key in the file system */
+      await saveDeviceKeyWithUserChoice({
+        email: userAccountData.email,
+        uuid: response.data?.newPublicKeysData?.id,
+        privateKey: userKeys.privateKey,
+        encryptKeyDataPassword: values.keyPassword,
+        keyType: 'app',
+      });
 
       const pgpDeviceKeyData = {
         devicePrivateKey: userKeys.privateKey,

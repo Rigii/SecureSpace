@@ -1096,6 +1096,10 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - RNShare (12.2.4):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - RNSVG (15.1.0):
     - React-Core
   - RNVectorIcons (10.0.3):
@@ -1169,6 +1173,7 @@ DEPENDENCIES:
   - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -1301,6 +1306,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -1371,6 +1378,7 @@ SPEC CHECKSUMS:
   RNKeychain: dbedb46c405973c0653c5dbf9274a18f259048a5
   RNReanimated: cda86f679be55726ad9f32b3180f3dcb985abeae
   RNScreens: 8d1521c6e375a79dbd4525efaf21704cc64ac0cf
+  RNShare: 88eb067d133340c3bf8b771eb723b9b570790026
   RNSVG: a31e321979e3001f56ba9331d10ac917f8ad1851
   RNVectorIcons: ff027ab4234109f91d261fbceae7f0bf95dcc479
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
