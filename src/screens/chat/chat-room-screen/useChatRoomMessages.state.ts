@@ -108,7 +108,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
             if (!isEncryptedMessage(message.message)) {
               return message;
             }
-
             if (!privateChatKey) {
               throw new Error(strings.noPrivateChatKeyFound);
             }
@@ -199,7 +198,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       action: onDeleteChatRoom,
     },
   ];
-
   return {
     messages,
     participantId: interlocutorId,

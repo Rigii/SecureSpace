@@ -13,6 +13,10 @@ import {updateUserChatsAccountSlice} from '../../app/store/state/userChatAccount
 import {addUserChatRooms} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
 import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
 import {useReduxSelector} from '../../app/store/store';
+import {
+  EKeychainSectets,
+  getSecretKeychain,
+} from '../../services/secrets-keychains/store-secret-keychain';
 
 export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
@@ -105,7 +109,11 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       };
 
       dispatch(setUser(fullUserData));
-      //TODO: Get user chat key file data
+      const currentPrivateKey = await getSecretKeychain({
+        type: EKeychainSectets.chatPrivateKey,
+        encryptKeyDataPassword: '',
+        email: user.email,
+      });
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {
@@ -115,6 +123,8 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
           created: userChats?.created,
           updated: userChats?.updated,
           invitations: userChats?.invitations,
+          publicChatKey: userChats?.public_chat_key,
+          privateChatKey: currentPrivateKey,
         };
 
         dispatch(updateUserChatsAccountSlice(chatAccountData));
