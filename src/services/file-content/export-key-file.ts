@@ -1,4 +1,3 @@
-// export-key-file.ts
 import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
@@ -8,7 +7,7 @@ export type TExportResult =
   | {
       exported: true;
       platform: 'ios' | 'android';
-      path: string; // where file lives
+      path: string;
       via: 'user-choice' | 'default';
     }
   | {exported: false};
@@ -17,7 +16,6 @@ export const exportKeyFileWithUserChoice = async (
   localFilePath: string,
   fileName: string,
 ): Promise<TExportResult> => {
-  // localFilePath is already in default directory
   if (Platform.OS === 'ios') {
     try {
       await Share.open({
@@ -27,7 +25,6 @@ export const exportKeyFileWithUserChoice = async (
         saveToFiles: true,
       });
 
-      // iOS copies the file, original stays
       return {
         exported: true,
         platform: 'ios',
@@ -35,7 +32,7 @@ export const exportKeyFileWithUserChoice = async (
         via: 'user-choice',
       };
     } catch (e) {
-      // User canceled share sheet
+      // User canceled share
       return {
         exported: true,
         platform: 'ios',

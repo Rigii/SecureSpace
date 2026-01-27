@@ -1,5 +1,5 @@
 export interface ICertificateData {
   email: string;
-  uuid: string;
+  keyUuid: string;
   privateKey: string;
 }

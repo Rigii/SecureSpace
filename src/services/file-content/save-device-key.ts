@@ -4,20 +4,20 @@ import {EAvailableFilePathNames} from './types';
 
 export const saveDeviceKeyWithUserChoice = async ({
   email,
-  uuid,
+  keyUuid,
   privateKey,
   encryptKeyDataPassword,
   keyType,
 }: {
   email: string;
-  uuid: string;
+  keyUuid: string;
   privateKey: string;
   encryptKeyDataPassword: string;
   keyType?: 'app' | 'chat';
 }) => {
   const localPath = await generateKeyFile({
     email,
-    uuid,
+    keyUuid,
     privateKey,
     encryptKeyDataPassword,
     filePathName: EAvailableFilePathNames.LIBRARY,

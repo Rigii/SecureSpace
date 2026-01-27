@@ -2,24 +2,24 @@ import OpenPGP from 'react-native-fast-openpgp';
 
 export const encryptPrivateKeyBlock = async ({
   email,
-  uuid,
+  /*Key DB record uuid*/
+  keyUuid,
   privateKey,
   encryptKeyDataPassword,
 }: {
   email: string;
-  uuid: string;
+  keyUuid: string;
   privateKey: string;
   encryptKeyDataPassword: string;
 }) => {
   const keyBlock = `
-  -----BEGIN PGP PRIVATE KEY BLOCK-----
+  -----BEGIN APPLICATION KEY BLOCK-----
   Version: OpenPGP.js v5.0.0
 
-  Comment: Email=${email}
-  Comment: UUID=${uuid}
-
-  ${privateKey}
-  -----END PGP PRIVATE KEY BLOCK-----
+  Email=${email}
+  UUID=${keyUuid}
+  PKey=${privateKey}
+  -----END APPLICATION KEY BLOCK-----
   `;
 
   const encryptedData = await OpenPGP.encryptSymmetric(
@@ -31,35 +31,48 @@ export const encryptPrivateKeyBlock = async ({
 };
 
 export const decryptPrivateKeyBlock = async ({
-  password,
   encryptedData,
+  password,
+  email,
+  /*Key DB record uuid*/
+  keyUuid,
 }: {
-  password: string;
   encryptedData: string;
+  password: string;
+  email: string;
+  keyUuid: string;
 }) => {
-  try {
-    const decryptedData = await OpenPGP.decryptSymmetric(
-      encryptedData,
-      password,
-    );
+  const decryptedData = await OpenPGP.decryptSymmetric(encryptedData, password);
 
-    const emailMatch = decryptedData.match(/Email: (.+)/);
-    const uuidMatch = decryptedData.match(/UUID: (.+)/);
-    const privateKeyMatch = decryptedData.match(
-      /-----BEGIN PGP PRIVATE KEY BLOCK-----[\s\S]*?-----END PGP PRIVATE KEY BLOCK-----/,
-    );
-
-    if (!emailMatch || !uuidMatch || !privateKeyMatch) {
-      throw new Error('Invalid certificate format');
-    }
-
-    return {
-      email: emailMatch[1].trim(),
-      uuid: uuidMatch[1].trim(),
-      privateKey: privateKeyMatch[0].trim(),
-    };
-  } catch (error) {
-    console.error('Failed to read certificate:', error);
-    throw error;
+  if (!decryptedData) {
+    throw new Error('Failed to decrypt key block');
   }
+
+  const emailMatch = decryptedData.match(/Email=(.*)/);
+  const uuidMatch = decryptedData.match(/UUID=(.*)/);
+  const pkeyMatch = decryptedData.match(
+    /^ *PKey=([\s\S]*?)-----END PGP PRIVATE KEY BLOCK-----/m,
+  );
+
+  if (!emailMatch || !uuidMatch || !pkeyMatch) {
+    throw new Error('Invalid key block format');
+  }
+
+  const decryptedEmail = emailMatch[1].trim();
+  const decryptedUUID = uuidMatch[1].trim();
+  const privateKey = pkeyMatch[1] + '-----END PGP PRIVATE KEY BLOCK-----';
+
+  if (decryptedEmail !== email) {
+    throw new Error('Email does not match key block');
+  }
+
+  if (decryptedUUID !== keyUuid) {
+    throw new Error('UUID does not match key block');
+  }
+
+  return {
+    email: decryptedEmail,
+    keyUuid: decryptedUUID,
+    privateKey,
+  };
 };

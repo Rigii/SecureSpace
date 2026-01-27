@@ -1,4 +1,7 @@
 export const strings = {
   noKeyFound: 'You have no key saved',
   failedToRetreiveKey: 'Failed to retrieve key:',
+  noKeyFoundInKeychain: 'No key found in keychain',
+  keyStoredSuccessfully: 'Key stored successfully:',
+  failedToStoreKey: 'Failed to store key:',
 };

@@ -30,6 +30,11 @@ import {addPgpDeviceKeyData} from '../../app/store/state/userState/userAction';
 import {IDeviceKeyData} from '../../app/store/state/userState/userState.types';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import {decryptPrivateKeyBlock} from '../../services/pgp-encryption-service/encrypt-pkey-block';
+import {
+  EKeychainSectets,
+  storeSecretKeychain,
+} from '../../services/secrets-keychains/store-secret-keychain';
 
 export const UploadKey = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -96,19 +101,20 @@ export const UploadKey = () => {
 
   const onSubmit = async () => {
     try {
-      const keyData = await pickPrivateKeyFile();
-
-      if (!keyData) {
+      const keyFileData = await pickPrivateKeyFile();
+      if (!keyFileData) {
         throw new Error(strings.noDeviceKeyData);
       }
-
-      if (keyData === null) {
-        throw new Error(strings.noDeviceKeyData);
-      }
+      const decryptedData = await decryptPrivateKeyBlock({
+        encryptedData: keyFileData || '',
+        password: keyPassword,
+        email,
+        keyUuid: keyRecordId,
+      });
 
       const compatiblePublicKeyData =
         (await checkPrivatePublicKeysCompatabillity({
-          privateKey: keyData,
+          privateKey: decryptedData.privateKey,
           thisPublicKey: publicKey,
         }))
           ? publicKey
@@ -120,12 +126,20 @@ export const UploadKey = () => {
 
       const newPgpDeviceKeyData = {
         ...pgpDeviceKeyData,
-        devicePrivateKey: keyData,
+        devicePrivateKey: decryptedData.privateKey,
         keyUUID: keyRecordId,
         date: keyRecordDate,
         email: email,
         approved: true,
       } as unknown as IDeviceKeyData;
+
+      await storeSecretKeychain({
+        email,
+        password: keyPassword,
+        uuid: keyRecordId,
+        privateKey: decryptedData.privateKey,
+        type: EKeychainSectets.devicePrivateKey,
+      });
 
       dispatch(addPgpDeviceKeyData(newPgpDeviceKeyData));
 

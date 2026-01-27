@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {EAuthMode, IFetchedUserAuthData} from './login-sign-up.types';
+import {EAuthMode} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-secure-storage/async-storage-service';
 import {registerSignInUserApi} from '../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../services/ErrorNotificationHandler';
@@ -41,47 +41,13 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     console.log('Check Google Sign Up');
   };
 
-  const proceedUserAuthData = async (user: IFetchedUserAuthData) => {
-    if (!user.user_info) {
-      navigation.navigate(manualEncryptionScreenRoutes.onboarding);
-      return;
-    }
-
-    if (!devicePrivateKey) {
-      const currentKeychainPrivateKey = await getSecretKeychain({
-        type: EKeychainSectets.chatPrivateKey,
-        encryptKeyDataPassword: '',
-        email: user.email,
-      });
-      if (currentKeychainPrivateKey) {
-        return;
-      }
-      const fetchedAllUserDevicePublicKeys =
-        user.user_info?.data_secrets.user_public_keys;
-
-      navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
-        publicKey: fetchedAllUserDevicePublicKeys[0].public_key,
-        keyRecordId: fetchedAllUserDevicePublicKeys[0].id,
-        keyRecordDate: fetchedAllUserDevicePublicKeys[0].created,
-      });
-      return;
-    }
-    navigation.navigate(manualEncryptionScreenRoutes.root);
-  };
-
   const loginSignUp = async (signInData: {email: string; password: string}) => {
     try {
       const isSignUp = mode === EAuthMode.signUp;
-      const {data} = await registerSignInUserApi(signInData, isSignUp);
-      const user = data.user;
 
-      if (!user.email_verified) {
-        ErrorNotificationHandler({
-          text1: strings.confirmYourEmail,
-          text2: strings.emailLinkPrevioslySent,
-        });
-        return;
-      }
+      const {data} = await registerSignInUserApi(signInData, isSignUp);
+
+      const user = data.user;
 
       const fetchedUserData = {
         id: user.id,
@@ -96,15 +62,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         securePlaces: null,
       };
 
-      if (!user.user_info) {
-        dispatch(setUser(fetchedUserData));
-
-        navigation.navigate(manualEncryptionScreenRoutes.onboarding);
-        return;
-      }
-
-      const userChats = user?.user_info?.user_chat_account;
-
       const userSecurityData = user.user_info?.data_secrets;
 
       const fullUserData = {
@@ -113,11 +70,53 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       };
 
       dispatch(setUser(fullUserData));
+
+      /* Is Email Verified */
+      if (!user.email_verified) {
+        ErrorNotificationHandler({
+          text1: strings.confirmYourEmail,
+          text2: strings.emailLinkPrevioslySent,
+        });
+        return;
+      }
+
+      /* Check is onboarding passed & Redirection */
+      if (!user.user_info || !user.user_info.is_onboarding_done) {
+        navigation.navigate(manualEncryptionScreenRoutes.onboarding);
+        return;
+      }
+
+      /* Handle App encryption keys */
+      if (!devicePrivateKey) {
+        // Check key in keychain
+        const currentKeychainPrivateKey = await getSecretKeychain({
+          type: EKeychainSectets.devicePrivateKey,
+          encryptKeyDataPassword: '',
+          email: user.email,
+        });
+
+        if (!currentKeychainPrivateKey) {
+          // Redirect to upload key screen
+          const fetchedAllUserDevicePublicKeys =
+            user.user_info?.data_secrets.user_public_keys;
+
+          navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
+            publicKey: fetchedAllUserDevicePublicKeys[0].public_key,
+            keyRecordId: fetchedAllUserDevicePublicKeys[0].id,
+            keyRecordDate: fetchedAllUserDevicePublicKeys[0].created,
+          });
+          return;
+        }
+      }
+
+      /* Storing chat data in the Redux store */
       const currentPrivateKey = await getSecretKeychain({
         type: EKeychainSectets.chatPrivateKey,
         encryptKeyDataPassword: '',
         email: user.email,
       });
+
+      const userChats = user?.user_info?.user_chat_account;
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {
@@ -134,6 +133,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         dispatch(updateUserChatsAccountSlice(chatAccountData));
       }
 
+      /* Storing user chat rooms in the Redux store */
       const userChatRooms = userChats?.chat_rooms;
       if (userChatRooms) {
         const userChatsObject = userChatRooms.reduce(
@@ -161,7 +161,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         dispatch(addUserChatRooms(userChatsObject));
       }
 
-      proceedUserAuthData(user);
+      navigation.navigate(manualEncryptionScreenRoutes.root);
     } catch (error) {
       const currentError = error as AxiosError<IHttpExceptionResponse>;
       if (currentError.response?.data.message) {

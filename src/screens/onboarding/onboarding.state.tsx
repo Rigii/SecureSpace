@@ -84,7 +84,7 @@ export const useOnboardingFlowState = () => {
       /* Storing Master Private Key in the file system */
       await saveDeviceKeyWithUserChoice({
         email: userAccountData.email,
-        uuid: response.data?.newPublicKeysData?.id,
+        keyUuid: response.data?.newPublicKeysData?.id,
         privateKey: userKeys.privateKey,
         encryptKeyDataPassword: values.keyPassword,
         keyType: 'app',

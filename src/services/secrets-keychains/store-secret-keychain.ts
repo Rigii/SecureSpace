@@ -1,5 +1,6 @@
 import * as Keychain from 'react-native-keychain';
 import OpenPGP from 'react-native-fast-openpgp';
+import {strings} from './secrets-keychains.strings';
 
 export enum EKeychainSectets {
   devicePrivateKey = 'devicePrivateKey',
@@ -26,9 +27,9 @@ export const storeSecretKeychain = async ({
       service: `${type}-${email}`,
       accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
     });
-    console.log('Key stored successfully:', result);
+    console.log(strings.keyStoredSuccessfully, result);
   } catch (error) {
-    console.error('Failed to store key:', error);
+    console.error(strings.failedToStoreKey, error);
   }
 };
 
@@ -45,7 +46,9 @@ export const getSecretKeychain = async ({
     const result = await Keychain.getGenericPassword({
       service: `${type}-${email}`,
     });
+
     if (!result) {
+      console.log(strings.noKeyFoundInKeychain, type);
       return '';
     }
 
@@ -53,7 +56,6 @@ export const getSecretKeychain = async ({
       result.password,
       encryptKeyDataPassword,
     );
-
     return decryptedData;
   } catch (error) {
     throw error;

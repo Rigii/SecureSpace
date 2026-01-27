@@ -6,26 +6,26 @@ import {fileNames} from './constants';
 
 export const generateKeyFile = async ({
   email,
-  uuid,
+  keyUuid,
   privateKey,
   encryptKeyDataPassword,
   filePathName,
   keyType,
 }: {
   email: string;
-  uuid: string;
+  keyUuid: string;
   privateKey: string;
   encryptKeyDataPassword: string;
   filePathName: EAvailableFilePathNames;
   keyType?: 'app' | 'chat';
 }) => {
-  const appKeyDir = getKeysDir(uuid, filePathName);
+  const appKeyDir = getKeysDir(keyUuid, filePathName);
 
   await ensureDir(appKeyDir);
 
   const encryptedData = await encryptPrivateKeyBlock({
     email,
-    uuid,
+    keyUuid,
     privateKey,
     encryptKeyDataPassword,
   });
