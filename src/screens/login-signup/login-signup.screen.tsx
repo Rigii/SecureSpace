@@ -1,8 +1,6 @@
 import React from 'react';
 import {useLoginSignUpUserState} from './login-signup.state';
 import {strings} from '../../constants/strings/login-signup.strings';
-import {ThemedButton} from '../../components/themed-button';
-// import {GoogleIcon, OutlookIcon} from '../../assets/icons';
 import {View} from 'react-native';
 import {Title1, Title2} from '../../components/text-titles/title';
 import {TextButton} from '../../components/text-titles/text-styled';
