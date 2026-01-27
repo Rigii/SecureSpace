@@ -43,7 +43,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       const isSignUp = mode === EAuthMode.signUp;
 
       const {data} = await registerSignInUserApi(signInData, isSignUp);
-      console.log(11111, data);
 
       const user = data.user;
 
