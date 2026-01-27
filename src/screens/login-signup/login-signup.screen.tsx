@@ -10,7 +10,7 @@ import {EmailPasswordForm} from './email-password-form';
 import {EAuthMode} from './login-sign-up.types';
 
 export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
-  const {onGoogleSignUp, loginSignUp, onForgotPassword, onChangeMode, mode} =
+  const {loginSignUp, onForgotPassword, onChangeMode, mode} =
     useLoginSignUpUserState({navigation});
 
   return (
@@ -24,14 +24,6 @@ export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
       <TextButton onPress={onChangeMode}>
         {mode === EAuthMode.logIn ? strings.signUp : strings.logIn}
       </TextButton>
-      <View className="gap-1">
-        <ThemedButton
-          text={strings.enterWithGoogle}
-          theme="lightBordered"
-          // rightContent={<GoogleIcon />}
-          onPress={onGoogleSignUp}
-        />
-      </View>
     </View>
   );
 };

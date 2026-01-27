@@ -37,10 +37,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     return await locallyEmailForSignIn.get();
   };
 
-  const onGoogleSignUp = async () => {
-    console.log('Check Google Sign Up');
-  };
-
   const loginSignUp = async (signInData: {email: string; password: string}) => {
     try {
       const isSignUp = mode === EAuthMode.signUp;
@@ -181,7 +177,6 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
     mode,
     isLoading,
     loginSignUp,
-    onGoogleSignUp,
     onChangeMode,
     onForgotPassword,
   };
