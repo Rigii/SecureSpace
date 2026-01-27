@@ -41,6 +41,7 @@ export type RootStackParamList = {
     publicKey: string;
     keyRecordId: string;
     keyRecordDate?: string;
+    keyType?: 'app' | 'chat';
   };
 };
 

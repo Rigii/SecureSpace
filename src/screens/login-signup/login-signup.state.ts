@@ -24,6 +24,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
   const {devicePrivateKey} = useReduxSelector(
     state => state.anonymousUserReducer.securityData?.pgpDeviceKeyData,
   );
+
   const dispatch = useDispatch();
 
   const onForgotPassword = () => setMode(EAuthMode.resetPassword);
@@ -42,6 +43,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       const isSignUp = mode === EAuthMode.signUp;
 
       const {data} = await registerSignInUserApi(signInData, isSignUp);
+      console.log(11111, data);
 
       const user = data.user;
 
@@ -112,17 +114,17 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
         email: user.email,
       });
 
-      const userChats = user?.user_info?.user_chat_account;
+      const userChatAccountData = user?.user_info?.user_chat_account;
 
       if (user?.user_info?.user_chat_account?.interlocutor_id) {
         const chatAccountData = {
           email: user.email,
-          interlocutorId: userChats?.interlocutor_id,
-          chatAccountId: userChats?.chat_account_id,
-          created: userChats?.created,
-          updated: userChats?.updated,
-          invitations: userChats?.invitations,
-          publicChatKey: userChats?.public_chat_key,
+          interlocutorId: userChatAccountData?.interlocutor_id,
+          chatAccountId: userChatAccountData?.chat_account_id,
+          created: userChatAccountData?.created,
+          updated: userChatAccountData?.updated,
+          invitations: userChatAccountData?.invitations,
+          publicChatKey: userChatAccountData?.public_chat_key,
           privateChatKey: currentPrivateKey,
         };
 
@@ -130,7 +132,7 @@ export const useLoginSignUpUserState = ({navigation}: {navigation: any}) => {
       }
 
       /* Storing user chat rooms in the Redux store */
-      const userChatRooms = userChats?.chat_rooms;
+      const userChatRooms = userChatAccountData?.chat_rooms;
       if (userChatRooms) {
         const userChatsObject = userChatRooms.reduce(
           (accumulator: any, currentValue: any) => {

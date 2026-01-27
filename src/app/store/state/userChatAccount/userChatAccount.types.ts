@@ -3,7 +3,7 @@ export interface IUserChatAccount {
   chatAccountId: string;
   publicChatKey: string;
   privateChatKey: string;
-  created: Date | null;
+  created: Date;
   updated: Date | null;
   email: string;
   invitations: IInvitations[];
