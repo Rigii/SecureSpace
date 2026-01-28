@@ -30,7 +30,7 @@ export const ChatEntryScreenState = ({
   const {id, token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
-  const {chatAccountId, publicChatKey, privateChatKey} = useReduxSelector(
+  const {chatAccountId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
 
@@ -99,5 +99,5 @@ export const ChatEntryScreenState = ({
     fetchData();
   }, [chatAccountId, id, token, privateChatKey, dispatch, navigation]);
 
-  return {accountId: chatAccountId, publicChatKey};
+  return {accountId: chatAccountId, privateChatKey};
 };

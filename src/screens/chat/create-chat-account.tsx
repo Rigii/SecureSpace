@@ -19,8 +19,19 @@ import {
   EKeychainSectets,
   storeSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
+import {saveDeviceKeyWithUserChoice} from '../../services/file-content/save-device-key';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  manualEncryptionScreenRoutes,
+  RootStackParamList,
+} from '../../app/navigator/screens';
 
 export const CreateChatAccount = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const {publicChatKey, privateChatKey, interlocutorId, created} =
+    useReduxSelector(state => state.userChatAccountReducer);
+
   const {token, id, email, name} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
@@ -40,11 +51,19 @@ export const CreateChatAccount = () => {
       );
 
       await storeSecretKeychain({
-        email: email,
+        email,
         password: '',
         uuid: response.data.interlocutor_id,
         privateKey: userKeys.privateKey,
         type: EKeychainSectets.chatPrivateKey,
+      });
+
+      await saveDeviceKeyWithUserChoice({
+        email,
+        keyUuid: response.data.interlocutor_id,
+        privateKey: userKeys.privateKey,
+        encryptKeyDataPassword: '',
+        keyType: 'chat',
       });
 
       const storeData = {
@@ -68,6 +87,19 @@ export const CreateChatAccount = () => {
       });
     }
   };
+
+  if (publicChatKey && !privateChatKey) {
+    if (!privateChatKey) {
+      navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
+        publicKey: publicChatKey,
+        keyRecordId: interlocutorId,
+        keyRecordDate: created.toString(),
+        keyType: 'chat',
+      });
+
+      return;
+    }
+  }
 
   return (
     <View className="flex flex-col items-center flex-1 p-3 w-screen">

@@ -40,7 +40,7 @@ export const UploadKey = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'uploadKey'>>();
 
-  const {publicKey, keyRecordId, keyRecordDate} = route.params;
+  const {publicKey, keyRecordId, keyRecordDate, keyType} = route.params;
 
   const dispatch = useDispatch();
 
@@ -156,12 +156,21 @@ export const UploadKey = () => {
     }
   };
 
+  const pageData = {
+    pageHeader:
+      keyType === 'chat' ? strings.uploadYourChatKey : strings.uploadYourAppKey,
+    pageDescription:
+      keyType === 'chat'
+        ? strings.toUseSecureChatRoomKeys
+        : strings.toUseSecureDataUploadKeys,
+  };
+
   return (
     <TouchableWithoutFeedback onPress={handleScreenPress}>
       <View className="flex flex-col items-center flex-1 p-3 w-screen">
         <View className="block flex-1 mt-auto items-center justify-center gap-y-5 overflow-scroll">
-          <Title1>{strings.uploadYourKeys}</Title1>
-          <Title3>{strings.toUseSecureDataUploadKeys}</Title3>
+          <Title1>{pageData.pageHeader}</Title1>
+          <Title3>{pageData.pageDescription}</Title3>
           <View>
             <Input
               value={keyPassword}

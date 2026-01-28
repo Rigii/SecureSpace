@@ -14,7 +14,7 @@ import {
 const initialState: IUserChatAccount = {
   interlocutorId: '',
   chatAccountId: '',
-  created: null,
+  created: new Date(),
   updated: null,
   email: '',
   publicChatKey: '',
