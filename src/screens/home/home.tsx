@@ -2,7 +2,7 @@ import * as React from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
   RootStackParamList,
-  manualEncryptionScreenRoutes,
+  applicationRoutes,
 } from '../../app/navigator/screens';
 import {View} from 'react-native';
 import {ThemedButton} from '../../components/themed-button';
@@ -20,7 +20,7 @@ export const Home: React.FC<{
 
   useEffect(() => {
     const navigateSettings = () => {
-      navigation.navigate(manualEncryptionScreenRoutes.accountSettings);
+      navigation.navigate(applicationRoutes.accountSettings);
     };
 
     const dropdownActions = [
@@ -57,9 +57,7 @@ export const Home: React.FC<{
     <View>
       <ThemedButton
         text={strings.chatList}
-        onPress={() =>
-          navigation.navigate(manualEncryptionScreenRoutes.chatList)
-        }
+        onPress={() => navigation.navigate(applicationRoutes.chatList)}
         theme={'filled'}
       />
     </View>

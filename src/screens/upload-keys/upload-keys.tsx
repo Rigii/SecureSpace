@@ -5,7 +5,7 @@ import {strings} from './upload-keys.string';
 import {Input, KeyboardTypes} from '../../components/input';
 import {ThemedButton} from '../../components/themed-button';
 // import {
-//   EKeychainSectets,
+//   EKeychainSecrets,
 //   getSecretKeychain,
 // } from '../../services/secrets-keychains/store-secret-keychain';
 import {useReduxSelector} from '../../app/store/store';
@@ -21,7 +21,7 @@ import {
 } from '@react-navigation/native';
 import {
   RootStackParamList,
-  manualEncryptionScreenRoutes,
+  applicationRoutes,
 } from '../../app/navigator/screens';
 import {useDispatch} from 'react-redux';
 import OpenPGP from 'react-native-fast-openpgp';
@@ -32,7 +32,7 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import {decryptPrivateKeyBlock} from '../../services/pgp-encryption-service/encrypt-pkey-block';
 import {
-  EKeychainSectets,
+  EKeychainSecrets,
   storeSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
 
@@ -57,7 +57,7 @@ export const UploadKey = () => {
   };
 
   const navigateSettings = () =>
-    navigation.navigate(manualEncryptionScreenRoutes.accountSettings);
+    navigation.navigate(applicationRoutes.accountSettings);
 
   const pickPrivateKeyFile = async (): Promise<string | null> => {
     try {
@@ -138,12 +138,12 @@ export const UploadKey = () => {
         password: keyPassword,
         uuid: keyRecordId,
         privateKey: decryptedData.privateKey,
-        type: EKeychainSectets.devicePrivateKey,
+        type: EKeychainSecrets.devicePrivateKey,
       });
 
       dispatch(addPgpDeviceKeyData(newPgpDeviceKeyData));
 
-      navigation.navigate(manualEncryptionScreenRoutes.root);
+      navigation.navigate(applicationRoutes.root);
       setError('');
     } catch (error) {
       console.error(error);

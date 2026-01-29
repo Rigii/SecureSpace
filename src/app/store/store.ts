@@ -20,6 +20,9 @@ import {
 import {IOnboardingFormValues} from './state/onboardingState/onboardingStateTypes';
 import {IUserChatAccount} from './state/userChatAccount/userChatAccount.types';
 import {IChatRooms} from './state/chatRoomsContent/chatRoomsState.types';
+import createSagaMiddleware from 'redux-saga';
+
+const sagaMiddleware = createSagaMiddleware();
 
 const userChatsPersistConfig = {
   key: 'userChats',
@@ -64,6 +67,7 @@ export const setupStore = async () => {
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({serializableCheck: false}).concat(
         persistMiddleware.middleware,
+        sagaMiddleware,
       ),
   });
 };

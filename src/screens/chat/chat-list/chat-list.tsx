@@ -5,7 +5,7 @@ import {UseChatListState} from './chat-list.state';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
   RootStackParamList,
-  manualEncryptionScreenRoutes,
+  applicationRoutes,
 } from '../../../app/navigator/screens';
 import {PlusButton} from '../../../components/themed-button';
 
@@ -23,11 +23,11 @@ const ChatList: React.FC<ChatListProps> = () => {
   const {chatRoomsArray, interlocutorId} = UseChatListState();
 
   const navigateCreateChat = () => {
-    navigation.navigate(manualEncryptionScreenRoutes.createChatRoom);
+    navigation.navigate(applicationRoutes.createChatRoom);
   };
 
   const navigateToChatRoom = (chatId: string) => {
-    navigation.navigate(manualEncryptionScreenRoutes.chatRoom, {
+    navigation.navigate(applicationRoutes.chatRoom, {
       chatId,
       participantId: interlocutorId,
     });

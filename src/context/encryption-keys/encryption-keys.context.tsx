@@ -1,7 +1,7 @@
 import React, {createContext} from 'react';
 import {useReduxSelector} from '../../app/store/store';
 import {
-  EKeychainSectets,
+  EKeychainSecrets,
   getSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
 
@@ -29,7 +29,7 @@ export const EncryptionKeysProvider: React.FC<{children: React.ReactNode}> = ({
     }
 
     const privatetKey = await getSecretKeychain({
-      type: EKeychainSectets.chatPrivateKey,
+      type: EKeychainSecrets.chatPrivateKey,
       encryptKeyDataPassword: '',
       email,
     });

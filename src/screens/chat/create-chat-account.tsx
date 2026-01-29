@@ -16,13 +16,13 @@ import {useDispatch} from 'react-redux';
 import {createUserChatsAccount} from '../../app/store/state/userChatAccount/userChatAccountAction';
 import {IInvitations} from '../../app/store/state/userChatAccount/userChatAccount.types';
 import {
-  EKeychainSectets,
+  EKeychainSecrets,
   storeSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
 import {saveDeviceKeyWithUserChoice} from '../../services/file-content/save-device-key';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
-  manualEncryptionScreenRoutes,
+  applicationRoutes,
   RootStackParamList,
 } from '../../app/navigator/screens';
 
@@ -55,7 +55,7 @@ export const CreateChatAccount = () => {
         password: '',
         uuid: response.data.interlocutor_id,
         privateKey: userKeys.privateKey,
-        type: EKeychainSectets.chatPrivateKey,
+        type: EKeychainSecrets.chatPrivateKey,
       });
 
       await saveDeviceKeyWithUserChoice({
@@ -90,7 +90,7 @@ export const CreateChatAccount = () => {
 
   if (publicChatKey && !privateChatKey) {
     if (!privateChatKey) {
-      navigation.navigate(manualEncryptionScreenRoutes.uploadKey, {
+      navigation.navigate(applicationRoutes.uploadKey, {
         publicKey: publicChatKey,
         keyRecordId: interlocutorId,
         keyRecordDate: created.toString(),

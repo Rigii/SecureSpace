@@ -2,8 +2,8 @@ import React from 'react';
 import {View, TouchableOpacity, SafeAreaView} from 'react-native';
 import {
   RootStackParamList,
-  TManualEncryptionScreens,
-  manualEncryptionScreenRoutes,
+  TapplicationScreens,
+  applicationRoutes,
 } from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {ChatIcon, HomeIcon, LogoutSmallIcon} from '../../../assets/icons';
@@ -24,7 +24,7 @@ const TopBar = ({
   currentScreen,
   menuActions,
 }: {
-  currentScreen: TManualEncryptionScreens;
+  currentScreen: TapplicationScreens;
   menuActions?: ITopBarMenuActions[];
 }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -45,15 +45,15 @@ const TopBar = ({
   };
 
   const toggleRedirectChatHome = () => {
-    if (currentScreen === manualEncryptionScreenRoutes.chatList) {
-      navigation.navigate(manualEncryptionScreenRoutes.root);
+    if (currentScreen === applicationRoutes.chatList) {
+      navigation.navigate(applicationRoutes.root);
       return;
     }
-    navigation.navigate(manualEncryptionScreenRoutes.chatList);
+    navigation.navigate(applicationRoutes.chatList);
   };
 
   const rightButtonRedirectionComponent = () => {
-    if (currentScreen === manualEncryptionScreenRoutes.chatList) {
+    if (currentScreen === applicationRoutes.chatList) {
       return (
         <TouchableOpacity onPress={toggleRedirectChatHome}>
           <HomeIcon />

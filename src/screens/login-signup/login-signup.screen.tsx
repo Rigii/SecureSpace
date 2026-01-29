@@ -7,9 +7,9 @@ import {TextButton} from '../../components/text-titles/text-styled';
 import {EmailPasswordForm} from './email-password-form';
 import {EAuthMode} from './login-sign-up.types';
 
-export const LoginSignUpUser = ({navigation}: {navigation: any}) => {
+export const LoginSignUpUser = () => {
   const {loginSignUp, onForgotPassword, onChangeMode, mode} =
-    useLoginSignUpUserState({navigation});
+    useLoginSignUpUserState();
 
   return (
     <View className="flex flex-col content-center items-center justify-center flex-1 w-full gap-y-5">

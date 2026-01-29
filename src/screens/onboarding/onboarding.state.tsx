@@ -21,7 +21,7 @@ import {DownloadKey} from './onboarding-cases/download-key';
 import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
 
 import {
-  EKeychainSectets,
+  EKeychainSecrets,
   storeSecretKeychain,
 } from '../../services/secrets-keychains/store-secret-keychain';
 import {saveDeviceKeyWithUserChoice} from '../../services/file-content/save-device-key';
@@ -78,7 +78,7 @@ export const useOnboardingFlowState = () => {
         password: values.keyPassword,
         uuid: response.data?.newPublicKeysData?.id,
         privateKey: userKeys.privateKey,
-        type: EKeychainSectets.devicePrivateKey,
+        type: EKeychainSecrets.devicePrivateKey,
       });
 
       /* Storing Master Private Key in the file system */

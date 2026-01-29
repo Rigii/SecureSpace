@@ -2,7 +2,7 @@ import * as Keychain from 'react-native-keychain';
 import OpenPGP from 'react-native-fast-openpgp';
 import {strings} from './secrets-keychains.strings';
 
-export enum EKeychainSectets {
+export enum EKeychainSecrets {
   devicePrivateKey = 'devicePrivateKey',
   chatPrivateKey = 'chatPrivateKey',
 }
@@ -17,7 +17,7 @@ export const storeSecretKeychain = async ({
   email: string;
   uuid: string;
   privateKey: string;
-  type: EKeychainSectets;
+  type: EKeychainSecrets;
   password: string;
 }): Promise<void> => {
   try {
@@ -39,7 +39,7 @@ export const getSecretKeychain = async ({
   encryptKeyDataPassword,
 }: {
   email: string;
-  type: EKeychainSectets;
+  type: EKeychainSecrets;
   encryptKeyDataPassword: string;
 }): Promise<string | null> => {
   try {
