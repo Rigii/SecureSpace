@@ -15,8 +15,8 @@ import {
   transformChatRooms,
   transformUserData,
 } from './helpers/authFlow.transformers';
-import {navigationService} from '../../../../services/navigation/navigation.service';
-import {applicationRoutes} from '../../../navigator/screens';
+// import {navigationService} from '../../../../services/navigation/navigation.service';
+// import {applicationRoutes} from '../../../navigator/screens';
 
 function* authenticateUser(
   action: ReturnType<typeof loginRequested>,
@@ -44,9 +44,9 @@ function* checkEmailVerification(user: any): Generator<any, void, any> {
 
 function* checkOnboardingStatus(userInfo: any): Generator<any, void, any> {
   if (!userInfo || !userInfo.is_onboarding_done) {
-    navigationService
-      .getNavigationActions()
-      .navigate(applicationRoutes.onboarding);
+    // navigationService
+    //   .getNavigationActions()
+    //   .navigate(applicationRoutes.onboarding);
 
     throw new Error('ONBOARDING_REQUIRED');
   }
@@ -66,13 +66,13 @@ function* validateEncryptionKeys(
     if (!currentKeychainPrivateKey) {
       const publicKeys = user.user_info?.data_secrets?.user_public_keys;
       if (publicKeys?.length > 0) {
-        navigationService
-          .getNavigationActions()
-          .navigate(applicationRoutes.uploadKey, {
-            publicKey: publicKeys[0].public_key,
-            keyRecordId: publicKeys[0].id,
-            keyRecordDate: publicKeys[0].created,
-          });
+        // navigationService
+        //   .getNavigationActions()
+        //   .navigate(applicationRoutes.uploadKey, {
+        //     publicKey: publicKeys[0].public_key,
+        //     keyRecordId: publicKeys[0].id,
+        //     keyRecordDate: publicKeys[0].created,
+        //   });
 
         throw new Error('ENCRYPTION_KEY_REQUIRED');
       }
@@ -111,10 +111,10 @@ function* loginSignUpSaga(
   action: ReturnType<typeof loginRequested>,
 ): Generator<any, void, any> {
   try {
-    if (!navigationService.isReady()) {
-      console.warn('Navigation service not ready yet');
-      return;
-    }
+    // if (!navigationService.isReady()) {
+    //   console.warn('Navigation service not ready yet');
+    //   return;
+    // }
     // 1. Authenticate user
     const {user, token} = yield call(authenticateUser, action);
 
