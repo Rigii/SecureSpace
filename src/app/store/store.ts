@@ -1,10 +1,7 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useSelector} from 'react-redux';
-import createSagaMiddleware from 'redux-saga';
 import {persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import rootSaga from './saga/root.saga';
 
 import anonymousUserReducer from './state/userState/userSlice';
 import onboardingFormReducer from './state/onboardingState/onboardingSlice';
@@ -19,7 +16,7 @@ import {IUserChatAccount} from './state/userChatAccount/userChatAccount.types';
 import {IChatRooms} from './state/chatRoomsContent/chatRoomsState.types';
 import {IRestrictionsState} from './state/applicationRestrictions/restrictionsSlice';
 import {IManualEncryptionState} from './state/manualEncryption/types';
-
+import createSagaMiddleware from 'redux-saga';
 import persistMiddleware from './middleware/persistMiddleware';
 
 export interface IState {
@@ -30,8 +27,6 @@ export interface IState {
   manualEncryptionDataReducer: IManualEncryptionState;
   onboardingFormReducer: IOnboardingFormValues;
 }
-
-const sagaMiddleware = createSagaMiddleware();
 
 const userChatAccountPersistConfig = {
   key: 'userChatAccount',
@@ -63,6 +58,8 @@ const rootReducer = combineReducers({
   onboardingFormReducer,
 });
 
+const sagaMiddleware = createSagaMiddleware();
+
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
@@ -76,4 +73,4 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export const useReduxSelector: TypedUseSelectorHook<RootState> = useSelector;
-export {sagaMiddleware, rootSaga};
+export {sagaMiddleware};

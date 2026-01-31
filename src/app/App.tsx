@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 // import {StatusBar} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import {rootSaga, sagaMiddleware, store} from './store/store';
+import {sagaMiddleware, store} from './store/store';
 import {Provider} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {Text, View} from 'react-native';
@@ -11,6 +11,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {applicationRoutes} from './navigator/screens';
 import {NavigationContainer} from '@react-navigation/native';
 import {SelectNavigationStack} from './navigator/select-navigation-stack';
+import rootSaga from './store/saga/root.saga';
 
 (global as any).asyncStorageLogger = asyncStorageLogger; // For asyncStorage debugging
 

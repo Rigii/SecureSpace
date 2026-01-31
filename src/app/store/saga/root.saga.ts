@@ -1,29 +1,8 @@
-import {all, call, fork, put} from 'redux-saga/effects';
+import {all, call, fork} from 'redux-saga/effects';
 import authSaga from './user/auth.saga';
-import {
-  ESecureStoredKeys,
-  getSecureStorageData,
-} from '../../../services/async-secure-storage/secure-storage-services';
-import {setUser} from '../state/userState/userAction';
 
-function* bootstrapSecureDataSaga(): Generator<any, void, any> {
-  try {
-    const anonymousUser = yield call(
-      getSecureStorageData,
-      ESecureStoredKeys.anonymousUser,
-    );
-
-    if (anonymousUser) {
-      yield put(setUser(anonymousUser));
-    }
-  } catch (error) {
-    console.warn(
-      '[bootstrapSecureDataSaga] Failed to load anonymous user',
-      error,
-    );
-  }
-}
+import {applyEncryptedStorageDataToStateSaga} from './encrypted-storage/encrypted-storage.saga';
 
 export default function* rootSaga() {
-  yield all([call(bootstrapSecureDataSaga), fork(authSaga)]);
+  yield all([call(applyEncryptedStorageDataToStateSaga), fork(authSaga)]);
 }
