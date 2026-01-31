@@ -160,7 +160,7 @@ export const useLoginSignUpUserState = () => {
           loginRequested({
             email: signInData.email,
             password: signInData.password,
-            mode: 'signIn',
+            mode,
             devicePrivateKey: null,
           }),
         );
@@ -168,7 +168,7 @@ export const useLoginSignUpUserState = () => {
         console.error('Login error:', error);
       }
     },
-    [dispatch],
+    [mode, dispatch],
   );
 
   useEffect(() => {

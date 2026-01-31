@@ -6,7 +6,7 @@ import {
 } from '../../../services/async-secure-storage/secure-storage-services';
 import {setUser} from '../state/userState/userAction';
 
-function* bootstrapSaga(): Generator<any, void, any> {
+function* bootstrapSecureDataSaga(): Generator<any, void, any> {
   try {
     const anonymousUser = yield call(
       getSecureStorageData,
@@ -17,10 +17,13 @@ function* bootstrapSaga(): Generator<any, void, any> {
       yield put(setUser(anonymousUser));
     }
   } catch (error) {
-    console.warn('[bootstrapSaga] Failed to load anonymous user', error);
+    console.warn(
+      '[bootstrapSecureDataSaga] Failed to load anonymous user',
+      error,
+    );
   }
 }
 
 export default function* rootSaga() {
-  yield all([call(bootstrapSaga), fork(authSaga)]);
+  yield all([call(bootstrapSecureDataSaga), fork(authSaga)]);
 }

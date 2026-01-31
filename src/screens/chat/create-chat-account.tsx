@@ -8,7 +8,7 @@ import {createChatUserApi} from '../../services/api/chat/chat-api';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/ErrorNotificationHandler';
+} from '../../services/error-notification-handler';
 import {AxiosError} from 'axios';
 import {IHttpExceptionResponse} from '../../services/xhr-services/xhr.types';
 import {generatePGPKeyPair} from '../../services/pgp-encryption-service/generate-keys';

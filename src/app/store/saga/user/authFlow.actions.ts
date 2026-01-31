@@ -1,9 +1,10 @@
 import {createAction} from '@reduxjs/toolkit';
+import {EAuthMode} from '../../../../screens/login-signup/login-sign-up.types';
 
 export const loginRequested = createAction<{
   email: string;
   password: string;
-  mode: 'signIn' | 'signUp';
+  mode: EAuthMode;
   devicePrivateKey: string | null;
 }>('authFlow/loginRequested');
 

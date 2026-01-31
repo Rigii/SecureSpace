@@ -12,7 +12,7 @@ import {useReduxSelector} from '../../app/store/store';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/ErrorNotificationHandler';
+} from '../../services/error-notification-handler';
 import {
   NavigationProp,
   RouteProp,

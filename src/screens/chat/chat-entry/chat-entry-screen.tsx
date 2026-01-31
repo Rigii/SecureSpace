@@ -13,7 +13,7 @@ const ChatListScreen: React.FC<{
   injectActions?: (actions: ITopBarMenuActions[]) => void;
 }> = ({injectActions}) => {
   const {privateChatKey} = ChatEntryScreenState({injectActions});
-  // TODO: remove publicChatKey from the check below after then all users are going to be updated with the new public/private keys
+
   return (
     <View className="flex-1">
       {privateChatKey ? (

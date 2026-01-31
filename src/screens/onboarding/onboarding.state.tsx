@@ -13,7 +13,7 @@ import {useReduxSelector} from '../../app/store/store';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/ErrorNotificationHandler';
+} from '../../services/error-notification-handler';
 import {generatePGPKeyPair} from '../../services/pgp-encryption-service/generate-keys';
 import {getTime} from 'date-fns';
 import {Platform} from 'react-native';

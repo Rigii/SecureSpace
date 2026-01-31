@@ -22,6 +22,17 @@ import {IManualEncryptionState} from './state/manualEncryption/types';
 
 import persistMiddleware from './middleware/persistMiddleware';
 
+export interface IState {
+  chatRoomsReducer: IChatRooms;
+  userChatAccountReducer: IUserChatAccount;
+  anonymousUserReducer: IUserState;
+  restrictionsReducer: IRestrictionsState;
+  manualEncryptionDataReducer: IManualEncryptionState;
+  onboardingFormReducer: IOnboardingFormValues;
+}
+
+const sagaMiddleware = createSagaMiddleware();
+
 const userChatAccountPersistConfig = {
   key: 'userChatAccount',
   storage: AsyncStorage,
@@ -52,8 +63,6 @@ const rootReducer = combineReducers({
   onboardingFormReducer,
 });
 
-const sagaMiddleware = createSagaMiddleware();
-
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
@@ -63,18 +72,8 @@ export const store = configureStore({
   devTools: __DEV__,
 });
 
-sagaMiddleware.run(rootSaga);
-
-export interface IState {
-  chatRoomsReducer: IChatRooms;
-  userChatAccountReducer: IUserChatAccount;
-  anonymousUserReducer: IUserState;
-  restrictionsReducer: IRestrictionsState;
-  manualEncryptionDataReducer: IManualEncryptionState;
-  onboardingFormReducer: IOnboardingFormValues;
-}
-
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export const useReduxSelector: TypedUseSelectorHook<RootState> = useSelector;
+export {sagaMiddleware, rootSaga};

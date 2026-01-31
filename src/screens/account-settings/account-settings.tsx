@@ -12,7 +12,7 @@ import {deleteUserAccountApi} from '../../services/api/user/user.api';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/ErrorNotificationHandler';
+} from '../../services/error-notification-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {clearChatRoomData} from '../../app/store/state/chatRoomsContent/chatRoomsAction';

@@ -2,7 +2,7 @@ import {takeLatest, call, put} from 'redux-saga/effects';
 import {loginRequested, loginSuccess, loginFailed} from './authFlow.actions';
 import {setUser} from '../../state/userState/userAction';
 import {registerSignInUserApi} from '../../../../services/api/user/user.api';
-import {ErrorNotificationHandler} from '../../../../services/ErrorNotificationHandler';
+import {ErrorNotificationHandler} from '../../../../services/error-notification-handler';
 import {strings} from '../../../../screens/login-signup/login-signup.strings';
 import {
   EKeychainSecrets,
@@ -15,19 +15,23 @@ import {
   transformChatRooms,
   transformUserData,
 } from './helpers/authFlow.transformers';
-// import {navigationService} from '../../../../services/navigation/navigation.service';
-// import {applicationRoutes} from '../../../navigator/screens';
+import {navigationService} from '../../../../services/navigation/navigation.service';
+import {applicationRoutes} from '../../../navigator/screens';
+import {EAuthMode} from '../../../../screens/login-signup/login-sign-up.types';
+import {IHttpExceptionResponse} from '../../../../services/xhr-services/xhr.types';
+import {AxiosError} from 'axios';
 
 function* authenticateUser(
   action: ReturnType<typeof loginRequested>,
 ): Generator<any, {user: any; token: string}, any> {
   const {email, password, mode} = action.payload;
-
+  console.log(1111, email, password, mode);
   const {data} = yield call(
     registerSignInUserApi,
     {email, password},
-    mode === 'signUp',
+    mode === EAuthMode.signUp,
   );
+  console.log(2222, data);
 
   return {user: data.user, token: data?.token || ''};
 }
@@ -44,9 +48,9 @@ function* checkEmailVerification(user: any): Generator<any, void, any> {
 
 function* checkOnboardingStatus(userInfo: any): Generator<any, void, any> {
   if (!userInfo || !userInfo.is_onboarding_done) {
-    // navigationService
-    //   .getNavigationActions()
-    //   .navigate(applicationRoutes.onboarding);
+    navigationService
+      .getNavigationActions()
+      .navigate(applicationRoutes.onboarding);
 
     throw new Error('ONBOARDING_REQUIRED');
   }
@@ -66,13 +70,13 @@ function* validateEncryptionKeys(
     if (!currentKeychainPrivateKey) {
       const publicKeys = user.user_info?.data_secrets?.user_public_keys;
       if (publicKeys?.length > 0) {
-        // navigationService
-        //   .getNavigationActions()
-        //   .navigate(applicationRoutes.uploadKey, {
-        //     publicKey: publicKeys[0].public_key,
-        //     keyRecordId: publicKeys[0].id,
-        //     keyRecordDate: publicKeys[0].created,
-        //   });
+        navigationService
+          .getNavigationActions()
+          .navigate(applicationRoutes.uploadKey, {
+            publicKey: publicKeys[0].public_key,
+            keyRecordId: publicKeys[0].id,
+            keyRecordDate: publicKeys[0].created,
+          });
 
         throw new Error('ENCRYPTION_KEY_REQUIRED');
       }
@@ -111,13 +115,13 @@ function* loginSignUpSaga(
   action: ReturnType<typeof loginRequested>,
 ): Generator<any, void, any> {
   try {
-    // if (!navigationService.isReady()) {
-    //   console.warn('Navigation service not ready yet');
-    //   return;
-    // }
+    if (!navigationService.isReady()) {
+      console.warn('Navigation service not ready yet');
+      return;
+    }
     // 1. Authenticate user
     const {user, token} = yield call(authenticateUser, action);
-
+    console.log(22222, user, token);
     // 2. Transform and store user data
     const userData = transformUserData(user, token);
     yield put(setUser(userData));
@@ -146,11 +150,21 @@ function* loginSignUpSaga(
       return;
     }
 
+    const currentError = error as AxiosError<IHttpExceptionResponse>;
+
+    console.warn(
+      'Login/signup saga error:',
+      currentError.response?.data.message,
+    );
+
+    const currentErrorMessage =
+      currentError.response?.data.message || error.message;
+
     // Handle actual API/network errors
-    yield put(loginFailed(error.message || 'Login failed'));
+    yield put(loginFailed(currentErrorMessage || strings.loginSignupError));
     yield call(ErrorNotificationHandler, {
-      text1: 'Login Error',
-      text2: error.message || 'Something went wrong',
+      text1: strings.loginSignupError,
+      text2: currentErrorMessage,
     });
   }
 }

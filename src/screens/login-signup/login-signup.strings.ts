@@ -26,4 +26,5 @@ export const strings = {
   invalidEmail: 'Invalid email',
   keyExported: 'Key exported:',
   emailLinkPreviouslySent: 'Please check your mailbox or try signing in again.',
+  loginSignupError: 'Login / Signup Error',
 };
