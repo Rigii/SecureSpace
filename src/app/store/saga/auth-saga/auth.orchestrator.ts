@@ -53,7 +53,7 @@ function* checkOnboardingStatus(userInfo: any): Generator<any, void, any> {
   }
 }
 
-export default function* loginSignUpSaga(
+export default function* authWorkerSaga(
   action: ReturnType<typeof loginRequested>,
 ): Generator<any, void, any> {
   try {
