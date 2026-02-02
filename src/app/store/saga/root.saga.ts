@@ -1,8 +1,8 @@
 import {all, call, fork} from 'redux-saga/effects';
-import authSaga from './user/auth.saga';
 
-import {applyEncryptedStorageDataToStateSaga} from './encrypted-storage/encrypted-storage.saga';
+import {applyEncryptedStorageStateSaga} from './encrypted-storage-saga/get-encrypted-storage.saga';
+import authWatcherSaga from './auth-saga/auth.wachers';
 
 export default function* rootSaga() {
-  yield all([call(applyEncryptedStorageDataToStateSaga), fork(authSaga)]);
+  yield all([call(applyEncryptedStorageStateSaga), fork(authWatcherSaga)]);
 }

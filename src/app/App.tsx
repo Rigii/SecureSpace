@@ -12,8 +12,10 @@ import {applicationRoutes} from './navigator/screens';
 import {NavigationContainer} from '@react-navigation/native';
 import {SelectNavigationStack} from './navigator/select-navigation-stack';
 import rootSaga from './store/saga/root.saga';
+import {navigationService} from '../services/navigation/navigation.service';
 
-(global as any).asyncStorageLogger = asyncStorageLogger; // For asyncStorage debugging
+/* For asyncStorage debugging */
+(global as any).asyncStorageLogger = asyncStorageLogger;
 
 function App(): React.JSX.Element {
   const navigationRef = useRef(null);
@@ -23,12 +25,11 @@ function App(): React.JSX.Element {
   }, []);
 
   const handleNavigationReady = () => {
+    navigationService.setNavigationRef(navigationRef.current);
     sagaMiddleware.run(rootSaga);
   };
 
   if (!store) {
-    // TODO: Create and use Loading screen with Spinner
-    // Create a HOC and drop spinner toggle finc into child components with Context
     return (
       <View>
         <Text>...Spinner Here</Text>

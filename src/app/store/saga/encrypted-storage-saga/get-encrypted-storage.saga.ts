@@ -5,11 +5,7 @@ import {
 } from '../../../../services/async-secure-storage/secure-storage-services';
 import {setUser} from '../../state/userState/userAction';
 
-export function* applyEncryptedStorageDataToStateSaga(): Generator<
-  any,
-  void,
-  any
-> {
+export function* applyEncryptedStorageStateSaga(): Generator<any, void, any> {
   try {
     const anonymousUser = yield call(
       getSecureStorageData,

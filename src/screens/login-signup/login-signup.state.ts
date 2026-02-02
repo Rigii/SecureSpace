@@ -3,7 +3,7 @@ import {EAuthMode} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-secure-storage/async-storage-service';
 import {useDispatch} from 'react-redux';
 
-import {loginRequested} from '../../app/store/saga/user/authFlow.actions';
+import {loginRequested} from '../../app/store/saga/auth-saga/auth.actions';
 
 export const useLoginSignUpUserState = () => {
   const [mode, setMode] = useState<EAuthMode>(EAuthMode.logIn);
