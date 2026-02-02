@@ -4,10 +4,6 @@ import {Title1, Title3} from '../../components/text-titles/title';
 import {strings} from './upload-keys.string';
 import {Input, KeyboardTypes} from '../../components/input';
 import {ThemedButton} from '../../components/themed-button';
-// import {
-//   EKeychainSecrets,
-//   getSecretKeychain,
-// } from '../../services/secrets-keychains/store-secret-keychain';
 import {useReduxSelector} from '../../app/store/store';
 import {
   EPopupType,
@@ -99,6 +95,57 @@ export const UploadKey = () => {
     return publicKeyMetadata.keyID === privateKeyMetadata.keyID;
   };
 
+  const updateAppKeyData = async ({
+    decryptedData,
+  }: {
+    decryptedData: {
+      email: string;
+      keyUuid: string;
+      privateKey: string;
+    };
+  }) => {
+    const newPgpDeviceKeyData = {
+      ...pgpDeviceKeyData,
+      devicePrivateKey: decryptedData.privateKey,
+      keyUUID: keyRecordId,
+      date: keyRecordDate,
+      email: email,
+      approved: true,
+    } as unknown as IDeviceKeyData;
+
+    await storeSecretKeychain({
+      email,
+      password: keyPassword,
+      uuid: keyRecordId,
+      privateKey: decryptedData.privateKey,
+      type: EKeychainSecrets.devicePrivateKey,
+    });
+
+    dispatch(addPgpDeviceKeyData(newPgpDeviceKeyData));
+
+    navigation.navigate(applicationRoutes.root);
+  };
+
+  const updateChatKeyData = async ({
+    decryptedData,
+  }: {
+    decryptedData: {
+      email: string;
+      keyUuid: string;
+      privateKey: string;
+    };
+  }) => {
+    await storeSecretKeychain({
+      email,
+      password: keyPassword,
+      uuid: keyRecordId,
+      privateKey: decryptedData.privateKey,
+      type: EKeychainSecrets.chatPrivateKey,
+    });
+
+    navigation.navigate(applicationRoutes.root);
+  };
+
   const onSubmit = async () => {
     try {
       const keyFileData = await pickPrivateKeyFile();
@@ -124,26 +171,10 @@ export const UploadKey = () => {
         return;
       }
 
-      const newPgpDeviceKeyData = {
-        ...pgpDeviceKeyData,
-        devicePrivateKey: decryptedData.privateKey,
-        keyUUID: keyRecordId,
-        date: keyRecordDate,
-        email: email,
-        approved: true,
-      } as unknown as IDeviceKeyData;
+      keyType === 'chat'
+        ? await updateChatKeyData({decryptedData})
+        : await updateAppKeyData({decryptedData});
 
-      await storeSecretKeychain({
-        email,
-        password: keyPassword,
-        uuid: keyRecordId,
-        privateKey: decryptedData.privateKey,
-        type: EKeychainSecrets.devicePrivateKey,
-      });
-
-      dispatch(addPgpDeviceKeyData(newPgpDeviceKeyData));
-
-      navigation.navigate(applicationRoutes.root);
       setError('');
     } catch (error) {
       console.error(error);

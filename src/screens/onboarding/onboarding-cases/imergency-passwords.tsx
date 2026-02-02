@@ -44,7 +44,10 @@ export const ImergencyPasswords = ({
       const newArray = [...array];
       newArray[inputIndex] =
         name === EImergencyEmailPassword.email
-          ? {email: value, password: newArray[inputIndex].password}
+          ? {
+              email: value.toLowerCase(),
+              password: newArray[inputIndex].password,
+            }
           : {email: newArray[inputIndex].email, password: value};
       if (array.length <= inputIndex + 1 && array.length < 3) {
         return [...newArray, {email: '', password: ''}];
