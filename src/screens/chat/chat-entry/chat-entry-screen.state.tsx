@@ -9,12 +9,12 @@ import {
 } from '../../../app/store/state/userChatAccount/userChatAccount.types';
 import {
   RootStackParamList,
-  manualEncryptionScreenRoutes,
+  applicationRoutes,
 } from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {ITopBarMenuActions} from '../../../HOC/combined-bar-component/combined-component';
 import {
-  EKeychainSectets,
+  EKeychainSecrets,
   getSecretKeychain,
 } from '../../../services/secrets-keychains/store-secret-keychain';
 import {menuActionIds} from './constants';
@@ -36,7 +36,7 @@ export const ChatEntryScreenState = ({
 
   useEffect(() => {
     const onCreateChatRoom = () => {
-      navigation.navigate(manualEncryptionScreenRoutes.createChatRoom);
+      navigation.navigate(applicationRoutes.createChatRoom);
     };
 
     const menuActions = [
@@ -72,7 +72,7 @@ export const ChatEntryScreenState = ({
         const response = await getChatUserApi(id, token);
 
         const currentPrivateKey = await getSecretKeychain({
-          type: EKeychainSectets.chatPrivateKey,
+          type: EKeychainSecrets.chatPrivateKey,
           encryptKeyDataPassword: '',
           email: response.data.email,
         });

@@ -10,7 +10,7 @@ import {decryptMessage} from '../../../services/pgp-encryption-service/encrypt-d
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../services/ErrorNotificationHandler';
+} from '../../../services/error-notification-handler';
 
 interface IChatRoomSocketState {
   chatId: string;

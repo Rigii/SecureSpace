@@ -25,4 +25,6 @@ export const strings = {
   required: 'Required',
   invalidEmail: 'Invalid email',
   keyExported: 'Key exported:',
+  emailLinkPreviouslySent: 'Please check your mailbox or try signing in again.',
+  loginSignupError: 'Login / Signup Error',
 };

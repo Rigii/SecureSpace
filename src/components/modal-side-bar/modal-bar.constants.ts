@@ -1,7 +1,7 @@
-import {manualEncryptionScreenRoutes} from '../../app/navigator/screens';
+import {applicationRoutes} from '../../app/navigator/screens';
 
 export const sidebarModalSets = {
-  [manualEncryptionScreenRoutes.chatRoom]: [
+  [applicationRoutes.chatRoom]: [
     {
       id: 'roomInfo',
       label: 'Room Info',
@@ -39,7 +39,7 @@ export const sidebarModalSets = {
       action: () => null,
     },
   ],
-  [manualEncryptionScreenRoutes.chatList]: [
+  [applicationRoutes.chatList]: [
     {
       id: 'chatListSearch',
       label: 'Search',
@@ -59,7 +59,7 @@ export const sidebarModalSets = {
       action: () => null,
     },
   ],
-  [manualEncryptionScreenRoutes.root]: [
+  [applicationRoutes.root]: [
     {
       id: 'homeSearch',
       label: 'Search',

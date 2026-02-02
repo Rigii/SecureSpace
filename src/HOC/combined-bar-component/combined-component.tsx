@@ -3,7 +3,7 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import TopBar from '../../components/top-bar/app-top-bap/app-top-bar';
-import {TManualEncryptionScreens} from '../../app/navigator/screens';
+import {TapplicationScreens} from '../../app/navigator/screens';
 
 export interface ITopBarMenuActions {
   id: string;
@@ -24,7 +24,7 @@ export const combineWithBarHOC = (
     const [actions, setActions] = React.useState(options?.actions || []);
 
     const route = useRoute();
-    const currentScreen = route.name as TManualEncryptionScreens;
+    const currentScreen = route.name as TapplicationScreens;
 
     return (
       <>

@@ -39,7 +39,8 @@ const ComponentsTopBar = ({
     await dispatch(clearEncryptionData());
     await dispatch(resetForm());
 
-    await EncryptedStorage.removeItem(ESecureStoredKeys.anonymousUser); // do not use EncryptedStorage.clear(); while in IOS simulator it's clear also keychains
+    /* Not EncryptedStorage.clear(); while in IOS simulator it's clear also keychains */
+    await EncryptedStorage.removeItem(ESecureStoredKeys.anonymousUser);
     await AsyncStorage.clear();
   };
 

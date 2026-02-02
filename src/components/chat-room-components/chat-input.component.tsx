@@ -7,7 +7,7 @@ import {strings} from '../create-update-chat/create-chat-form.strings';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/ErrorNotificationHandler';
+} from '../../services/error-notification-handler';
 import {encryptMessageForMultipleRecipients} from '../../services/pgp-encryption-service/encrypt-decrypt-message';
 
 interface IChatInput {

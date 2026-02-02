@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {RootStackParamList, manualEncryptionScreenRoutes} from '../screens';
+import {RootStackParamList, applicationRoutes} from '../screens';
 import {CreateChatRoom} from '../../../components/create-update-chat/create-update-chat';
 import ChatRoomScreen from '../../../screens/chat/chat-room-screen/room-screen';
 import {CombinedBarHome} from '../../../screens/home/home';
@@ -13,27 +13,21 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export const AppStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name={applicationRoutes.root} component={CombinedBarHome} />
       <Stack.Screen
-        name={manualEncryptionScreenRoutes.root}
-        component={CombinedBarHome}
-      />
-      <Stack.Screen
-        name={manualEncryptionScreenRoutes.createChatRoom}
+        name={applicationRoutes.createChatRoom}
         component={CreateChatRoom}
       />
       <Stack.Screen
-        name={manualEncryptionScreenRoutes.chatList}
+        name={applicationRoutes.chatList}
         component={CombinedChatListScreen}
       />
       <Stack.Screen
-        name={manualEncryptionScreenRoutes.accountSettings}
+        name={applicationRoutes.accountSettings}
         component={AccountSetttings}
       />
-      <Stack.Screen
-        name={manualEncryptionScreenRoutes.uploadKey}
-        component={UploadKey}
-      />
-      <Stack.Screen name={manualEncryptionScreenRoutes.chatRoom}>
+      <Stack.Screen name={applicationRoutes.uploadKey} component={UploadKey} />
+      <Stack.Screen name={applicationRoutes.chatRoom}>
         {props => <ChatRoomScreen chatId={props.route.params.chatId} />}
       </Stack.Screen>
     </Stack.Navigator>

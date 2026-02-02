@@ -16,7 +16,7 @@ import {
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../services/ErrorNotificationHandler';
+} from '../../../services/error-notification-handler';
 
 interface IChatRoomMessagesState {
   chatId: string;

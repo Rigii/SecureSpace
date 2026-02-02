@@ -1,15 +1,7 @@
-export const manualEncryptionScreenRoutes: {
+export const applicationRoutes: {
   [K in keyof RootStackParamList]: K;
 } = {
-  encryption: 'encryption',
-  home: 'home',
-  manualDecrypt: 'manualDecrypt',
-  updatePlan: 'updatePlan',
   registerLogin: 'registerLogin',
-  messageUpdate: 'messageUpdate',
-  networkError: 'networkError',
-  messageAccessRequest: 'messageAccessRequest',
-  invitation: 'invitation',
   onboarding: 'onboarding',
   root: 'root',
   notFound: 'notFound',
@@ -21,15 +13,7 @@ export const manualEncryptionScreenRoutes: {
 };
 
 export type RootStackParamList = {
-  encryption: undefined;
-  home: undefined;
-  manualDecrypt: {id: string};
-  updatePlan: undefined;
   registerLogin: undefined;
-  messageUpdate: undefined;
-  networkError: undefined;
-  messageAccessRequest: undefined;
-  invitation: {inviteId: string};
   onboarding: undefined;
   createChatRoom: undefined;
   root: undefined;
@@ -45,5 +29,4 @@ export type RootStackParamList = {
   };
 };
 
-export type TManualEncryptionScreens =
-  keyof typeof manualEncryptionScreenRoutes;
+export type TapplicationScreens = keyof typeof applicationRoutes;

@@ -62,7 +62,7 @@ export const chatRoomsReducer = createSlice({
         }
         const chatRoom = state[chatRoomId];
 
-        // dirrect change works — while createSlice uses Immer.js
+        // NOTE: dirrect change works — while createSlice uses Immer.js
         chatRoom.messages = [...action.payload];
       },
     );
@@ -76,7 +76,7 @@ export const chatRoomsReducer = createSlice({
         }
         const chatRoom = state[chatRoomId];
 
-        // dirrect change works — while createSlice uses Immer.js
+        // NOTE: dirrect change works — while createSlice uses Immer.js
         chatRoom.messages = [...chatRoom.messages, action.payload];
       },
     );

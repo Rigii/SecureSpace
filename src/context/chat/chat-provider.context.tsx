@@ -16,7 +16,7 @@ import {socketEventStatus} from './chat-provider.constants';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/ErrorNotificationHandler';
+} from '../../services/error-notification-handler';
 import {getChatRoomsData} from '../../services/api/chat/chat-api';
 import {useDispatch} from 'react-redux';
 import {
