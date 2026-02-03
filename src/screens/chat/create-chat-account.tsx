@@ -11,7 +11,7 @@ import {
   applicationRoutes,
   RootStackParamList,
 } from '../../app/navigator/screens';
-import {createChatAccount} from '../../app/store/saga/chat-account-saga/chat-account.actions';
+import {createChatAccountSaga} from '../../app/store/saga/chat-account-saga/chat-account.actions';
 
 export const CreateChatAccount = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -26,7 +26,7 @@ export const CreateChatAccount = () => {
   const dispatch = useDispatch();
 
   const onCreateChatAccount = async () => {
-    dispatch(createChatAccount({email, id, name, token}));
+    dispatch(createChatAccountSaga({email, id, name, token}));
   };
 
   if (publicChatKey && !privateChatKey) {

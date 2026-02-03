@@ -1,12 +1,12 @@
 import {call, put} from 'redux-saga/effects';
 import {
-  createChatAccount,
+  createChatAccountSaga,
   createChatAccountFailed,
   createChatAccountSuccess,
 } from './chat-account.actions';
 import {createChatUserApi} from '../../../../services/api/chat/chat-api';
 import {generatePGPKeyPair} from '../../../../services/pgp-encryption-service/generate-keys';
-import {saveDeviceKeyWithUserChoice} from '../../../../services/file-content/save-device-key';
+import {storeDeviceKeyWithUserChoice} from '../../../../services/file-content/save-device-key';
 import {IInvitations} from '../../state/userChatAccount/userChatAccount.types';
 import {
   EKeychainSecrets,
@@ -20,7 +20,7 @@ import {
 import {strings} from '../../../../screens/chat/chat.strings';
 
 export function* createChatAccountWorkerSaga(
-  action: ReturnType<typeof createChatAccount>,
+  action: ReturnType<typeof createChatAccountSaga>,
 ): Generator<any, void, any> {
   try {
     const {email, id, name, token} = action.payload;
@@ -48,7 +48,7 @@ export function* createChatAccountWorkerSaga(
       type: EKeychainSecrets.chatPrivateKey,
     });
 
-    yield call(saveDeviceKeyWithUserChoice, {
+    yield call(storeDeviceKeyWithUserChoice, {
       email,
       keyUuid: response.data.interlocutor_id,
       privateKey: userKeys.privateKey,

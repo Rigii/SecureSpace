@@ -2,7 +2,7 @@ import {generateKeyFile} from './create-key-file';
 import {exportKeyFileWithUserChoice} from './export-key-file';
 import {EAvailableFilePathNames} from './types';
 
-export const saveDeviceKeyWithUserChoice = async ({
+export const storeDeviceKeyWithUserChoice = async ({
   email,
   keyUuid,
   privateKey,

@@ -4,27 +4,11 @@ import {ImergencyPasswords} from './onboarding-cases/imergency-passwords';
 import {SecurePlaces} from './onboarding-cases/secure-places';
 import {SwiperRef} from './onboarding.types';
 import {useDispatch} from 'react-redux';
-import {
-  setSecurityData,
-  setUser,
-} from '../../app/store/state/userState/userAction';
-import {postOnboardingDataApi} from '../../services/api/user/user.api';
+import {setUser} from '../../app/store/state/userState/userAction';
 import {useReduxSelector} from '../../app/store/store';
-import {
-  EPopupType,
-  ErrorNotificationHandler,
-} from '../../services/error-notification-handler';
-import {generatePGPKeyPair} from '../../services/pgp-encryption-service/generate-keys';
-import {getTime} from 'date-fns';
-import {Platform} from 'react-native';
 import {DownloadKey} from './onboarding-cases/download-key';
 import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
-
-import {
-  EKeychainSecrets,
-  storeSecretKeychain,
-} from '../../services/secrets-keychains/store-secret-keychain';
-import {saveDeviceKeyWithUserChoice} from '../../services/file-content/save-device-key';
+import {followOnboardingSaga} from '../../app/store/saga/onboarding-saga/onboarding.actions';
 
 export const useOnboardingFlowState = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -36,106 +20,17 @@ export const useOnboardingFlowState = () => {
   const dispatch = useDispatch();
 
   const onSubmit = async (values: IOnboardingFormValues) => {
-    const userKeys = await generatePGPKeyPair({
-      userIds: [{name: values.name, email: userAccountData.email}],
-      numBits: 2048,
-      passphrase: values.keyPassword,
-    });
-
-    const publicKeyData = {
-      publicKey: userKeys.publicKey,
-      os: Platform.OS,
-      date: getTime(new Date()),
-      email: userAccountData.email,
-      approved: true,
-    };
-
-    try {
-      const response = await postOnboardingDataApi(userAccountData.token, {
-        role: 'user', // TODO: get from the global constants
-        title: values.titleForm,
-        isOnboardingDone: true,
-        name: values.name,
-        accessCredentials: values.imergencyPasswordsEmails,
-        accountId: userAccountData.id,
-        pgpPublicKey: publicKeyData,
-        securePlaces: [
-          {
-            name: values.securePlaceName,
-            securePlaceData: values.securePlaceData,
-            securePlaceRadius: values.securePlaceRadius,
-          },
-        ],
-      });
-
-      if (!response.data?.newPublicKeysData?.id) {
-        throw new Error('PGP Key id is not awailable');
-      }
-
-      /* Storing Master Private Key in the Keychain */
-      await storeSecretKeychain({
+    dispatch(
+      followOnboardingSaga({
+        values,
+        token: userAccountData.token,
+        id: userAccountData.id,
         email: userAccountData.email,
-        password: values.keyPassword,
-        uuid: response.data?.newPublicKeysData?.id,
-        privateKey: userKeys.privateKey,
-        type: EKeychainSecrets.devicePrivateKey,
-      });
-
-      /* Storing Master Private Key in the file system */
-      await saveDeviceKeyWithUserChoice({
-        email: userAccountData.email,
-        keyUuid: response.data?.newPublicKeysData?.id,
-        privateKey: userKeys.privateKey,
-        encryptKeyDataPassword: values.keyPassword,
-        keyType: 'app',
-      });
-
-      const pgpDeviceKeyData = {
-        devicePrivateKey: userKeys.privateKey,
-        date: getTime(new Date()),
-        email: userAccountData.email,
-        keyUUID: response.data?.newPublicKeysData?.id,
-        approved: true,
-      };
-
-      const deviceIdentifyer = {
-        os: Platform.OS,
-        date: getTime(new Date()),
-      };
-
-      dispatch(
-        setUser({
-          title: values.titleForm,
-          name: values.name,
-          token: userAccountData.token,
-        }),
-      );
-
-      dispatch(
-        setSecurityData({
-          accessCredentials: values.imergencyPasswordsEmails,
-          deviceIdentifyer,
-          pgpDeviceKeyData,
-          securePlaces: [
-            {
-              name: values.securePlaceName,
-              securePlaceData: values.securePlaceData,
-              securePlaceRadius: values.securePlaceRadius,
-            },
-          ],
-        }),
-      );
-
-      setIsSubmitted(true);
-    } catch (error) {
-      const currentError = error as Error;
-
-      ErrorNotificationHandler({
-        type: EPopupType.ERROR,
-        text1: 'Onboarding data submit error',
-        text2: currentError.name || '',
-      });
-    }
+        onSuccess: () => {
+          setIsSubmitted(true);
+        },
+      }),
+    );
   };
 
   const onNextPage = () => {

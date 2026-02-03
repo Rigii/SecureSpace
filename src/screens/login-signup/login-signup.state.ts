@@ -3,7 +3,7 @@ import {EAuthMode} from './login-sign-up.types';
 import {locallyEmailForSignIn} from '../../services/async-secure-storage/async-storage-service';
 import {useDispatch} from 'react-redux';
 
-import {loginRequested} from '../../app/store/saga/auth-saga/auth.actions';
+import {loginRequestedSaga} from '../../app/store/saga/auth-saga/auth.actions';
 import {strings} from './login-signup.strings';
 
 export const useLoginSignUpUserState = () => {
@@ -27,7 +27,7 @@ export const useLoginSignUpUserState = () => {
     async (signInData: {email: string; password: string}) => {
       try {
         dispatch(
-          loginRequested({
+          loginRequestedSaga({
             email: signInData.email,
             password: signInData.password,
             mode,

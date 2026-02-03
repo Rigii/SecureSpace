@@ -1,5 +1,5 @@
 import {call, put} from 'redux-saga/effects';
-import {loginRequested, loginSuccess, loginFailed} from './auth.actions';
+import {loginRequestedSaga, loginSuccess, loginFailed} from './auth.actions';
 import {setUser} from '../../state/userState/userAction';
 import {registerSignInUserApi} from '../../../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../../../services/error-notification-handler';
@@ -20,7 +20,7 @@ const errorMessageCases = {
 };
 
 function* authenticateUser(
-  action: ReturnType<typeof loginRequested>,
+  action: ReturnType<typeof loginRequestedSaga>,
 ): Generator<any, {user: any; token: string}, any> {
   const {email, password, mode} = action.payload;
 
@@ -54,7 +54,7 @@ function* checkOnboardingStatus(userInfo: any): Generator<any, void, any> {
 }
 
 export default function* authWorkerSaga(
-  action: ReturnType<typeof loginRequested>,
+  action: ReturnType<typeof loginRequestedSaga>,
 ): Generator<any, void, any> {
   try {
     /* Authenticate user */

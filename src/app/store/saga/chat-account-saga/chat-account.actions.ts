@@ -1,6 +1,6 @@
 import {createAction} from '@reduxjs/toolkit';
 
-export const createChatAccount = createAction<{
+export const createChatAccountSaga = createAction<{
   token: string;
   id: string;
   email: string;
