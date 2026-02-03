@@ -25,6 +25,9 @@
 ## User creates an account
 
 - create keys for the app
+- store keys in the keychain
+- store keys in files
+  **_create keys for chat on first chat open_**
 - create keys for chat
 - store keys in the keychain
 - store keys in files
@@ -39,13 +42,15 @@
 
 - get account data from the server, including public keys, store in Redux state
 - get private keys from the keychain and add them to Redux state
-- User deletes the app from the device.
-- purge the associated keys from the keychain
 
-key files remain on the device (user can manually transfer them to another device)
+## User deletes the app from the device.
+
+- purge the associated keys from the keychain
+- key files remain on the device (user can manually transfer them to another device)
 
 ## User installs the app on another device.
 
+- transfer app/chat keys manually
 - get keys from key files
 - store them in the keychain
 - store them in Redux state
