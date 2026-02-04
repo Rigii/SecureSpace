@@ -18,9 +18,7 @@ export const ChatEntryScreenState = ({
 }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
-  const {id, token} = useReduxSelector(
-    state => state.anonymousUserReducer.userAccountData,
-  );
+
   const {chatAccountId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
@@ -54,8 +52,8 @@ export const ChatEntryScreenState = ({
   }, [injectActions, navigation]);
 
   useEffect(() => {
-    dispatch(fetchUpdateChatStateSaga({token, id}));
-  }, [chatAccountId, id, token, privateChatKey, dispatch, navigation]);
+    dispatch(fetchUpdateChatStateSaga());
+  }, [chatAccountId, privateChatKey, dispatch, navigation]);
 
   return {accountId: chatAccountId, privateChatKey};
 };

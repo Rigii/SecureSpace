@@ -19,14 +19,10 @@ export const CreateChatAccount = () => {
   const {publicChatKey, privateChatKey, interlocutorId, created} =
     useReduxSelector(state => state.userChatAccountReducer);
 
-  const {token, id, email, name} = useReduxSelector(
-    state => state.anonymousUserReducer.userAccountData,
-  );
-
   const dispatch = useDispatch();
 
   const onCreateChatAccount = async () => {
-    dispatch(createChatAccountSaga({email, id, name, token}));
+    dispatch(createChatAccountSaga());
   };
 
   if (publicChatKey && !privateChatKey) {

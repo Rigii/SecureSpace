@@ -1,6 +1,5 @@
-import {call, put} from 'redux-saga/effects';
+import {call, put, select} from 'redux-saga/effects';
 import {
-  createChatAccountSaga,
   createChatAccountFailed,
   createChatAccountSuccess,
 } from './chat-account.actions';
@@ -19,11 +18,11 @@ import {
 } from '../../../../services/error-notification-handler';
 import {strings} from '../../../../screens/chat/chat.strings';
 
-export function* createChatAccountWorkerSaga(
-  action: ReturnType<typeof createChatAccountSaga>,
-): Generator<any, void, any> {
+export function* createChatAccountWorkerSaga(): Generator<any, void, any> {
   try {
-    const {email, id, name, token} = action.payload;
+    const {token, id, email, name} = yield select(
+      thisState => thisState.anonymousUserReducer.userAccountData,
+    );
 
     const userKeys = yield call(generatePGPKeyPair, {
       userIds: [{name: name || email, email}],

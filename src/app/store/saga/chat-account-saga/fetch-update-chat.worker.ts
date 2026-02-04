@@ -1,8 +1,5 @@
 import {call, put, select} from 'redux-saga/effects';
-import {
-  createChatAccountFailed,
-  fetchUpdateChatStateSaga,
-} from './chat-account.actions';
+import {createChatAccountFailed} from './chat-account.actions';
 import {
   EPopupType,
   ErrorNotificationHandler,
@@ -19,12 +16,13 @@ import {
 } from '../../state/userChatAccount/userChatAccount.types';
 import {updateUserChatsAccountSlice} from '../../state/userChatAccount/userChatAccountAction';
 
-export function* fetchUpdateChatStateWorker(
-  action: ReturnType<typeof fetchUpdateChatStateSaga>,
-): Generator<any, void, any> {
+export function* fetchUpdateChatStateWorker(): Generator<any, void, any> {
   try {
-    const {token, id} = action.payload;
     const state = yield select(
+      thisState => thisState.anonymousUserReducer.userAccountData,
+    );
+
+    const {id, token} = yield select(
       thisState => thisState.anonymousUserReducer.userAccountData,
     );
 
