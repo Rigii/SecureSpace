@@ -6,7 +6,6 @@ import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.t
 interface ChatListItemProps {
   chatItemData: IChatRoom;
   interlocutorId: string;
-  lastMessageTime: string;
   unreadMessages: boolean;
   navigateToChatRoom: (chatId: string) => void;
 }
@@ -14,7 +13,6 @@ interface ChatListItemProps {
 const ChatListItem: React.FC<ChatListItemProps> = ({
   chatItemData,
   interlocutorId,
-  lastMessageTime,
   unreadMessages,
   navigateToChatRoom,
 }) => {
@@ -36,7 +34,11 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
 
       <View className="flex-row gap-x-3 items-center">
         <View className="flex-col items-end">
-          <Text className="text-gray-500 text-xs">{lastMessageTime}</Text>
+          {chatItemData.messages[0] && (
+            <Text className="text-gray-500 text-xs">
+              {new Date(chatItemData.messages[0].created).toLocaleString()}
+            </Text>
+          )}
           {isInvitationAccepted && <AcceptDecline chatId={chatItemData.id} />}
         </View>
         <View

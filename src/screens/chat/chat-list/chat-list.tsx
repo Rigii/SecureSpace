@@ -1,12 +1,8 @@
 import React from 'react';
 import {View, FlatList} from 'react-native';
 import ChatListItem from '../../../components/chat-item/chat-item';
-import {UseChatListState} from './chat-list.state';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {
-  RootStackParamList,
-  applicationRoutes,
-} from '../../../app/navigator/screens';
+import {useChatListState} from './chat-list.state';
+
 import {PlusButton} from '../../../components/themed-button';
 
 interface ChatListProps {
@@ -19,19 +15,12 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {chatRoomsArray, interlocutorId} = UseChatListState();
-
-  const navigateCreateChat = () => {
-    navigation.navigate(applicationRoutes.createChatRoom);
-  };
-
-  const navigateToChatRoom = (chatId: string) => {
-    navigation.navigate(applicationRoutes.chatRoom, {
-      chatId,
-      participantId: interlocutorId,
-    });
-  };
+  const {
+    chatRoomsArray,
+    interlocutorId,
+    navigateCreateChat,
+    navigateToChatRoom,
+  } = useChatListState();
 
   if (!chatRoomsArray) {
     return null;
@@ -46,11 +35,6 @@ const ChatList: React.FC<ChatListProps> = () => {
           <ChatListItem
             chatItemData={item}
             interlocutorId={interlocutorId}
-            lastMessageTime={
-              item.messages && item.messages?.length > 0
-                ? new Date(item.messages[0].created).toLocaleString()
-                : '12.08.2025'
-            }
             navigateToChatRoom={navigateToChatRoom}
             unreadMessages={false}
           />
