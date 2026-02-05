@@ -4,7 +4,7 @@ import {setUser} from '../../state/userState/userAction';
 import {registerSignInUserApi} from '../../../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../../../services/error-notification-handler';
 import {strings} from '../../../../screens/login-signup/login-signup.strings';
-import {transformUserData} from './helpers/authFlow.transformers';
+import {transformUserData} from './helpers/auth-flow.transformers';
 import {navigationService} from '../../../../services/navigation/navigation.service';
 import {applicationRoutes} from '../../../navigator/screens';
 import {EAuthMode} from '../../../../screens/login-signup/login-sign-up.types';
