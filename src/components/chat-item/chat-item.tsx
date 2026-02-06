@@ -23,6 +23,8 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
     navigateToChatRoom(chatItemData.id);
   };
 
+  const chatMessages = chatItemData.messages || [];
+
   return (
     <TouchableOpacity
       className="flex-row items-center justify-center p-3 border-b border-gray-200"
@@ -34,9 +36,9 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
 
       <View className="flex-row gap-x-3 items-center">
         <View className="flex-col items-end">
-          {chatItemData.messages[0] && (
+          {chatMessages[0] && (
             <Text className="text-gray-500 text-xs">
-              {new Date(chatItemData.messages[0].created).toLocaleString()}
+              {chatMessages[0]?.created}
             </Text>
           )}
           {isInvitationAccepted && <AcceptDecline chatId={chatItemData.id} />}

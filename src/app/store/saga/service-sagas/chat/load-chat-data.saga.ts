@@ -3,12 +3,13 @@ import {
   EKeychainSecrets,
   getSecretKeychain,
 } from '../../../../../services/secrets-keychains/store-secret-keychain';
+
+import {updateUserChatsAccountSlice} from '../../../state/userChatAccount/userChatAccountAction';
+import {addUserChatRooms} from '../../../state/chatRoomsContent/chatRoomsAction';
 import {
   transformChatAccountData,
   transformChatRooms,
-} from '../../auth-saga/helpers/authFlow.transformers';
-import {updateUserChatsAccountSlice} from '../../../state/userChatAccount/userChatAccountAction';
-import {addUserChatRooms} from '../../../state/chatRoomsContent/chatRoomsAction';
+} from '../../auth-saga/helpers/auth-flow.transformers';
 
 export function* loadChatDataSaga(user: any): Generator<any, void, any> {
   const currentPrivateKey = yield call(getSecretKeychain, {

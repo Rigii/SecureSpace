@@ -17,18 +17,17 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../services/error-notification-handler';
-import {getChatRoomsData} from '../../services/api/chat/chat-api';
 import {useDispatch} from 'react-redux';
 import {
   addNewChatRoom,
   deleteChatRoomLocalData,
   updateChatRoom,
 } from '../../app/store/state/chatRoomsContent/chatRoomsAction';
-import {IFetchedChatRoom} from '../../screens/login-signup/login-sign-up.types';
+import {chatSocketSagaHandlers} from '../../app/store/saga/chat-account-saga/chat-socket.worker';
+import {handleChatSocketEvent} from '../../app/store/saga/chat-account-saga/chat-account.actions';
 
 export const ChatSocketProviderContext = createContext<{
   socket: Socket | null;
-  messages: string[];
   handleCreateChat: (chatData: ICreateChatRoom) => void;
   handleJoinChat: ({chatId}: {chatId: string}) => void;
   handleDeclineChatRoomInvitation: ({chatId}: {chatId: string}) => void;
@@ -44,7 +43,6 @@ export const ChatSocketProviderContext = createContext<{
   deleteChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
 }>({
   socket: null,
-  messages: [],
   handleCreateChat: () => {},
   handleJoinChat: () => {},
   handleDeclineChatRoomInvitation: () => {},
@@ -58,7 +56,6 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<string[]>([]);
   const [currentActiveChatId, setCurrentActiveChatId] = useState<string | null>(
     null,
   );
@@ -67,87 +64,127 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     state => state.userChatAccountReducer,
   );
   const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
-  const {token} = useReduxSelector(
-    state => state.anonymousUserReducer.userAccountData,
-  );
 
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   if (!interlocutorId) {
+  //     return;
+  //   }
+  //   const newSocket = connectUserChatNotificationsSocket(interlocutorId);
+
+  //   newSocket.on(socketEventStatus.CONNECT, () => {
+  //     console.log(strings.connectedChatServer);
+  //   });
+
+  //   newSocket.on(socketEventStatus.NEW_MESSAGE, (message: string) => {
+  //     setMessages(prevMessages => [...prevMessages, message]);
+  //   });
+
+  //   newSocket.on(
+  //     socketEventStatus.CHAT_ROOM_MESSAGE,
+  //     (message: {chatId: string; chatName: string; message: string}) => {
+  //       if (currentActiveChatId === message.chatId) {
+  //         return;
+  //       }
+  //       ErrorNotificationHandler({
+  //         type: EPopupType.INFO,
+  //         text1: `${strings.newMessageReceived} ${message}`,
+  //       });
+  //     },
+  //   );
+
+  //   newSocket.on(
+  //     socketEventStatus.USER_CHAT_INVITATION,
+  //     async (message: any) => {
+  //       console.log(strings.userChatInvitation, message);
+  //       ErrorNotificationHandler({
+  //         type: EPopupType.INFO,
+  //         text1: `${strings.newRoomInvitation} ${message.chatName}`,
+  //         text2: strings.findRoomInChatList,
+  //       });
+
+  //       // Get chat room data from the Socket message (no extra server call)
+  //       const responce = await getChatRoomsData({
+  //         token,
+  //         roomIds: [message?.chatId],
+  //       });
+  //       if (!responce?.data) {
+  //         return;
+  //       }
+
+  //       const chatData = responce.data[0] as IFetchedChatRoom;
+
+  //       const chatRoomData = {
+  //         id: chatData.id,
+  //         password: '',
+  //         chatName: chatData.chat_name,
+  //         chatType: chatData.chat_type,
+  //         ownerId: chatData.owner_id,
+  //         moderatorIds: chatData.moderator_ids,
+  //         usersData: chatData.users_data,
+  //         invitedUserIds: chatData.invited_user_ids,
+  //         messageDurationHours: chatData.message_duration_hours,
+  //         chatMediaStorageUrl: chatData.chat_media_storage_url,
+  //         chatIconUrl: chatData.chat_icon_url,
+  //         availabilityAreaData: chatData.availability_area_data,
+  //         messages: chatData.messages,
+  //       };
+
+  //       dispatch(addNewChatRoom(chatRoomData));
+  //     },
+  //   );
+
+  //   newSocket.on(socketEventStatus.DISCONNECT, () => {
+  //     console.log(strings.disconnectedChatServer);
+  //   });
+
+  //   newSocket.on(socketEventStatus.ERROR, (error: any) => {
+  //     console.error(strings.socketError, error);
+  //   });
+
+  //   setSocket(newSocket);
+
+  //   return () => {
+  //     newSocket.disconnect();
+  //     newSocket.removeAllListeners();
+  //   };
+  // }, [currentActiveChatId, dispatch, interlocutorId, token]);
 
   useEffect(() => {
     if (!interlocutorId) {
       return;
     }
+
     const newSocket = connectUserChatNotificationsSocket(interlocutorId);
 
     newSocket.on(socketEventStatus.CONNECT, () => {
       console.log(strings.connectedChatServer);
     });
 
-    newSocket.on(socketEventStatus.NEW_MESSAGE, (message: string) => {
-      setMessages(prevMessages => [...prevMessages, message]);
-    });
+    newSocket.on(
+      socketEventStatus.USER_CHAT_INVITATION,
+      (message: {chatId: string; chatName: string; message: string}) => {
+        dispatch(
+          handleChatSocketEvent({
+            type: chatSocketSagaHandlers.USER_CHAT_INVITATION,
+            data: {currentActiveChatId, message},
+          }),
+        );
+      },
+    );
 
     newSocket.on(
       socketEventStatus.CHAT_ROOM_MESSAGE,
       (message: {chatId: string; chatName: string; message: string}) => {
-        if (currentActiveChatId === message.chatId) {
-          return;
-        }
-        ErrorNotificationHandler({
-          type: EPopupType.INFO,
-          text1: `${strings.newMessageReceived} ${message}`,
-        });
+        dispatch(
+          handleChatSocketEvent({
+            type: chatSocketSagaHandlers.CHAT_ROOM_MESSAGE,
+            data: {currentActiveChatId, message},
+          }),
+        );
       },
     );
-
-    newSocket.on(
-      socketEventStatus.USER_CHAT_INVITATION,
-      async (message: any) => {
-        console.log(strings.userChatInvitation, message);
-        ErrorNotificationHandler({
-          type: EPopupType.INFO,
-          text1: `${strings.newRoomInvitation} ${message.chatName}`,
-          text2: strings.findRoomInChatList,
-        });
-
-        // Get chat room data from the Socket message (no extra server call)
-        const responce = await getChatRoomsData({
-          token,
-          roomIds: [message?.chatId],
-        });
-        if (!responce?.data) {
-          return;
-        }
-
-        const chatData = responce.data[0] as IFetchedChatRoom;
-
-        const chatRoomData = {
-          id: chatData.id,
-          password: '',
-          chatName: chatData.chat_name,
-          chatType: chatData.chat_type,
-          ownerId: chatData.owner_id,
-          moderatorIds: chatData.moderator_ids,
-          usersData: chatData.users_data,
-          invitedUserIds: chatData.invited_user_ids,
-          messageDurationHours: chatData.message_duration_hours,
-          chatMediaStorageUrl: chatData.chat_media_storage_url,
-          chatIconUrl: chatData.chat_icon_url,
-          availabilityAreaData: chatData.availability_area_data,
-          messages: chatData.messages,
-        };
-
-        dispatch(addNewChatRoom(chatRoomData));
-      },
-    );
-
-    newSocket.on(socketEventStatus.DISCONNECT, () => {
-      console.log(strings.disconnectedChatServer);
-    });
-
-    newSocket.on(socketEventStatus.ERROR, (error: any) => {
-      console.error(strings.socketError, error);
-    });
 
     setSocket(newSocket);
 
@@ -155,7 +192,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       newSocket.disconnect();
       newSocket.removeAllListeners();
     };
-  }, [currentActiveChatId, dispatch, interlocutorId, token]);
+  }, [interlocutorId, currentActiveChatId, dispatch]);
 
   const handleCreateChat = async (chatData: ICreateChatRoom) => {
     if (!socket) {
@@ -262,7 +299,6 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     <ChatSocketProviderContext.Provider
       value={{
         socket,
-        messages,
         deleteChatRoom,
         leaveChatRoom,
         setCurrentActiveChatId,
