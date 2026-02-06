@@ -18,7 +18,7 @@ import {updateUserChatsAccountSlice} from '../../state/userChatAccount/userChatA
 
 export function* fetchUpdateChatStateWorker(): Generator<any, void, any> {
   try {
-    const state = yield select(
+    const {chatAccountId, privateChatKey} = yield select(
       thisState => thisState.anonymousUserReducer.userAccountData,
     );
 
@@ -26,7 +26,7 @@ export function* fetchUpdateChatStateWorker(): Generator<any, void, any> {
       thisState => thisState.anonymousUserReducer.userAccountData,
     );
 
-    if (state.chatAccountId && state.privateChatKey) {
+    if (chatAccountId && privateChatKey) {
       return;
     }
     const response = yield call(getChatUserApi, id, token);

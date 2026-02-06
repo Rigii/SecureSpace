@@ -36,24 +36,30 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   const {interlocutorId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
-  const {messages} = userChatRooms[chatId] || {messages: []};
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const storedMessages = userChatRooms[chatId]?.messages || [];
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!flatListRef.current || messages.length < 1) {
+    if (!flatListRef.current || storedMessages.length < 1) {
       return;
     }
 
     flatListRef.current.scrollToEnd({animated: true});
-  }, [messages]);
+  }, [storedMessages]);
 
   useEffect(() => {
+    // TODO: moove flow to the saga
     setCurrentActiveChatId(chatId);
     const getMessages = async () => {
       try {
+        //       const responce = await getChatRoomsData({
+        //         token,
+        //         roomIds: [message?.chatId],
+        //       });
         const roomMessagesResponce = await getChatRoomMessages({
           roomId: chatId,
           pagination: {page: 1, limit: 200},
@@ -199,7 +205,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     },
   ];
   return {
-    messages,
+    messages: storedMessages,
     participantId: interlocutorId,
     chatRoomOptions,
     flatListRef,

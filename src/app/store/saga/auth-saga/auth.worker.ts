@@ -4,12 +4,10 @@ import {setUser} from '../../state/userState/userAction';
 import {registerSignInUserApi} from '../../../../services/api/user/user.api';
 import {ErrorNotificationHandler} from '../../../../services/error-notification-handler';
 import {strings} from '../../../../screens/login-signup/login-signup.strings';
-import {transformUserData} from './helpers/authFlow.transformers';
+import {transformUserData} from './helpers/auth-flow.transformers';
 import {navigationService} from '../../../../services/navigation/navigation.service';
 import {applicationRoutes} from '../../../navigator/screens';
 import {EAuthMode} from '../../../../screens/login-signup/login-sign-up.types';
-import {IHttpExceptionResponse} from '../../../../services/xhr-services/xhr.types';
-import {AxiosError} from 'axios';
 import {validateEncryptionKeysSaga} from '../service-sagas/crypto/validate-encryption-keys.saga';
 import {loadChatDataSaga} from '../service-sagas/chat/load-chat-data.saga';
 
@@ -83,21 +81,13 @@ export default function* authWorkerSaga(
       return;
     }
 
-    const currentError = error as AxiosError<IHttpExceptionResponse>;
-
-    console.warn(
-      'Login/signup saga error:',
-      currentError.response?.data.message,
-    );
-
-    const currentErrorMessage =
-      currentError.response?.data.message || error.message;
+    console.error(error.message, error.response?.data.message);
 
     /* Actual API/network errors */
-    yield put(loginFailed(currentErrorMessage || strings.loginSignupError));
+    yield put(loginFailed(error.message || strings.loginSignupError));
     yield call(ErrorNotificationHandler, {
       text1: strings.loginSignupError,
-      text2: currentErrorMessage,
+      text2: error.message || strings.loginSignupError,
     });
   }
 }

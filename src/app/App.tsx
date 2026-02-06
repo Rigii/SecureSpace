@@ -1,5 +1,4 @@
 import React, {useEffect, useRef} from 'react';
-// import {StatusBar} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {sagaMiddleware, store} from './store/store';
 import {Provider} from 'react-redux';
@@ -17,16 +16,51 @@ import {navigationService} from '../services/navigation/navigation.service';
 /* For asyncStorage debugging */
 (global as any).asyncStorageLogger = asyncStorageLogger;
 
+// Type declaration for Webpack HMR
+declare const module: any;
+
+// Variable to hold the saga task reference
+let sagaTask: ReturnType<typeof sagaMiddleware.run> | null = null;
+
 function App(): React.JSX.Element {
   const navigationRef = useRef(null);
 
   useEffect(() => {
     SplashScreen.hide();
+
+    // Start the saga
+    startSaga();
+
+    // Set up hot module replacement
+    if (__DEV__ && module.hot) {
+      module.hot.accept('./store/saga/root.saga', () => {
+        console.log('[HMR] Reloading sagas...');
+
+        if (sagaTask) {
+          sagaTask.cancel();
+          sagaTask.toPromise().finally(() => {
+            const newRootSaga = require('./store/saga/root.saga').default;
+            sagaTask = sagaMiddleware.run(newRootSaga);
+          });
+        }
+      });
+    }
+
+    return () => {
+      if (sagaTask) {
+        sagaTask.cancel();
+      }
+    };
   }, []);
+
+  const startSaga = () => {
+    if (!sagaTask) {
+      sagaTask = sagaMiddleware.run(rootSaga);
+    }
+  };
 
   const handleNavigationReady = () => {
     navigationService.setNavigationRef(navigationRef.current);
-    sagaMiddleware.run(rootSaga);
   };
 
   if (!store) {
