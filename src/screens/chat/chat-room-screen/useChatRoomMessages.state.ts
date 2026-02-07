@@ -56,10 +56,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     setCurrentActiveChatId(chatId);
     const getMessages = async () => {
       try {
-        //       const responce = await getChatRoomsData({
-        //         token,
-        //         roomIds: [message?.chatId],
-        //       });
         const roomMessagesResponce = await getChatRoomMessages({
           roomId: chatId,
           pagination: {page: 1, limit: 200},
@@ -73,7 +69,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           (messageObject: {
             id: string;
             participantId: string;
-            senderNikName: string;
+            senderNickame: string;
             message: string;
             chatRoomId: string;
             isAdmin: boolean;
@@ -86,7 +82,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
             message: messageObject?.message,
             created: new Date(messageObject?.created).toLocaleString(),
             updated: new Date(messageObject?.updated).toLocaleString(),
-            senderNikName: messageObject?.senderNikName,
+            senderNickame: messageObject?.senderNickame,
             participantId: messageObject?.participantId,
             chatRoomId: messageObject?.chatRoomId,
             isAdmin: false,
@@ -131,10 +127,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           }),
         );
         dispatch(addMessagesToChatRoom(decryptedMessages));
-
-        return () => {
-          setCurrentActiveChatId(null);
-        };
       } catch (error) {
         const currentError = error as Error;
         console.error(currentError);
@@ -145,6 +137,10 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       }
     };
     getMessages();
+
+    return () => {
+      setCurrentActiveChatId(null);
+    };
   }, [chatId, privateChatKey, token, dispatch, setCurrentActiveChatId]);
 
   const onLeaveChatRoom = async () => {

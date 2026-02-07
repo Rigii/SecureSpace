@@ -1,20 +1,20 @@
 import {call, put, select} from 'redux-saga/effects';
-import {createChatAccountFailed} from './chat-account.actions';
+import {createChatAccountFailed} from '../chat-account.actions';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../../services/error-notification-handler';
-import {strings} from '../../../../screens/chat/chat-entry/strings';
-import {getChatUserApi} from '../../../../services/api/chat/chat-api';
+} from '../../../../../services/error-notification-handler';
+import {strings} from '../../../../../screens/chat/chat-entry/strings';
+import {getChatUserApi} from '../../../../../services/api/chat/chat-api';
 import {
   EKeychainSecrets,
   getSecretKeychain,
-} from '../../../../services/secrets-keychains/store-secret-keychain';
+} from '../../../../../services/secrets-keychains/store-secret-keychain';
 import {
   IChatRoomId,
   IInvitations,
-} from '../../state/userChatAccount/userChatAccount.types';
-import {updateUserChatsAccountSlice} from '../../state/userChatAccount/userChatAccountAction';
+} from '../../../state/userChatAccount/userChatAccount.types';
+import {updateUserChatsAccountSlice} from '../../../state/userChatAccount/userChatAccountAction';
 
 export function* fetchUpdateChatStateWorker(): Generator<any, void, any> {
   try {

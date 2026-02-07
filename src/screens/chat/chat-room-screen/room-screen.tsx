@@ -36,7 +36,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
             <ChatMessage
               message={item.message}
               isOwnMessage={item.participantId === participantId}
-              senderName={item.senderNikName}
+              senderName={item.senderNickame}
               time={item.created}
             />
           )}

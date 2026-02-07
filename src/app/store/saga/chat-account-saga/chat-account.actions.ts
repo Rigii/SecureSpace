@@ -1,5 +1,6 @@
 import {createAction} from '@reduxjs/toolkit';
-import {TChatSocketEventType} from './chat-socket.worker';
+import {Socket} from 'socket.io-client';
+import {IChatSocketEvent} from './types';
 
 export const createChatAccountSaga = createAction(
   'chat/createChatAccountRequested',
@@ -17,10 +18,16 @@ export const fetchUpdateChatStateSaga = createAction(
   'chat/updateChatAccountRequested',
 );
 
-export const handleChatSocketEvent = createAction<{
-  type: TChatSocketEventType;
-  data: {
-    currentActiveChatId: string | null;
-    message: {chatId: string; chatName: string; message: string};
-  };
-}>('chat/chatSocketEvent');
+export const handleChatSocketSaga = createAction<IChatSocketEvent>(
+  'chat/chatSocketEvent',
+);
+
+export const leaveChatRoomSaga = createAction<{
+  socket: Socket;
+  chatRoomId: string;
+}>('chat/leaveChatRoomSaga');
+
+export const deleteChatRoomSaga = createAction<{
+  socket: Socket;
+  chatRoomId: string;
+}>('chat/deleteChatRoomSaga');

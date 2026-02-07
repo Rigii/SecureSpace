@@ -42,9 +42,10 @@ export interface IUserData {
 export interface IChatMessage {
   id: string;
   participantId: string;
-  senderNikName: string;
+  senderNickame: string;
   message: string;
   chatRoomId: string;
+  chatRoomName?: string;
   lifeCycleLimitHours?: number;
   isAdmin: boolean;
   mediaUrl?: string;

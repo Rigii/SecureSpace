@@ -1,16 +1,12 @@
 import {useEffect, useState} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
-import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
 import {connectUserChatNotificationsSocket} from '../../../services/sockets/chat/chat.socket';
 import {strings} from '../../../context/chat/chat-provider.strings';
 import {socketEventStatus} from '../../../context/chat/chat-provider.constants';
 import {useDispatch} from 'react-redux';
-import {addMessageToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
-import {decryptMessage} from '../../../services/pgp-encryption-service/encrypt-decrypt-message';
-import {
-  EPopupType,
-  ErrorNotificationHandler,
-} from '../../../services/error-notification-handler';
+
+import {handleChatSocketSaga} from '../../../app/store/saga/chat-account-saga/chat-account.actions';
+import {chatSocketSagaHandlers} from '../../../app/store/saga/chat-account-saga/workers/constants';
 
 interface IChatRoomSocketState {
   chatId: string;
@@ -30,81 +26,46 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       [chatId],
     );
 
+    const handleChatMessage = (message: any) => {
+      dispatch(
+        handleChatSocketSaga({
+          type: chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER,
+          data: {currentActiveChatId: chatId, message},
+        }),
+      );
+    };
+
     currentChatSocket.on(socketEventStatus.CONNECT, () => {
-      console.log(`${strings.connectedChatWithId} ${chatId}`);
+      console.info(`${strings.connectedChatWithId} ${chatId}`);
     });
 
     currentChatSocket.on(socketEventStatus.DISCONNECT, () => {
-      console.log(`${strings.disconnectedChatWithId} ${chatId}`);
+      console.info(`${strings.disconnectedChatWithId} ${chatId}`);
     });
 
     currentChatSocket.on(
       socketEventStatus.JOIN_CHAT_SUCCESS,
       ({message, data}: {message: string; data: string[]}) => {
-        console.log(`${message}`);
+        console.info(`${message}`);
 
         setPublicKeys(data);
       },
     );
 
     currentChatSocket.on(socketEventStatus.USER_LEFT_CHAT, () => {
-      console.log(`${strings.disconnectedChatWithId} ${chatId}`);
+      console.info(`${strings.disconnectedChatWithId} ${chatId}`);
     });
 
     currentChatSocket.on(
       socketEventStatus.CHAT_ROOM_MESSAGE,
-      async (messageObject: {
-        id: string;
-        participantId: string;
-        senderNikName: string;
-        message: string;
-        chatRoomId: string;
-        isAdmin: boolean;
-        mediaUrl?: string;
-        voiceMessageUrl?: string;
-        created: string;
-        updated: string;
-      }) => {
-        try {
-          const storeData: IChatMessage = {
-            id: messageObject.id,
-            message: messageObject.message,
-            created: new Date(messageObject.created).toLocaleString(),
-            updated: new Date(messageObject.updated).toLocaleString(),
-            senderNikName: messageObject.senderNikName,
-            participantId: messageObject.participantId,
-            chatRoomId: messageObject.chatRoomId,
-            isAdmin: false,
-            mediaUrl: messageObject.mediaUrl,
-            voiceMessageUrl: messageObject.voiceMessageUrl,
-          };
-
-          if (!privateChatKey) {
-            throw new Error(strings.noPrivateChatKeyFound);
-          }
-
-          const decryptedMessage = await decryptMessage({
-            privateKey: privateChatKey,
-            passphrase: '',
-            encryptedMessage: storeData.message,
-          });
-
-          dispatch(
-            addMessageToChatRoom({...storeData, message: decryptedMessage}),
-          );
-        } catch (error) {
-          const currentError = error as Error;
-          ErrorNotificationHandler({
-            text1: currentError.message || strings.messageDisplayError,
-            type: EPopupType.ERROR,
-          });
-        }
-      },
+      handleChatMessage,
     );
 
     return () => {
-      currentChatSocket.disconnect();
-      currentChatSocket.removeAllListeners();
+      currentChatSocket.off(
+        socketEventStatus.CHAT_ROOM_MESSAGE,
+        handleChatMessage,
+      );
     };
   }, [chatId, interlocutorId, privateChatKey, dispatch]);
 

@@ -29,6 +29,7 @@ export interface ISecurePlace {
 
 export interface IChatMessage {
   chatRoomId: string;
+  chatRoomName?: string;
   message: string;
   senderId: string;
   senderName: string;
