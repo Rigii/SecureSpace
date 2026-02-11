@@ -8,7 +8,7 @@ import {ThemedButton} from '../../../components/themed-button';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../services/error-notification-handler';
+} from '../../../components/popup-message/error-notification-handler';
 import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
 
 export const DownloadKey = ({

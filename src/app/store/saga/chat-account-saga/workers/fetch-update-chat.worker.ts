@@ -3,7 +3,7 @@ import {createChatAccountFailed} from '../chat-account.actions';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../../../services/error-notification-handler';
+} from '../../../../../components/popup-message/error-notification-handler';
 import {strings} from '../../../../../screens/chat/chat-entry/strings';
 import {getChatUserApi} from '../../../../../services/api/chat/chat-api';
 import {

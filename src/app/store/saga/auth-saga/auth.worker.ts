@@ -2,7 +2,7 @@ import {call, put} from 'redux-saga/effects';
 import {loginRequestedSaga, loginSuccess, loginFailed} from './auth.actions';
 import {setUser} from '../../state/userState/userAction';
 import {registerSignInUserApi} from '../../../../services/api/user/user.api';
-import {ErrorNotificationHandler} from '../../../../services/error-notification-handler';
+import {ErrorNotificationHandler} from '../../../../components/popup-message/error-notification-handler';
 import {strings} from '../../../../screens/login-signup/login-signup.strings';
 import {transformUserData} from './helpers/auth-flow.transformers';
 import {navigationService} from '../../../../services/navigation/navigation.service';

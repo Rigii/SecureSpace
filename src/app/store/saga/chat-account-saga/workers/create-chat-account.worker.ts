@@ -15,7 +15,7 @@ import {createUserChatsAccount} from '../../../state/userChatAccount/userChatAcc
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../../../services/error-notification-handler';
+} from '../../../../../components/popup-message/error-notification-handler';
 import {strings} from '../../../../../screens/chat/chat.strings';
 
 export function* createChatAccountWorkerSaga(): Generator<any, void, any> {

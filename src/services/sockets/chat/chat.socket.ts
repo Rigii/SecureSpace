@@ -10,7 +10,7 @@ import {strings} from './chat-sockets.strings';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../error-notification-handler';
+} from '../../../components/popup-message/error-notification-handler';
 import {IChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
 
 const CHAT_ROOM_URL = '/chat_room';

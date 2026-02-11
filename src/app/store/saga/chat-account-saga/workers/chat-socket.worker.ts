@@ -7,7 +7,7 @@ import {
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../../../services/error-notification-handler';
+} from '../../../../../components/popup-message/error-notification-handler';
 import {IFetchedChatRoom} from '../../../../../screens/login-signup/login-sign-up.types';
 import {IChatMessage} from '../../../state/chatRoomsContent/chatRoomsState.types';
 import {decryptMessage} from '../../../../../services/pgp-encryption-service/encrypt-decrypt-message';

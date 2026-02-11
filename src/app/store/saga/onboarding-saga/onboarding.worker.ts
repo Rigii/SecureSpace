@@ -17,7 +17,7 @@ import {setSecurityData, setUser} from '../../state/userState/userAction';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../../services/error-notification-handler';
+} from '../../../../components/popup-message/error-notification-handler';
 import {strings} from '../../../../screens/onboarding/strings';
 
 export function* followOnboardingWorkerSaga(

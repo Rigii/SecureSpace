@@ -8,7 +8,7 @@ import {useReduxSelector} from '../../app/store/store';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/error-notification-handler';
+} from '../../components/popup-message/error-notification-handler';
 import {
   NavigationProp,
   RouteProp,
