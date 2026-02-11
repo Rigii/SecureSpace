@@ -8,7 +8,7 @@ import {
 export const useChatListState = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const chatRooms = useReduxSelector(state => state.chatRoomsReducer);
+  const chatRooms = useReduxSelector(state => state.chatRoomsSlice);
   const userChatAccount = useReduxSelector(
     state => state.userChatAccountReducer,
   );

@@ -63,7 +63,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const {interlocutorId, email} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
-  const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
+  const userChatRooms = useReduxSelector(state => state.chatRoomsSlice);
 
   const dispatch = useDispatch();
 

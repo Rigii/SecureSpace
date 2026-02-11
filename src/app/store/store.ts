@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import anonymousUserReducer from './state/userState/userSlice';
 import onboardingFormReducer from './state/onboardingState/onboardingSlice';
-import chatRoomsReducer from './state/chatRoomsContent/chatRoomsSlice';
+import chatRoomsSlice from './state/chatRoomsContent/chatRoomsSlice';
 import userChatAccountReducer from './state/userChatAccount/userChatAccountSlice';
 import restrictionsReducer from './state/applicationRestrictions/restrictionsSlice';
 import manualEncryptionDataReducer from './state/manualEncryption/manualEncryptionSlice';
@@ -20,7 +20,7 @@ import createSagaMiddleware from 'redux-saga';
 import persistMiddleware from './middleware/persistMiddleware';
 
 export interface IState {
-  chatRoomsReducer: IChatRooms;
+  chatRoomsSlice: IChatRooms;
   userChatAccountReducer: IUserChatAccount;
   anonymousUserReducer: IUserState;
   restrictionsReducer: IRestrictionsState;
@@ -48,7 +48,7 @@ const rootReducer = combineReducers({
     userChatAccountPersistConfig,
     userChatAccountReducer,
   ),
-  chatRoomsReducer: persistReducer(chatRoomsPersistConfig, chatRoomsReducer),
+  chatRoomsSlice: persistReducer(chatRoomsPersistConfig, chatRoomsSlice),
   anonymousUserReducer: persistReducer(
     anonymousUserPersistConfig,
     anonymousUserReducer,

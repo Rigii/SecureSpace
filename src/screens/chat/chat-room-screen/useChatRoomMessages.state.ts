@@ -32,7 +32,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     state => state.anonymousUserReducer.userAccountData,
   );
 
-  const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
+  const userChatRooms = useReduxSelector(state => state.chatRoomsSlice);
   const {interlocutorId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );

@@ -8,7 +8,7 @@ import {
   addMessageToChatRoom,
   clearChatRoomData,
 } from './chatRoomsAction';
-import chatRoomsReducer from './chatRoomsSlice';
+import chatRoomsSlice from './chatRoomsSlice';
 import {EChatVariants, IChatMessage, IChatRoom} from './chatRoomsState.types';
 
 // id: string;
@@ -84,7 +84,7 @@ describe('Chat Rooms Reducer', () => {
         'room-2': createMockChatRoom('room-2'),
       };
 
-      const nextState = chatRoomsReducer(
+      const nextState = chatRoomsSlice(
         initialState,
         addUserChatRooms(chatRooms),
       );
@@ -104,7 +104,7 @@ describe('Chat Rooms Reducer', () => {
         'room-2': createMockChatRoom('room-2'),
       };
 
-      const nextState = chatRoomsReducer(
+      const nextState = chatRoomsSlice(
         existingState,
         addUserChatRooms(newChatRooms),
       );
@@ -124,7 +124,7 @@ describe('Chat Rooms Reducer', () => {
         'room-1': createMockChatRoom('room-1', {chatName: 'New Name'}),
       };
 
-      const nextState = chatRoomsReducer(
+      const nextState = chatRoomsSlice(
         existingState,
         addUserChatRooms(updatedRoom),
       );
@@ -138,7 +138,7 @@ describe('Chat Rooms Reducer', () => {
 //     it('should add a new chat room when ID does not exist', () => {
 //       const newRoom = createMockChatRoom('room-1');
 
-//       const nextState = chatRoomsReducer(initialState, addNewChatRoom(newRoom));
+//       const nextState = chatRoomsSlice(initialState, addNewChatRoom(newRoom));
 
 //       expect(nextState).toEqual({
 //         'room-1': newRoom,
@@ -158,7 +158,7 @@ describe('Chat Rooms Reducer', () => {
 //         chatName: 'New Room',
 //       });
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addNewChatRoom(newRoom),
 //       );
@@ -175,7 +175,7 @@ describe('Chat Rooms Reducer', () => {
 
 //       const newRoom = createMockChatRoom('room-2');
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addNewChatRoom(newRoom),
 //       );
@@ -199,7 +199,7 @@ describe('Chat Rooms Reducer', () => {
 //         invitedUserIds: ['user-1', 'user-2'],
 //       });
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         updateChatRoom(updatedRoom),
 //       );
@@ -211,7 +211,7 @@ describe('Chat Rooms Reducer', () => {
 //     it('should add room if it does not exist (upsert)', () => {
 //       const newRoom = createMockChatRoom('room-1');
 
-//       const nextState = chatRoomsReducer(initialState, updateChatRoom(newRoom));
+//       const nextState = chatRoomsSlice(initialState, updateChatRoom(newRoom));
 
 //       expect(nextState['room-1']).toEqual(newRoom);
 //     });
@@ -225,7 +225,7 @@ describe('Chat Rooms Reducer', () => {
 //         'room-3': createMockChatRoom('room-3'),
 //       };
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         deleteChatRoomLocalData({chatRoomId: 'room-2'}),
 //       );
@@ -241,7 +241,7 @@ describe('Chat Rooms Reducer', () => {
 //         'room-1': createMockChatRoom('room-1'),
 //       };
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         deleteChatRoomLocalData({chatRoomId: 'nonexistent'}),
 //       );
@@ -255,7 +255,7 @@ describe('Chat Rooms Reducer', () => {
 //       };
 
 //       // @ts-ignore - testing edge case
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         deleteChatRoomLocalData({}),
 //       );
@@ -278,7 +278,7 @@ describe('Chat Rooms Reducer', () => {
 //         createMockMessage('room-1', 'msg-2'),
 //       ];
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addMessagesToChatRoom(messages),
 //       );
@@ -300,7 +300,7 @@ describe('Chat Rooms Reducer', () => {
 //         createMockMessage('room-1', 'new-msg-2'),
 //       ];
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addMessagesToChatRoom(messages),
 //       );
@@ -321,7 +321,7 @@ describe('Chat Rooms Reducer', () => {
 
 //       const messages = [createMockMessage('nonexistent', 'msg-1')];
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addMessagesToChatRoom(messages),
 //       );
@@ -336,7 +336,7 @@ describe('Chat Rooms Reducer', () => {
 //         }),
 //       };
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addMessagesToChatRoom([]),
 //       );
@@ -355,7 +355,7 @@ describe('Chat Rooms Reducer', () => {
 
 //       const newMessage = createMockMessage('room-1', 'msg-2');
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addMessageToChatRoom(newMessage),
 //       );
@@ -372,7 +372,7 @@ describe('Chat Rooms Reducer', () => {
 
 //       const newMessage = createMockMessage('nonexistent', 'msg-1');
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addMessageToChatRoom(newMessage),
 //       );
@@ -388,7 +388,7 @@ describe('Chat Rooms Reducer', () => {
 
 //       const newMessage = createMockMessage('room-1', 'msg-1');
 
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         existingState,
 //         addMessageToChatRoom(newMessage),
 //       );
@@ -404,13 +404,13 @@ describe('Chat Rooms Reducer', () => {
 //         'room-2': createMockChatRoom('room-2'),
 //       };
 
-//       const nextState = chatRoomsReducer(populatedState, clearChatRoomData());
+//       const nextState = chatRoomsSlice(populatedState, clearChatRoomData());
 
 //       expect(nextState).toEqual({});
 //     });
 
 //     it('should handle clearing already empty state', () => {
-//       const nextState = chatRoomsReducer(initialState, clearChatRoomData());
+//       const nextState = chatRoomsSlice(initialState, clearChatRoomData());
 
 //       expect(nextState).toEqual({});
 //     });
@@ -426,7 +426,7 @@ describe('Chat Rooms Reducer', () => {
 //       const newMessage = createMockMessage('room-1', 'msg-1');
 
 //       // This uses the direct mutation pattern from your reducer
-//       const nextState = chatRoomsReducer(
+//       const nextState = chatRoomsSlice(
 //         state,
 //         addMessageToChatRoom(newMessage),
 //       );
@@ -442,19 +442,19 @@ describe('Chat Rooms Reducer', () => {
 //   describe('Integration scenarios', () => {
 //     it('should handle complete chat room lifecycle', () => {
 //       // 1. Start empty
-//       let state = chatRoomsReducer({}, {type: '@@INIT'});
+//       let state = chatRoomsSlice({}, {type: '@@INIT'});
 //       expect(state).toEqual({});
 
 //       // 2. Add new chat room
 //       const newRoom = createMockChatRoom('room-1');
-//       state = chatRoomsReducer(state, addNewChatRoom(newRoom));
+//       state = chatRoomsSlice(state, addNewChatRoom(newRoom));
 //       expect(state['room-1']).toBeDefined();
 
 //       // 3. Update the chat room
 //       const updatedRoom = createMockChatRoom('room-1', {
 //         chatName: 'Updated Team Chat',
 //       });
-//       state = chatRoomsReducer(state, updateChatRoom(updatedRoom));
+//       state = chatRoomsSlice(state, updateChatRoom(updatedRoom));
 //       expect(state['room-1'].chatName).toBe('Updated Team Chat');
 
 //       // 4. Add messages
@@ -462,16 +462,16 @@ describe('Chat Rooms Reducer', () => {
 //         createMockMessage('room-1', 'msg-1'),
 //         createMockMessage('room-1', 'msg-2'),
 //       ];
-//       state = chatRoomsReducer(state, addMessagesToChatRoom(messages));
+//       state = chatRoomsSlice(state, addMessagesToChatRoom(messages));
 //       expect(state['room-1'].messages).toHaveLength(2);
 
 //       // 5. Add one more message
 //       const newMessage = createMockMessage('room-1', 'msg-3');
-//       state = chatRoomsReducer(state, addMessageToChatRoom(newMessage));
+//       state = chatRoomsSlice(state, addMessageToChatRoom(newMessage));
 //       expect(state['room-1'].messages).toHaveLength(3);
 
 //       // 6. Delete the chat room
-//       state = chatRoomsReducer(
+//       state = chatRoomsSlice(
 //         state,
 //         deleteChatRoomLocalData({chatRoomId: 'room-1'}),
 //       );
