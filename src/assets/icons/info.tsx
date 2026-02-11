@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {isDarkMode} from '../../services/custom-services';
+import {isDarkMode} from '../../services/custom-services/custom-services';
 import {Path} from 'react-native-svg';
 
 export const InfoIcon = (): ReactElement => {

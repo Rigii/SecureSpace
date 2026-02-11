@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {isJSON} from '../custom-services';
+import {isJSON} from '../custom-services/custom-services';
 import {IAEncryptionLimits} from '../../app/store/state/applicationRestrictions/application-restrictions.types';
 import {IAEncryptionPaymentSettings} from '../../app/store/state/paymentSettings/payment-settings.types';
 

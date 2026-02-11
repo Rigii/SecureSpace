@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import IIconProps from './iconTypes';
 import {Path, G} from 'react-native-svg';
-import {isDarkMode} from '../../services/custom-services';
+import {isDarkMode} from '../../services/custom-services/custom-services';
 
 const EyeIcon = (props: IIconProps): ReactElement => {
   const currentFillStroke = isDarkMode() ? '#FFFFFF' : '#1F1F1F';
