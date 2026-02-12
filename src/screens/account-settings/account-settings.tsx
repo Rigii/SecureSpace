@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {clearChatRoomData} from '../../app/store/state/chat-rooms-content/chat-room.actions';
 import {clearChatAccountData} from '../../app/store/state/user-chat-account/user-chat-account.actions';
-import {clearUser} from '../../app/store/state/userState/userAction';
+import {clearUser} from '../../app/store/state/user-state/user.action';
 import {clearRestrictions} from '../../app/store/state/application-restrictions/restrictions.actions';
 import {clearEncryptionData} from '../../app/store/state/manual-encryption/manual-encryption.actions';
 import {resetForm} from '../../app/store/state/onboarding-state/onboarding.slice';

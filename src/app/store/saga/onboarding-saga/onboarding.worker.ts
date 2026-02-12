@@ -13,7 +13,7 @@ import {
   storeSecretKeychain,
 } from '../../../../services/secrets-keychains/store-secret-keychain';
 import {storeDeviceKeyWithUserChoice} from '../../../../services/file-content/save-device-key';
-import {setSecurityData, setUser} from '../../state/userState/userAction';
+import {setSecurityData, setUser} from '../../state/user-state/user.action';
 import {
   EPopupType,
   ErrorNotificationHandler,

@@ -7,7 +7,10 @@ import DropdownButton from '../../modal-side-bar/modal-bar';
 import {BackIcon} from '../../../assets/icons/backIcon';
 import {ISidebarDropdownDataSet} from '../../modal-side-bar/modal-bar.types';
 import {useDispatch} from 'react-redux';
-import {clearUser, logOut} from '../../../app/store/state/userState/userAction';
+import {
+  clearUser,
+  logOut,
+} from '../../../app/store/state/user-state/user.action';
 import {clearChatRoomData} from '../../../app/store/state/chat-rooms-content/chat-room.actions';
 import {clearChatAccountData} from '../../../app/store/state/user-chat-account/user-chat-account.actions';
 import {clearRestrictions} from '../../../app/store/state/application-restrictions/restrictions.actions';

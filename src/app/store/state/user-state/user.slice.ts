@@ -4,14 +4,14 @@ import {
   ISecurityData,
   IUserAccount,
   IUserState,
-} from './userState.types';
+} from './user-state.types';
 import {
   setUser,
   setSecurityData,
   logOut,
   clearUser,
   addPgpDeviceKeyData,
-} from './userAction';
+} from './user.action';
 
 const initialState: IUserState = {
   userAccountData: {
