@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {AcceptDecline} from './accept-decline';
-import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {IChatRoom} from '../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 
 interface ChatListItemProps {
   chatItemData: IChatRoom;

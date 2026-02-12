@@ -4,7 +4,7 @@ import {
   IFetchedChatRoomsData,
   IInvitations,
   IUserChatAccount,
-} from './userChatAccount.types';
+} from './user-chat-account.types';
 
 export const createUserChatsAccount = createAction<IUserChatAccount>(
   'anonymousUser/createUserChatsAccount',

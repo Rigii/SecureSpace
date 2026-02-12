@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux';
 import {setUser} from '../../app/store/state/userState/userAction';
 import {useReduxSelector} from '../../app/store/store';
 import {DownloadKey} from './onboarding-cases/download-key';
-import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
+import {IOnboardingFormValues} from '../../app/store/state/onboarding-state/onboarding-state.types';
 import {followOnboardingSaga} from '../../app/store/saga/onboarding-saga/onboarding.actions';
 
 export const useOnboardingFlowState = () => {

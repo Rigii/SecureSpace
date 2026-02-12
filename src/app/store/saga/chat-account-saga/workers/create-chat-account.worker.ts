@@ -6,12 +6,12 @@ import {
 import {createChatUserApi} from '../../../../../services/api/chat/chat-api';
 import {generatePGPKeyPair} from '../../../../../services/pgp-encryption-service/generate-keys';
 import {storeDeviceKeyWithUserChoice} from '../../../../../services/file-content/save-device-key';
-import {IInvitations} from '../../../state/userChatAccount/userChatAccount.types';
+import {IInvitations} from '../../../state/user-chat-account/user-chat-account.types';
 import {
   EKeychainSecrets,
   storeSecretKeychain,
 } from '../../../../../services/secrets-keychains/store-secret-keychain';
-import {createUserChatsAccount} from '../../../state/userChatAccount/userChatAccountAction';
+import {createUserChatsAccount} from '../../../state/user-chat-account/user-chat-account.actions';
 import {
   EPopupType,
   ErrorNotificationHandler,

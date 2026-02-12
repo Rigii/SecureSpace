@@ -4,18 +4,18 @@ import {persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import anonymousUserReducer from './state/userState/userSlice';
-import onboardingFormReducer from './state/onboardingState/onboardingSlice';
-import chatRoomsSlice from './state/chatRoomsContent/chatRoomsSlice';
-import userChatAccountReducer from './state/userChatAccount/userChatAccountSlice';
-import restrictionsReducer from './state/applicationRestrictions/restrictionsSlice';
-import manualEncryptionDataReducer from './state/manualEncryption/manualEncryptionSlice';
+import onboardingFormReducer from './state/onboarding-state/onboarding.slice';
+import chatRoomsSlice from './state/chat-rooms-content/chat-rooms-slice';
+import userChatAccountReducer from './state/user-chat-account/user-chat-account.slice';
+import restrictionsReducer from './state/application-restrictions/restrictions-slice';
+import manualEncryptionDataReducer from './state/manual-encryption/manual-encryption.slice';
 
 import {IUserState} from './state/userState/userState.types';
-import {IOnboardingFormValues} from './state/onboardingState/onboardingStateTypes';
-import {IUserChatAccount} from './state/userChatAccount/userChatAccount.types';
-import {IChatRooms} from './state/chatRoomsContent/chatRoomsState.types';
-import {IRestrictionsState} from './state/applicationRestrictions/restrictionsSlice';
-import {IManualEncryptionState} from './state/manualEncryption/types';
+import {IOnboardingFormValues} from './state/onboarding-state/onboarding-state.types';
+import {IUserChatAccount} from './state/user-chat-account/user-chat-account.types';
+import {IChatRooms} from './state/chat-rooms-content/chat-rooms-state.types';
+import {IRestrictionsState} from './state/application-restrictions/restrictions-slice';
+import {IManualEncryptionState} from './state/manual-encryption/types';
 import createSagaMiddleware from 'redux-saga';
 import persistMiddleware from './middleware/persistMiddleware';
 

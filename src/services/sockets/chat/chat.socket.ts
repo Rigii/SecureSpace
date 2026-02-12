@@ -11,7 +11,7 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../../components/popup-message/error-notification-handler';
-import {IChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {IChatRoom} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 
 const CHAT_ROOM_URL = '/chat_room';
 

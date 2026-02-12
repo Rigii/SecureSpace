@@ -9,7 +9,7 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../../components/popup-message/error-notification-handler';
-import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
+import {IOnboardingFormValues} from '../../../app/store/state/onboarding-state/onboarding-state.types';
 
 export const DownloadKey = ({
   keyPassword,

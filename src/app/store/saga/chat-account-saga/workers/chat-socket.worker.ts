@@ -3,13 +3,13 @@ import {getChatRoomsData} from '../../../../../services/api/chat/chat-api';
 import {
   addMessageToChatRoom,
   addNewChatRoom,
-} from '../../../state/chatRoomsContent/chatRoomsAction';
+} from '../../../state/chat-rooms-content/chat-room.actions';
 import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../../../../components/popup-message/error-notification-handler';
 import {IFetchedChatRoom} from '../../../../../screens/login-signup/login-sign-up.types';
-import {IChatMessage} from '../../../state/chatRoomsContent/chatRoomsState.types';
+import {IChatMessage} from '../../../state/chat-rooms-content/chat-rooms-state.types';
 import {decryptMessage} from '../../../../../services/pgp-encryption-service/encrypt-decrypt-message';
 import {chatSocketSagaHandlers} from './constants';
 import {IChatSocketEvent, IChatSocketMessageType} from '../types';

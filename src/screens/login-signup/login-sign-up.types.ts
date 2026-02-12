@@ -1,6 +1,6 @@
 // import {UserCredential, User as IAuthUser} from 'firebase/auth';
 // import {Key} from '../../adapters/firebase-adapter';
-import {EChatVariants} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {EChatVariants} from '../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {IErrorResponse} from '../../services/xhr-services/xhr.types';
 
 // export type TKeys = Array<Key>;

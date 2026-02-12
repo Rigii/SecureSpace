@@ -4,7 +4,7 @@ import {
   IChatRooms,
   IChatMessage,
   IdeleteChatRoomLocalData,
-} from './chatRoomsState.types';
+} from './chat-rooms-state.types';
 import {
   addMessageToChatRoom,
   addMessagesToChatRoom,
@@ -13,7 +13,7 @@ import {
   clearChatRoomData,
   deleteChatRoomLocalData,
   updateChatRoom,
-} from './chatRoomsAction';
+} from './chat-room.actions';
 
 const initialState: IChatRooms = {};
 

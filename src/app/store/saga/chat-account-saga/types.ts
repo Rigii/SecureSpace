@@ -1,4 +1,4 @@
-import {IChatMessage} from '../../state/chatRoomsContent/chatRoomsState.types';
+import {IChatMessage} from '../../state/chat-rooms-content/chat-rooms-state.types';
 import {TChatSocketEventType} from './workers/chat-socket.worker';
 import {chatSocketSagaHandlers} from './workers/constants';
 

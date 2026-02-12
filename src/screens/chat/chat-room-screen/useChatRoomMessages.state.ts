@@ -1,10 +1,10 @@
 import {useContext, useEffect, useRef} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
-import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {strings} from '../../../context/chat/chat-provider.strings';
 import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
 import {useDispatch} from 'react-redux';
-import {addMessagesToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {addMessagesToChatRoom} from '../../../app/store/state/chat-rooms-content/chat-room.actions';
 import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../../app/navigator/screens';

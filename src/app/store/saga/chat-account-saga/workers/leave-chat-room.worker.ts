@@ -3,7 +3,7 @@ import {
   deleteChatRoomSocket,
   leaveChatRoomSocket,
 } from '../../../../../services/sockets/chat/chat.socket';
-import {deleteChatRoomLocalData} from '../../../state/chatRoomsContent/chatRoomsAction';
+import {deleteChatRoomLocalData} from '../../../state/chat-rooms-content/chat-room.actions';
 import {leaveChatRoomSaga} from '../chat-account.actions';
 
 export function* leaveChatRoomWorker(

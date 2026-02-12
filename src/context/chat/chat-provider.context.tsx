@@ -22,7 +22,7 @@ import {
   addNewChatRoom,
   deleteChatRoomLocalData,
   updateChatRoom,
-} from '../../app/store/state/chatRoomsContent/chatRoomsAction';
+} from '../../app/store/state/chat-rooms-content/chat-room.actions';
 import {handleChatSocketSaga} from '../../app/store/saga/chat-account-saga/chat-account.actions';
 import {chatSocketSagaHandlers} from '../../app/store/saga/chat-account-saga/workers/constants';
 

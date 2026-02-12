@@ -6,7 +6,7 @@ import {Input, KeyboardTypes} from '../../../components/input';
 import {ThemedButton} from '../../../components/themed-button';
 import {IUserData} from '../onboarding.types';
 import {FormikErrors, FormikActions} from 'formik';
-import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
+import {IOnboardingFormValues} from '../../../app/store/state/onboarding-state/onboarding-state.types';
 
 export const ImergencyPasswords = ({
   imergencyPasswordsEmails,

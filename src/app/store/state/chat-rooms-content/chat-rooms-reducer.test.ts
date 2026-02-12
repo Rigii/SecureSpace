@@ -6,9 +6,9 @@ import {
   addMessagesToChatRoom,
   addMessageToChatRoom,
   clearChatRoomData,
-} from './chatRoomsAction';
-import chatRoomsSlice from './chatRoomsSlice';
-import {EChatVariants, IChatMessage, IChatRoom} from './chatRoomsState.types';
+} from './chat-room.actions';
+import chatRoomsSlice from './chat-rooms-slice';
+import {EChatVariants, IChatMessage, IChatRoom} from './chat-rooms-state.types';
 
 const createMockChatRoom = (id: string, overrides = {}): IChatRoom => ({
   id,

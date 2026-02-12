@@ -4,7 +4,7 @@ import {
   GooglePlaceData,
   GooglePlaceDetail,
 } from 'react-native-google-places-autocomplete';
-import {EChatVariants} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {EChatVariants} from '../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {ChatNameType} from './create-chat-cases/chat-type-name';
 import {ICreateRoomFormValues} from './create-update-chat.types';
 import {ChatPassword} from './create-chat-cases/chat-password';

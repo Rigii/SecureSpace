@@ -13,8 +13,8 @@ import {
 import {
   IChatRoomId,
   IInvitations,
-} from '../../../state/userChatAccount/userChatAccount.types';
-import {updateUserChatsAccountSlice} from '../../../state/userChatAccount/userChatAccountAction';
+} from '../../../state/user-chat-account/user-chat-account.types';
+import {updateUserChatsAccountSlice} from '../../../state/user-chat-account/user-chat-account.actions';
 
 export function* fetchUpdateChatStateWorker(): Generator<any, void, any> {
   try {

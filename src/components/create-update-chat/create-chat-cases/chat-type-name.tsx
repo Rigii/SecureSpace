@@ -5,7 +5,7 @@ import {Input, KeyboardTypes} from '../../input';
 import {ThemedButton} from '../../themed-button';
 import {FormikErrors, FormikTouched, FormikActions} from 'formik';
 import {strings} from '../create-chat-form.strings';
-import {EChatVariants} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {EChatVariants} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {RadioGroup} from 'react-native-radio-buttons-group';
 import {radioButtonsData} from '../create-chat-mocked';
 import {ICreateRoomFormValues} from '../create-update-chat.types';
