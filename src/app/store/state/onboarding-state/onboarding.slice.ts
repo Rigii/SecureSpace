@@ -20,7 +20,7 @@ const initialState: IOnboardingFormValues = {
   saveKeyOnDevice: false,
 };
 
-const onboardingFormSlice = createSlice({
+export const onboardingFormSlice = createSlice({
   name: 'onboardingForm',
   initialState,
   reducers: {
