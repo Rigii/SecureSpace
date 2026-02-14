@@ -9,6 +9,10 @@ interface AcceptDeclineProps {
   chatId: string;
 }
 
+const strings = {
+  newInvitation: 'New invitation',
+};
+
 export const AcceptDecline: React.FC<AcceptDeclineProps> = ({chatId}) => {
   const {handleJoinChat, handleDeclineChatRoomInvitation} = useContext(
     ChatSocketProviderContext,
@@ -22,22 +26,26 @@ export const AcceptDecline: React.FC<AcceptDeclineProps> = ({chatId}) => {
     handleDeclineChatRoomInvitation({chatId});
 
   return (
-    <View className="flex-row items-center space-x-1 p-2 border-gray-200 border rounded-md">
-      <TextNormal className="color-gray-400">New</TextNormal>
-      <TouchableOpacity
-        className="flex-row items-center"
-        onPress={onHandleChatJoin}>
-        <View className="w-6 h-6 bg-emerald-700 rounded-full items-center justify-center">
-          <AcceptIcon />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="flex-row items-center"
-        onPress={onHandleDeclineChatRoomInvitation}>
-        <View className="w-6 h-6 bg-input-error rounded-full items-center justify-center">
-          <DeclineIcon />
-        </View>
-      </TouchableOpacity>
+    <View className="flex-row items-center space-x-1 p-2 border-gray-200 border rounded-md justify-between">
+      <TextNormal className="color-gray-400">
+        {strings.newInvitation}
+      </TextNormal>
+      <View className="flex-row items-center space-x-4">
+        <TouchableOpacity
+          className="flex-row items-center"
+          onPress={onHandleChatJoin}>
+          <View className="w-10 h-10 bg-emerald-700 rounded-full items-center justify-center">
+            <AcceptIcon />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="flex-row items-center"
+          onPress={onHandleDeclineChatRoomInvitation}>
+          <View className="w-10 h-10 bg-input-error rounded-full items-center justify-center">
+            <DeclineIcon />
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

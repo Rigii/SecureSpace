@@ -43,6 +43,9 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
 
   const dispatch = useDispatch();
 
+  const isInvitationNotAccepted =
+    userChatRooms[chatId]?.invitedUserIds?.includes(interlocutorId);
+
   useEffect(() => {
     if (!flatListRef.current || storedMessages.length < 1) {
       return;
@@ -204,6 +207,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     messages: storedMessages,
     participantId: interlocutorId,
     chatRoomOptions,
+    isInvitationNotAccepted,
     flatListRef,
   };
 };

@@ -6,6 +6,7 @@ import {ChatMessage} from '../../../components/chat-room-components/chat-message
 import ChatInput from '../../../components/chat-room-components/chat-input.component';
 import {useChatRoomSocketState} from './use-room-socket.state';
 import {useChatRoomMessagesState} from './use-room-messages.state';
+import {AcceptDecline} from '../../../components/chat-item/accept-decline';
 
 interface IChatRoomScreen {
   chatId: string;
@@ -13,17 +14,23 @@ interface IChatRoomScreen {
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
   const {publicKeys} = useChatRoomSocketState({chatId});
-  const {participantId, chatRoomOptions, messages, flatListRef} =
-    useChatRoomMessagesState({
-      chatId,
-    });
+  const {
+    participantId,
+    chatRoomOptions,
+    messages,
+    isInvitationNotAccepted,
+    flatListRef,
+  } = useChatRoomMessagesState({
+    chatId,
+  });
 
   return (
     <View className="flex-1">
       <ComponentsTopBar settingsData={chatRoomOptions} />
+      {isInvitationNotAccepted ? <AcceptDecline chatId={chatId} /> : null}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1 mt-3"
+        className="flex-1"
         keyboardVerticalOffset={100}>
         <FlatList
           data={messages}
