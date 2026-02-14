@@ -95,7 +95,7 @@ export const deleteChatRoomSocket = (
   socket.emit(socketMessageNamespaces.DELETE_CHAT_ROOM, chatData);
 
   socket.on(chatEvents.DELETE_CHAT_ROOM_SUCCESS, data => {
-    console.log(strings.roomDeleted, data);
+    console.info(strings.roomDeleted, data);
   });
 
   socket.on(chatEvents.DELETE_CHAT_ROOM_ERROR, error => {
@@ -115,7 +115,7 @@ export const joinChatRoomSocket = (
   socket.emit(socketMessageNamespaces.JOIN_CHAT, chatData);
 
   socket.on(chatEvents.JOIN_CHAT_SUCCESS, data => {
-    console.log(strings.roomJoined, data);
+    console.info(strings.roomJoined, data);
     return data;
   });
 
@@ -149,7 +149,7 @@ export const declineChatRoomInvitationSocket = (
   socket.emit(socketMessageNamespaces.DECLINE_CHAT, chatData);
 
   socket.on(chatEvents.DECLINE_CHAT_INVITATION_SUCCESS, data => {
-    console.log(strings.roomInvitationDeclinedDone, data);
+    console.info(strings.roomInvitationDeclinedDone, data);
     return data;
   });
 

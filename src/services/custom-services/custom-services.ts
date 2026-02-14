@@ -33,7 +33,7 @@ export const isDarkMode = () => {
 };
 
 export const developmentLog = (name: string, value: any) => {
-  console.log(name, value);
+  console.info(name, value);
 };
 
 export const asyncStorageLogger = async () => {
@@ -42,5 +42,5 @@ export const asyncStorageLogger = async () => {
   }
   const keys = await AsyncStorage.getAllKeys();
   const result = await AsyncStorage.multiGet(keys);
-  console.log('LOGGER: AsyncStorage contents:', result);
+  console.info('LOGGER: AsyncStorage contents:', result);
 };

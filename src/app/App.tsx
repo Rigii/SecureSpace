@@ -34,7 +34,7 @@ function App(): React.JSX.Element {
     // Set up hot module replacement
     if (__DEV__ && module.hot) {
       module.hot.accept('./store/saga/root.saga', () => {
-        console.log('[HMR] Reloading sagas...');
+        console.info('[HMR] Reloading sagas...');
 
         if (sagaTask) {
           sagaTask.cancel();

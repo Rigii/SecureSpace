@@ -4,10 +4,13 @@ import {
   applicationRoutes,
   RootStackParamList,
 } from '../../../app/navigator/screens';
+import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
+import {useContext} from 'react';
 
 export const useChatListState = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {setCurrentActiveChatId} = useContext(ChatSocketProviderContext);
 
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const chatRooms = useReduxSelector(state => state.chatRoomsSlice);
   const userChatAccount = useReduxSelector(
     state => state.userChatAccountReducer,
@@ -19,6 +22,8 @@ export const useChatListState = () => {
   };
 
   const navigateToChatRoom = (chatId: string) => {
+    setCurrentActiveChatId(chatId);
+
     navigation.navigate(applicationRoutes.chatRoom, {
       chatId,
       participantId: userChatAccount?.interlocutorId,

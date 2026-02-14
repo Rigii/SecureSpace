@@ -28,7 +28,7 @@ export const Home: React.FC<{
         id: 'homeSearch',
         label: strings.search,
         icon: '',
-        action: () => console.log(strings.search),
+        action: () => console.info(strings.search),
       },
       {
         id: 'homeSettings',
@@ -40,13 +40,13 @@ export const Home: React.FC<{
         id: 'homeStorage',
         label: strings.storage,
         icon: '',
-        action: () => console.log(strings.storage),
+        action: () => console.info(strings.storage),
       },
       {
         id: 'homeCreateDocument',
         label: strings.createDocument,
         icon: '',
-        action: () => console.log(strings.createDocument),
+        action: () => console.info(strings.createDocument),
       },
     ];
 

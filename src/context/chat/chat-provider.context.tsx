@@ -59,12 +59,10 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const [currentActiveChatId, setCurrentActiveChatId] = useState<string | null>(
     null,
   );
-  console.log();
   const {interlocutorId, email} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
   const userChatRooms = useReduxSelector(state => state.chatRoomsSlice);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -75,7 +73,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     const newSocket = connectUserChatNotificationsSocket(interlocutorId);
 
     newSocket.on(socketEventStatus.CONNECT, () => {
-      console.log(strings.connectedChatServer);
+      console.info(strings.connectedChatServer);
     });
 
     setSocket(newSocket);
@@ -110,10 +108,10 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     };
 
     if (!currentActiveChatId || currentActiveChatId === null) {
-      console.log('Subscribing to chat room NOTIFICATION messages');
+      console.info('Subscribing to chat room NOTIFICATION messages');
       socket.on(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
     } else {
-      console.log('Unsubscribing from chat room NOTIFICATION messages');
+      console.info('Unsubscribing from chat room NOTIFICATION messages');
       socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
     }
     socket.on(socketEventStatus.USER_CHAT_INVITATION, handleInvitation);
@@ -191,7 +189,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       }),
     );
 
-    console.log(`${strings.joinedChatRoom} ${chatId}`);
+    console.info(`${strings.joinedChatRoom} ${chatId}`);
   };
 
   const handleSendChatRoomMessage = ({

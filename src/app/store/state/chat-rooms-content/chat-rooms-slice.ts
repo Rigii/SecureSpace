@@ -35,7 +35,12 @@ export const chatRoomsSlice = createSlice({
         if (state[action?.payload?.id]) {
           return;
         }
-        return {...state, [action?.payload?.id]: action?.payload};
+
+        const newRoom = {
+          ...action.payload,
+          messages: action.payload.messages || [],
+        };
+        return {...state, [action?.payload?.id]: newRoom};
       },
     );
 
@@ -62,7 +67,6 @@ export const chatRoomsSlice = createSlice({
         }
         const chatRoom = state[chatRoomId];
 
-        // NOTE: dirrect change works — while createSlice uses Immer.js
         chatRoom.messages = [...action?.payload];
       },
     );
@@ -76,8 +80,11 @@ export const chatRoomsSlice = createSlice({
         }
         const chatRoom = state[chatRoomId];
 
-        // NOTE: dirrect change works — while createSlice uses Immer.js
-        chatRoom.messages = [...chatRoom.messages, action?.payload];
+        /* NOTE:
+        1. Dirrect change works — while createSlice uses Immer.js
+        2. chatRoom.messages- undefined will cause issues with next spreading
+        */
+        chatRoom.messages = [...(chatRoom?.messages || []), action?.payload];
       },
     );
 

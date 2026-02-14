@@ -51,7 +51,7 @@ function* handleInvitationSaga(message: {
     chatMediaStorageUrl: chatData.chat_media_storage_url,
     chatIconUrl: chatData.chat_icon_url,
     availabilityAreaData: chatData.availability_area_data,
-    messages: chatData.messages,
+    messages: chatData.messages || [],
   };
 
   yield put(addNewChatRoom(chatRoomData));
@@ -81,8 +81,8 @@ function* handleRoomMessageListSaga({
       participantId: messageObject.participantId,
       chatRoomId: messageObject.chatRoomId,
       isAdmin: messageObject.isAdmin || false,
-      mediaUrl: messageObject.mediaUrl,
-      voiceMessageUrl: messageObject.voiceMessageUrl,
+      mediaUrl: messageObject.mediaUrl || '',
+      voiceMessageUrl: messageObject.voiceMessageUrl || '',
     };
 
     if (!privateChatKey) {
@@ -121,7 +121,6 @@ export function* handleSocketEventWorker(action: {
   payload: IChatSocketEvent;
 }): Generator<any, void, any> {
   const {type, data} = action.payload;
-
   const {message} = data;
   switch (type) {
     case chatSocketSagaHandlers.USER_CHAT_INVITATION_WORKER:

@@ -4,8 +4,8 @@ import {strings} from '../../../context/chat/chat-provider.strings';
 import ComponentsTopBar from '../../../components/top-bar/components-top-bar/components-top-bar';
 import {ChatMessage} from '../../../components/chat-room-components/chat-message.component';
 import ChatInput from '../../../components/chat-room-components/chat-input.component';
-import {useChatRoomSocketState} from './useChatRoomSocket.state';
-import {useChatRoomMessagesState} from './useChatRoomMessages.state';
+import {useChatRoomSocketState} from './use-room-socket.state';
+import {useChatRoomMessagesState} from './use-room-messages.state';
 
 interface IChatRoomScreen {
   chatId: string;

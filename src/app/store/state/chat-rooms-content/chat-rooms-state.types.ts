@@ -27,7 +27,7 @@ export interface IChatRoom {
   chatMediaStorageUrl: string;
   chatIconUrl: string | null;
   availabilityAreaData: ISecurePlace | null;
-  messages: IChatMessage[]; // Fetching messages from Mongodb by common chat ID. Start with the last date.
+  messages: IChatMessage[] | []; // Fetching messages from Mongodb by common chat ID. Start with the last date.
 }
 
 export interface IUserData {

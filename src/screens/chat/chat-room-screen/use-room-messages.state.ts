@@ -53,7 +53,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
 
   useEffect(() => {
     // TODO: moove flow to the saga
-    setCurrentActiveChatId(chatId);
+
     const getMessages = async () => {
       try {
         const roomMessagesResponce = await getChatRoomMessages({
@@ -148,7 +148,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       await leaveChatRoom({chatRoomId: chatId});
       navigation.goBack();
     } catch (error) {
-      console.log(strings.errorLeavingChatRoom);
+      console.info(strings.errorLeavingChatRoom);
     }
   };
 
@@ -158,7 +158,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       await deleteChatRoom({chatRoomId: chatId});
       navigation.goBack();
     } catch (error) {
-      console.log(strings.errorDeletingChatRoom);
+      console.info(strings.errorDeletingChatRoom);
     }
   };
 
