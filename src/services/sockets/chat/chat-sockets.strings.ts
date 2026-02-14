@@ -9,4 +9,5 @@ export const strings = {
   sendingChatRoomMessageError: 'Error sending chat room message:',
   roomDeleted: 'Chat room deleted successfully:',
   errorDeletingChatRoom: 'Error deleting chat room:',
+  errorAcceptingRoomInvitation: 'Error accepting chat room invitation:',
 };

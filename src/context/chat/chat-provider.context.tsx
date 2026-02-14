@@ -25,6 +25,7 @@ import {
 } from '../../app/store/state/chat-rooms-content/chat-room.actions';
 import {handleChatSocketSaga} from '../../app/store/saga/chat-account-saga/chat-account.actions';
 import {chatSocketSagaHandlers} from '../../app/store/saga/chat-account-saga/workers/constants';
+import {IChatRoom} from '../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 
 export const ChatSocketProviderContext = createContext<{
   socket: Socket | null;
@@ -168,28 +169,33 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     setCurrentActiveChatId(null);
   };
 
-  const handleJoinChat = ({chatId}: {chatId: string}) => {
-    const currentRoom = userChatRooms[chatId];
+  const handleJoinChat = async ({chatId}: {chatId: string}) => {
+    try {
+      if (!socket) {
+        console.error(strings.socketIsNotConnected);
+        return;
+      }
+      const currentRoom = userChatRooms[chatId];
 
-    if (!currentRoom) {
-      return;
+      if (!currentRoom) {
+        return;
+      }
+
+      const updatedRoom = await joinChatRoomSocket(socket, {
+        userChatIds: [chatId],
+        interlocutorId,
+      });
+
+      dispatch(updateChatRoom(updatedRoom as IChatRoom));
+
+      console.info(`${strings.joinedChatRoom} ${chatId}`);
+    } catch (error) {
+      console.error(strings.errorJoiningChatRoom, error);
+      ErrorNotificationHandler({
+        type: EPopupType.ERROR,
+        text1: strings.errorJoiningChatRoom,
+      });
     }
-
-    joinChatRoomSocket(socket, {
-      userChatIds: [chatId],
-      interlocutorId,
-    });
-
-    dispatch(
-      updateChatRoom({
-        ...currentRoom,
-        invitedUserIds: currentRoom.invitedUserIds.filter(
-          id => id !== interlocutorId,
-        ),
-      }),
-    );
-
-    console.info(`${strings.joinedChatRoom} ${chatId}`);
   };
 
   const handleSendChatRoomMessage = ({
