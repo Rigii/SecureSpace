@@ -4,6 +4,8 @@ import {AcceptIcon} from '../../assets/icons/acceptIcon';
 import {DeclineIcon} from '../../assets/icons/declineIcon';
 import {TextNormal} from '../text-titles/text-styled';
 import {ChatSocketProviderContext} from '../../context/chat/chat-provider.context';
+import {RootStackParamList} from '../../app/navigator/screens';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 interface AcceptDeclineProps {
   chatId: string;
@@ -14,6 +16,8 @@ const strings = {
 };
 
 export const AcceptDecline: React.FC<AcceptDeclineProps> = ({chatId}) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const {handleJoinChat, handleDeclineChatRoomInvitation} = useContext(
     ChatSocketProviderContext,
   );
@@ -22,8 +26,10 @@ export const AcceptDecline: React.FC<AcceptDeclineProps> = ({chatId}) => {
     handleJoinChat({chatId});
   };
 
-  const onHandleDeclineChatRoomInvitation = () =>
+  const onHandleDeclineChatRoomInvitation = () => {
     handleDeclineChatRoomInvitation({chatId});
+    navigation.goBack();
+  };
 
   return (
     <View className="flex-row items-center space-x-1 p-2 border-gray-200 border rounded-md justify-between">
