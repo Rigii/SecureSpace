@@ -110,18 +110,24 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
 
     if (!currentActiveChatId || currentActiveChatId === null) {
       console.info('Subscribing to chat room NOTIFICATION messages');
-      socket.on(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
+      socket.on(socketEventStatus.ROOM_NOTIFICATION_MESSAGE, handleChatMessage);
     } else {
       console.info('Unsubscribing from chat room NOTIFICATION messages');
-      socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
+      socket.off(
+        socketEventStatus.ROOM_NOTIFICATION_MESSAGE,
+        handleChatMessage,
+      );
     }
     socket.on(socketEventStatus.USER_CHAT_INVITATION, handleInvitation);
 
     return () => {
-      socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
+      socket.off(
+        socketEventStatus.ROOM_NOTIFICATION_MESSAGE,
+        handleChatMessage,
+      );
       socket.off(socketEventStatus.USER_CHAT_INVITATION, handleInvitation);
     };
-  }, [socket, currentActiveChatId, dispatch]);
+  }, [socket, currentActiveChatId, dispatch, email]);
 
   const handleCreateChat = async (chatData: ICreateChatRoom) => {
     if (!socket) {
@@ -212,7 +218,6 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       senderId: interlocutorId,
       senderName: email,
     };
-
     sendChatRoomMessage(socket, messageData);
   };
 
@@ -221,7 +226,6 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       chatId,
       interlocutorId,
     });
-
     leaveRoomLocal({chatRoomId: chatId});
     ErrorNotificationHandler({
       type: EPopupType.INFO,
