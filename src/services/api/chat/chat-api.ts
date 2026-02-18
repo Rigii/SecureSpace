@@ -1,4 +1,4 @@
-import {IInvitations} from '../../../app/store/state/userChatAccount/userChatAccount.types';
+import {IInvitations} from '../../../app/store/state/user-chat-account/user-chat-account.types';
 import {postData} from '../../xhr-services/api-service';
 
 const CREATE_CHAT_USER_URL = '/chat/create-chat-user';

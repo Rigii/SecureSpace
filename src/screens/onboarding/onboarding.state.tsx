@@ -4,10 +4,10 @@ import {ImergencyPasswords} from './onboarding-cases/imergency-passwords';
 import {SecurePlaces} from './onboarding-cases/secure-places';
 import {SwiperRef} from './onboarding.types';
 import {useDispatch} from 'react-redux';
-import {setUser} from '../../app/store/state/userState/userAction';
+import {setUser} from '../../app/store/state/user-state/user.action';
 import {useReduxSelector} from '../../app/store/store';
 import {DownloadKey} from './onboarding-cases/download-key';
-import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
+import {IOnboardingFormValues} from '../../app/store/state/onboarding-state/onboarding-state.types';
 import {followOnboardingSaga} from '../../app/store/saga/onboarding-saga/onboarding.actions';
 
 export const useOnboardingFlowState = () => {

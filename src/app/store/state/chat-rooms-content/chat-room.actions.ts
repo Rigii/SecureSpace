@@ -4,7 +4,7 @@ import {
   IChatRoom,
   IChatRooms,
   IdeleteChatRoomLocalData,
-} from './chatRoomsState.types';
+} from './chat-rooms-state.types';
 
 export const addUserChatRooms = createAction<IChatRooms>(
   'anonymousUser/addUserChatRooms',

@@ -20,4 +20,5 @@ export const strings = {
   errorDeletingChatRoom: 'Error deleting chat room:',
   noPrivateChatKeyFound:
     "Can't decrypt the messages. No private chat key found",
+  errorJoiningChatRoom: 'Error joining chat room:',
 };

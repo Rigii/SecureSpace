@@ -27,7 +27,7 @@ export const storeSecretKeychain = async ({
       service: `${type}-${email}`,
       accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
     });
-    console.log(strings.keyStoredSuccessfully, result);
+    console.info(strings.keyStoredSuccessfully, result);
   } catch (error) {
     console.error(strings.failedToStoreKey, error);
   }
@@ -48,7 +48,7 @@ export const getSecretKeychain = async ({
     });
 
     if (!result) {
-      console.log(strings.noKeyFoundInKeychain, type);
+      console.info(strings.noKeyFoundInKeychain, type);
       return '';
     }
 

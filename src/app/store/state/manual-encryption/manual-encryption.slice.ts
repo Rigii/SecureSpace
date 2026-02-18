@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {
   clearEncryptionData,
   updateManualEncryptionDataAction,
-} from './updateManualEncryptionAction';
+} from './manual-encryption.actions';
 import {IManualEncryptionState} from './types';
 import {EExpiry} from '../../../types/encrypt.types';
 

@@ -1,5 +1,5 @@
 import {createAction} from '@reduxjs/toolkit';
-import {IDeviceKeyData, ISecurityData, IUserAccount} from './userState.types';
+import {IDeviceKeyData, ISecurityData, IUserAccount} from './user-state.types';
 
 export const setUser = createAction<Partial<IUserAccount> | null>(
   'anonymousUser/setAnonymousUser',

@@ -1,5 +1,5 @@
 import {createAction} from '@reduxjs/toolkit';
-import {IOnboardingFormValues} from '../../state/onboardingState/onboardingStateTypes';
+import {IOnboardingFormValues} from '../../state/onboarding-state/onboarding-state.types';
 
 export const followOnboardingSaga = createAction<{
   values: IOnboardingFormValues;

@@ -4,7 +4,7 @@ import {sagaMiddleware, store} from './store/store';
 import {Provider} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {Text, View} from 'react-native';
-import {asyncStorageLogger} from '../services/custom-services';
+import {asyncStorageLogger} from '../services/custom-services/custom-services';
 import {ChatSocketProvider} from '../context/chat/chat-provider.context';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {applicationRoutes} from './navigator/screens';
@@ -34,7 +34,7 @@ function App(): React.JSX.Element {
     // Set up hot module replacement
     if (__DEV__ && module.hot) {
       module.hot.accept('./store/saga/root.saga', () => {
-        console.log('[HMR] Reloading sagas...');
+        console.info('[HMR] Reloading sagas...');
 
         if (sagaTask) {
           sagaTask.cancel();

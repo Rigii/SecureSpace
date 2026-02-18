@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import IIconProps from './iconTypes';
 import {Path} from 'react-native-svg';
-import {isDarkMode} from '../../services/custom-services';
+import {isDarkMode} from '../../services/custom-services/custom-services';
 import {View} from 'react-native';
 
 export const StarsShield = (props: IIconProps): ReactElement => {

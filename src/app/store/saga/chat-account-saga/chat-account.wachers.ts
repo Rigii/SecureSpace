@@ -1,12 +1,18 @@
 import {takeEvery, takeLatest} from 'redux-saga/effects';
 import {
   createChatAccountSaga,
+  deleteChatRoomSaga,
   fetchUpdateChatStateSaga,
-  handleChatSocketEvent,
+  handleChatSocketSaga,
+  leaveChatRoomSaga,
 } from './chat-account.actions';
-import {createChatAccountWorkerSaga} from './create-chat-account.worker';
-import {fetchUpdateChatStateWorker} from './fetch-update-chat.worker';
-import {handleSocketEventWorker} from './chat-socket.worker';
+import {handleSocketEventWorker} from './workers/chat-socket.worker';
+import {createChatAccountWorkerSaga} from './workers/create-chat-account.worker';
+import {fetchUpdateChatStateWorker} from './workers/fetch-update-chat.worker';
+import {
+  deleteChatRoomWorker,
+  leaveChatRoomWorker,
+} from './workers/leave-chat-room.worker';
 
 export function* createChatAccountWatcherSaga() {
   yield takeLatest(createChatAccountSaga.type, createChatAccountWorkerSaga);
@@ -16,6 +22,14 @@ export function* fetchUpdateChatStateWatcherSaga() {
   yield takeLatest(fetchUpdateChatStateSaga.type, fetchUpdateChatStateWorker);
 }
 
+export function* leaveChatRoomWatcherSaga() {
+  yield takeLatest(leaveChatRoomSaga.type, leaveChatRoomWorker);
+}
+
+export function* deleteChatRoomWatcherSaga() {
+  yield takeLatest(deleteChatRoomSaga.type, deleteChatRoomWorker);
+}
+
 export function* chatSocketWatcherSaga(): Generator<any, void, any> {
-  yield takeEvery(handleChatSocketEvent.type, handleSocketEventWorker);
+  yield takeEvery(handleChatSocketSaga, handleSocketEventWorker);
 }

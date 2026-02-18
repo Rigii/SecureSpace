@@ -7,8 +7,8 @@ import {WelcomeAboard} from './onboarding-cases/welcome-aboard';
 import {validationOnboardingSchema} from './onboarding.validation';
 import Swiper from 'react-native-swiper';
 import {DownloadKey} from './onboarding-cases/download-key';
-import {IOnboardingFormValues} from '../../app/store/state/onboardingState/onboardingStateTypes';
-import {updateFormField} from '../../app/store/state/onboardingState/onboardingSlice';
+import {IOnboardingFormValues} from '../../app/store/state/onboarding-state/onboarding-state.types';
+import {updateFormField} from '../../app/store/state/onboarding-state/onboarding.slice';
 import {FormikActions} from 'formik';
 import {useOnboardingFlowState} from './onboarding.state';
 

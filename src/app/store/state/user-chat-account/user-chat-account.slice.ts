@@ -3,13 +3,13 @@ import {
   IFetchedChatRoomsData,
   IInvitations,
   IUserChatAccount,
-} from './userChatAccount.types';
+} from './user-chat-account.types';
 import {
   updateUserChatsAccountSlice,
   addInvitation,
   createUserChatsAccount,
   clearChatAccountData,
-} from './userChatAccountAction';
+} from './user-chat-account.actions';
 
 const initialState: IUserChatAccount = {
   interlocutorId: '',

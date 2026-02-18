@@ -1,4 +1,4 @@
-import {IChatRoom} from '../../../state/chatRoomsContent/chatRoomsState.types';
+import {IChatRoom} from '../../../state/chat-rooms-content/chat-rooms-state.types';
 
 export const transformUserData = (apiUser: any, token: string) => ({
   id: apiUser.id,

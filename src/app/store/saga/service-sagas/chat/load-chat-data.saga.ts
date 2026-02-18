@@ -4,8 +4,8 @@ import {
   getSecretKeychain,
 } from '../../../../../services/secrets-keychains/store-secret-keychain';
 
-import {updateUserChatsAccountSlice} from '../../../state/userChatAccount/userChatAccountAction';
-import {addUserChatRooms} from '../../../state/chatRoomsContent/chatRoomsAction';
+import {updateUserChatsAccountSlice} from '../../../state/user-chat-account/user-chat-account.actions';
+import {addUserChatRooms} from '../../../state/chat-rooms-content/chat-room.actions';
 import {
   transformChatAccountData,
   transformChatRooms,

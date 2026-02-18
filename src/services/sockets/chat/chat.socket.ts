@@ -5,13 +5,14 @@ import {
   IChatRoomSocketResponse,
   ICreateChatRoom,
   IDeleteChatRoom,
+  IRoomSockerResponse,
 } from './chat-api.types';
 import {strings} from './chat-sockets.strings';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../error-notification-handler';
-import {IChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
+} from '../../../components/popup-message/error-notification-handler';
+import {IChatRoom} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 
 const CHAT_ROOM_URL = '/chat_room';
 
@@ -44,10 +45,10 @@ export const chatEvents = {
 
 export const connectUserChatNotificationsSocket = (
   userIdChannel: string,
-  roomIds?: string[],
+  roomId?: string,
 ): Socket => {
   return io(`${BASE_URL}${CHAT_ROOM_URL}`, {
-    query: {userId: userIdChannel, roomIds},
+    query: {userId: userIdChannel, roomId},
     transports: ['websocket'],
     reconnection: true,
   });
@@ -95,7 +96,7 @@ export const deleteChatRoomSocket = (
   socket.emit(socketMessageNamespaces.DELETE_CHAT_ROOM, chatData);
 
   socket.on(chatEvents.DELETE_CHAT_ROOM_SUCCESS, data => {
-    console.log(strings.roomDeleted, data);
+    console.info(strings.roomDeleted, data);
   });
 
   socket.on(chatEvents.DELETE_CHAT_ROOM_ERROR, error => {
@@ -107,21 +108,56 @@ export const joinChatRoomSocket = (
   socket: Socket | null,
   chatData: {userChatIds: string[]; interlocutorId: string},
 ) => {
-  if (!socket) {
-    console.error(strings.wSConnectionNotEstablished);
-    return;
-  }
+  return new Promise((resolve, reject) => {
+    if (!socket) {
+      console.error(strings.wSConnectionNotEstablished);
+      reject(new Error(strings.wSConnectionNotEstablished));
+      return;
+    }
 
-  socket.emit(socketMessageNamespaces.JOIN_CHAT, chatData);
+    socket.emit(
+      socketMessageNamespaces.JOIN_CHAT,
+      {
+        userChatId: chatData.userChatIds[0],
+        interlocutorId: chatData.interlocutorId,
+      },
+      (response: IRoomSockerResponse) => {
+        if (response.status === 'error') {
+          ErrorNotificationHandler({
+            text1: strings.errorAcceptingRoomInvitation,
+            type: EPopupType.ERROR,
+          });
+          reject(new Error(strings.errorAcceptingRoomInvitation));
+          return;
+        }
+        const fetchedRoomData = response.data?.chat_room;
+        const roomData = {
+          id: fetchedRoomData?.id || '',
+          chatName: fetchedRoomData?.chat_name || '',
+          chatType: fetchedRoomData?.chat_type || '',
+          ownerId: fetchedRoomData?.owner_id || '',
+          moderatorIds: fetchedRoomData?.moderator_ids || [],
+          usersData: fetchedRoomData?.participants.map(participant => ({
+            chat_account_id: participant.chat_account_id,
+            created: participant.created,
+            updated: participant.updated,
+            email: participant.email,
+            interlocutor_id: participant.interlocutor_id,
+            public_chat_key: participant.public_chat_key,
+          })),
+          invitedUserIds: fetchedRoomData?.invited_user_ids || [],
+          messageDurationHours: fetchedRoomData?.message_duration_hours || null,
+          password: fetchedRoomData?.password || '',
+          chatMediaStorageUrl: fetchedRoomData?.chat_media_storage_url || '',
+          chatIconUrl: fetchedRoomData?.chat_icon_url || null,
+          availabilityAreaData:
+            fetchedRoomData?.location_area_availability || null,
+          messages: [] as IChatMessage[],
+        };
 
-  socket.on(chatEvents.JOIN_CHAT_SUCCESS, data => {
-    console.log(strings.roomJoined, data);
-    return data;
-  });
-
-  socket.on(chatEvents.JOIN_CHAT_ERROR, error => {
-    console.error(strings.joiningRoomError, error);
-    throw new Error(error);
+        resolve(roomData || null);
+      },
+    );
   });
 };
 
@@ -149,7 +185,7 @@ export const declineChatRoomInvitationSocket = (
   socket.emit(socketMessageNamespaces.DECLINE_CHAT, chatData);
 
   socket.on(chatEvents.DECLINE_CHAT_INVITATION_SUCCESS, data => {
-    console.log(strings.roomInvitationDeclinedDone, data);
+    console.info(strings.roomInvitationDeclinedDone, data);
     return data;
   });
 

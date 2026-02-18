@@ -8,7 +8,7 @@ import {FormikActions} from 'formik';
 import {ThemedButton} from '../../../components/themed-button';
 import {FormikErrors, FormikTouched} from 'formik';
 import {radioButtonsData} from '../onboarding.mocked';
-import {IOnboardingFormValues} from '../../../app/store/state/onboardingState/onboardingStateTypes';
+import {IOnboardingFormValues} from '../../../app/store/state/onboarding-state/onboarding-state.types';
 
 export const UserInitialData = ({
   nikValue,

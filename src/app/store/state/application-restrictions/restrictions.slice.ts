@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {
   clearRestrictions,
   fetchApplicationRestrictions,
-} from './restrictionAction';
+} from './restrictions.actions';
 import {IAEncryptionLimits} from './application-restrictions.types';
 
 export interface IRestrictionsState {

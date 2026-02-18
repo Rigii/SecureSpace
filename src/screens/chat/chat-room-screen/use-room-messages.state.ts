@@ -1,10 +1,10 @@
 import {useContext, useEffect, useRef} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
-import {IChatMessage} from '../../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {strings} from '../../../context/chat/chat-provider.strings';
 import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
 import {useDispatch} from 'react-redux';
-import {addMessagesToChatRoom} from '../../../app/store/state/chatRoomsContent/chatRoomsAction';
+import {addMessagesToChatRoom} from '../../../app/store/state/chat-rooms-content/chat-room.actions';
 import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../../app/navigator/screens';
@@ -16,7 +16,7 @@ import {
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../services/error-notification-handler';
+} from '../../../components/popup-message/error-notification-handler';
 
 interface IChatRoomMessagesState {
   chatId: string;
@@ -32,7 +32,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     state => state.anonymousUserReducer.userAccountData,
   );
 
-  const userChatRooms = useReduxSelector(state => state.chatRoomsReducer);
+  const userChatRooms = useReduxSelector(state => state.chatRoomsSlice);
   const {interlocutorId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
@@ -42,6 +42,9 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const dispatch = useDispatch();
+
+  const isInvitationNotAccepted =
+    userChatRooms[chatId]?.invitedUserIds?.includes(interlocutorId);
 
   useEffect(() => {
     if (!flatListRef.current || storedMessages.length < 1) {
@@ -53,13 +56,9 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
 
   useEffect(() => {
     // TODO: moove flow to the saga
-    setCurrentActiveChatId(chatId);
+
     const getMessages = async () => {
       try {
-        //       const responce = await getChatRoomsData({
-        //         token,
-        //         roomIds: [message?.chatId],
-        //       });
         const roomMessagesResponce = await getChatRoomMessages({
           roomId: chatId,
           pagination: {page: 1, limit: 200},
@@ -73,7 +72,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           (messageObject: {
             id: string;
             participantId: string;
-            senderNikName: string;
+            senderNickame: string;
             message: string;
             chatRoomId: string;
             isAdmin: boolean;
@@ -86,7 +85,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
             message: messageObject?.message,
             created: new Date(messageObject?.created).toLocaleString(),
             updated: new Date(messageObject?.updated).toLocaleString(),
-            senderNikName: messageObject?.senderNikName,
+            senderNickame: messageObject?.senderNickame,
             participantId: messageObject?.participantId,
             chatRoomId: messageObject?.chatRoomId,
             isAdmin: false,
@@ -131,10 +130,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           }),
         );
         dispatch(addMessagesToChatRoom(decryptedMessages));
-
-        return () => {
-          setCurrentActiveChatId(null);
-        };
       } catch (error) {
         const currentError = error as Error;
         console.error(currentError);
@@ -145,6 +140,10 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       }
     };
     getMessages();
+
+    return () => {
+      setCurrentActiveChatId(null);
+    };
   }, [chatId, privateChatKey, token, dispatch, setCurrentActiveChatId]);
 
   const onLeaveChatRoom = async () => {
@@ -152,7 +151,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       await leaveChatRoom({chatRoomId: chatId});
       navigation.goBack();
     } catch (error) {
-      console.log(strings.errorLeavingChatRoom);
+      console.info(strings.errorLeavingChatRoom);
     }
   };
 
@@ -162,7 +161,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
       await deleteChatRoom({chatRoomId: chatId});
       navigation.goBack();
     } catch (error) {
-      console.log(strings.errorDeletingChatRoom);
+      console.info(strings.errorDeletingChatRoom);
     }
   };
 
@@ -208,6 +207,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     messages: storedMessages,
     participantId: interlocutorId,
     chatRoomOptions,
+    isInvitationNotAccepted,
     flatListRef,
   };
 };

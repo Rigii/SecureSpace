@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {AcceptDecline} from './accept-decline';
-import {IChatRoom} from '../../app/store/state/chatRoomsContent/chatRoomsState.types';
+import {IChatRoom} from '../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 
 interface ChatListItemProps {
   chatItemData: IChatRoom;
@@ -16,7 +15,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
   unreadMessages,
   navigateToChatRoom,
 }) => {
-  const isInvitationAccepted =
+  const isInvitationNotAccepted =
     chatItemData?.invitedUserIds?.includes(interlocutorId);
 
   const onNavigateToChatRoom = () => {
@@ -27,7 +26,9 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
 
   return (
     <TouchableOpacity
-      className="flex-row items-center justify-center p-3 border-b border-gray-200"
+      className={`flex-row items-center justify-center p-3 border-b border-gray-200 ${
+        isInvitationNotAccepted && 'bg-gray-200'
+      }`}
       onPress={onNavigateToChatRoom}>
       <View className="w-10 h-10 bg-gray-300 rounded-full mr-4" />
       <Text className="flex-1 text-lg font-bold text-black">
@@ -41,7 +42,6 @@ const ChatListItem: React.FC<ChatListItemProps> = ({
               {chatMessages[0]?.created}
             </Text>
           )}
-          {isInvitationAccepted && <AcceptDecline chatId={chatItemData.id} />}
         </View>
         <View
           className={`w-3 h-3 rounded-full ${

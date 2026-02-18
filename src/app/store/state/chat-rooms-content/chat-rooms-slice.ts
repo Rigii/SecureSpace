@@ -4,7 +4,7 @@ import {
   IChatRooms,
   IChatMessage,
   IdeleteChatRoomLocalData,
-} from './chatRoomsState.types';
+} from './chat-rooms-state.types';
 import {
   addMessageToChatRoom,
   addMessagesToChatRoom,
@@ -13,11 +13,11 @@ import {
   clearChatRoomData,
   deleteChatRoomLocalData,
   updateChatRoom,
-} from './chatRoomsAction';
+} from './chat-room.actions';
 
 const initialState: IChatRooms = {};
 
-export const chatRoomsReducer = createSlice({
+export const chatRoomsSlice = createSlice({
   name: 'anonymousUser',
   initialState,
   reducers: {},
@@ -25,24 +25,29 @@ export const chatRoomsReducer = createSlice({
     builder.addCase(
       addUserChatRooms,
       (state, action: PayloadAction<IChatRooms>) => {
-        return {...state, ...action.payload};
+        return {...state, ...action?.payload};
       },
     );
 
     builder.addCase(
       addNewChatRoom,
       (state, action: PayloadAction<IChatRoom>) => {
-        if (state[action.payload.id]) {
+        if (state[action?.payload?.id]) {
           return;
         }
-        return {...state, [action.payload.id]: action.payload};
+
+        const newRoom = {
+          ...action.payload,
+          messages: action.payload.messages || [],
+        };
+        return {...state, [action?.payload?.id]: newRoom};
       },
     );
 
     builder.addCase(
       updateChatRoom,
       (state, action: PayloadAction<IChatRoom>) => {
-        return {...state, [action.payload.id]: action.payload};
+        return {...state, [action?.payload?.id]: action?.payload};
       },
     );
 
@@ -56,28 +61,30 @@ export const chatRoomsReducer = createSlice({
     builder.addCase(
       addMessagesToChatRoom,
       (state, action: PayloadAction<IChatMessage[]>) => {
-        const chatRoomId = action.payload[0].chatRoomId;
+        const chatRoomId = action?.payload[0]?.chatRoomId;
         if (!state[chatRoomId]) {
           return;
         }
         const chatRoom = state[chatRoomId];
 
-        // NOTE: dirrect change works — while createSlice uses Immer.js
-        chatRoom.messages = [...action.payload];
+        chatRoom.messages = [...action?.payload];
       },
     );
 
     builder.addCase(
       addMessageToChatRoom,
       (state, action: PayloadAction<IChatMessage>) => {
-        const chatRoomId = action.payload.chatRoomId;
+        const chatRoomId = action?.payload?.chatRoomId;
         if (!state[chatRoomId]) {
           return;
         }
         const chatRoom = state[chatRoomId];
 
-        // NOTE: dirrect change works — while createSlice uses Immer.js
-        chatRoom.messages = [...chatRoom.messages, action.payload];
+        /* NOTE:
+        1. Dirrect change works — while createSlice uses Immer.js
+        2. chatRoom.messages- undefined will cause issues with next spreading
+        */
+        chatRoom.messages = [...(chatRoom?.messages || []), action?.payload];
       },
     );
 
@@ -87,4 +94,4 @@ export const chatRoomsReducer = createSlice({
   },
 });
 
-export default chatRoomsReducer.reducer;
+export default chatRoomsSlice.reducer;

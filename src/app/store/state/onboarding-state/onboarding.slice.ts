@@ -1,5 +1,5 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {IOnboardingFormValues} from './onboardingStateTypes';
+import {IOnboardingFormValues} from './onboarding-state.types';
 
 const initialState: IOnboardingFormValues = {
   name: '',
@@ -20,7 +20,7 @@ const initialState: IOnboardingFormValues = {
   saveKeyOnDevice: false,
 };
 
-const onboardingFormSlice = createSlice({
+export const onboardingFormSlice = createSlice({
   name: 'onboardingForm',
   initialState,
   reducers: {

@@ -5,7 +5,9 @@ import authWatcherSaga from './auth-saga/auth.wachers';
 import {
   chatSocketWatcherSaga,
   createChatAccountWatcherSaga,
+  deleteChatRoomWatcherSaga,
   fetchUpdateChatStateWatcherSaga,
+  leaveChatRoomWatcherSaga,
 } from './chat-account-saga/chat-account.wachers';
 import followOnboardingWatcherSaga from './onboarding-saga/onboarding.wachers';
 
@@ -17,5 +19,7 @@ export default function* rootSaga() {
     fork(fetchUpdateChatStateWatcherSaga),
     fork(followOnboardingWatcherSaga),
     fork(chatSocketWatcherSaga),
+    fork(leaveChatRoomWatcherSaga),
+    fork(deleteChatRoomWatcherSaga),
   ]);
 }

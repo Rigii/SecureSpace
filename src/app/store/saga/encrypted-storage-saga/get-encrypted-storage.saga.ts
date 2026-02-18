@@ -3,7 +3,7 @@ import {
   ESecureStoredKeys,
   getSecureStorageData,
 } from '../../../../services/async-secure-storage/secure-storage-services';
-import {setUser} from '../../state/userState/userAction';
+import {setUser} from '../../state/user-state/user.action';
 
 export function* applyEncryptedStorageStateSaga(): Generator<any, void, any> {
   try {

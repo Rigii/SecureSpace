@@ -8,7 +8,7 @@ import {useReduxSelector} from '../../app/store/store';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../services/error-notification-handler';
+} from '../../components/popup-message/error-notification-handler';
 import {
   NavigationProp,
   RouteProp,
@@ -22,8 +22,8 @@ import {
 import {useDispatch} from 'react-redux';
 import OpenPGP from 'react-native-fast-openpgp';
 
-import {addPgpDeviceKeyData} from '../../app/store/state/userState/userAction';
-import {IDeviceKeyData} from '../../app/store/state/userState/userState.types';
+import {addPgpDeviceKeyData} from '../../app/store/state/user-state/user.action';
+import {IDeviceKeyData} from '../../app/store/state/user-state/user-state.types';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import {decryptPrivateKeyBlock} from '../../services/pgp-encryption-service/encrypt-pkey-block';

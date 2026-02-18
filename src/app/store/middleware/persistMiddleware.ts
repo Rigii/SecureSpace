@@ -3,12 +3,12 @@ import {RootState} from '../store';
 import {
   addPgpDeviceKeyData,
   setSecurityData,
-} from '../state/userState/userAction';
+} from '../state/user-state/user.action';
 import {
   ESecureStoredKeys,
   saveSecureStorageData,
 } from '../../../services/async-secure-storage/secure-storage-services';
-import {IUserState} from '../state/userState/userState.types';
+import {IUserState} from '../state/user-state/user-state.types';
 
 const persistMiddleware = createListenerMiddleware();
 

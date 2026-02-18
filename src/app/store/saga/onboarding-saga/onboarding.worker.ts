@@ -13,11 +13,11 @@ import {
   storeSecretKeychain,
 } from '../../../../services/secrets-keychains/store-secret-keychain';
 import {storeDeviceKeyWithUserChoice} from '../../../../services/file-content/save-device-key';
-import {setSecurityData, setUser} from '../../state/userState/userAction';
+import {setSecurityData, setUser} from '../../state/user-state/user.action';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../../services/error-notification-handler';
+} from '../../../../components/popup-message/error-notification-handler';
 import {strings} from '../../../../screens/onboarding/strings';
 
 export function* followOnboardingWorkerSaga(

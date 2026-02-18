@@ -2,21 +2,21 @@ import {call, put, select} from 'redux-saga/effects';
 import {
   createChatAccountFailed,
   createChatAccountSuccess,
-} from './chat-account.actions';
-import {createChatUserApi} from '../../../../services/api/chat/chat-api';
-import {generatePGPKeyPair} from '../../../../services/pgp-encryption-service/generate-keys';
-import {storeDeviceKeyWithUserChoice} from '../../../../services/file-content/save-device-key';
-import {IInvitations} from '../../state/userChatAccount/userChatAccount.types';
+} from '../chat-account.actions';
+import {createChatUserApi} from '../../../../../services/api/chat/chat-api';
+import {generatePGPKeyPair} from '../../../../../services/pgp-encryption-service/generate-keys';
+import {storeDeviceKeyWithUserChoice} from '../../../../../services/file-content/save-device-key';
+import {IInvitations} from '../../../state/user-chat-account/user-chat-account.types';
 import {
   EKeychainSecrets,
   storeSecretKeychain,
-} from '../../../../services/secrets-keychains/store-secret-keychain';
-import {createUserChatsAccount} from '../../state/userChatAccount/userChatAccountAction';
+} from '../../../../../services/secrets-keychains/store-secret-keychain';
+import {createUserChatsAccount} from '../../../state/user-chat-account/user-chat-account.actions';
 import {
   EPopupType,
   ErrorNotificationHandler,
-} from '../../../../services/error-notification-handler';
-import {strings} from '../../../../screens/chat/chat.strings';
+} from '../../../../../components/popup-message/error-notification-handler';
+import {strings} from '../../../../../screens/chat/chat.strings';
 
 export function* createChatAccountWorkerSaga(): Generator<any, void, any> {
   try {
