@@ -23,7 +23,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   useEffect(() => {
     const currentChatSocket = connectUserChatNotificationsSocket(
       interlocutorId,
-      [chatId],
+      chatId,
     );
 
     const handleChatMessage = (message: any) => {
@@ -66,6 +66,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         socketEventStatus.CHAT_ROOM_MESSAGE,
         handleChatMessage,
       );
+      currentChatSocket.disconnect();
     };
   }, [chatId, interlocutorId, privateChatKey, dispatch]);
 
