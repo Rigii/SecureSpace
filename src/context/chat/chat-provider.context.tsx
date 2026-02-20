@@ -63,15 +63,20 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const {interlocutorId, email} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
+  const {token} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
+  );
   const userChatRooms = useReduxSelector(state => state.chatRoomsSlice);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!interlocutorId) {
+    if (!interlocutorId || !token) {
       return;
     }
 
-    const newSocket = connectUserChatAppSocket(interlocutorId);
+    const newSocket = connectUserChatAppSocket({
+      token,
+    });
 
     newSocket.on(socketEventStatus.CONNECT, () => {
       console.info(strings.connectedChatServer);
@@ -83,7 +88,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       newSocket.disconnect();
       newSocket.removeAllListeners();
     };
-  }, [interlocutorId]);
+  }, [interlocutorId, token]);
 
   useEffect(() => {
     if (!socket) {

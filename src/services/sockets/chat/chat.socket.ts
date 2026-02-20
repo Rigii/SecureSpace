@@ -44,9 +44,10 @@ export const chatEvents = {
   ROOM_MESSAGE_SEEN: 'room_message_seen',
 };
 
-export const connectUserChatAppSocket = (userIdChannel: string): Socket => {
+export const connectUserChatAppSocket = ({token}: {token: string}): Socket => {
   return io(`${BASE_URL}${CHAT_APP_URL}`, {
-    query: {userId: userIdChannel},
+    /* The user data would be retrieved from the database during token validation. */
+    auth: {token},
     transports: ['websocket'],
     reconnection: true,
   });
