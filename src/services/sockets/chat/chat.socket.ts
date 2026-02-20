@@ -26,7 +26,7 @@ export const socketMessageNamespaces = {
   JOIN_ROOM: 'join_room',
   JOIN_NEW_ROOM: 'join_new_room',
   DECLINE_CHAT: 'decline_chat',
-  LEAVE_CHAT: 'leave_chat',
+  UNSUBSCRIBE_ROOM: 'leave_chat',
   CHAT_ROOM_MESSAGE: 'chat_room_message',
 };
 
@@ -168,7 +168,7 @@ export const leaveChatRoomSocket = (
     return;
   }
 
-  socket.emit(socketMessageNamespaces.LEAVE_CHAT, chatData);
+  socket.emit(socketMessageNamespaces.UNSUBSCRIBE_ROOM, chatData);
 };
 
 export const declineChatRoomInvitationSocket = (

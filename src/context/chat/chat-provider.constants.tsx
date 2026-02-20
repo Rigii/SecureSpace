@@ -20,5 +20,5 @@ export const socketMessageNamespaces = {
   LEAVE_ROOM: 'leave_room',
   JOIN_NEW_ROOM: 'join_new_room',
   SEND_MESSAGE: 'send_message',
-  LEAVE_CHAT: 'leave_chat',
+  UNSUBSCRIBE_ROOM: 'unsubscribe_room',
 };

@@ -6,7 +6,6 @@ import {
   socketMessageNamespaces,
 } from '../../../context/chat/chat-provider.constants';
 import {useDispatch} from 'react-redux';
-
 import {handleChatSocketSaga} from '../../../app/store/saga/chat-account-saga/chat-account.actions';
 import {chatSocketSagaHandlers} from '../../../app/store/saga/chat-account-saga/workers/constants';
 import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
@@ -29,7 +28,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       return;
     }
     const handleChatMessage = (message: any) => {
-      console.log(22222, 'Received chat message:', message);
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER,
