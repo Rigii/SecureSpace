@@ -46,9 +46,10 @@ export const chatEvents = {
 export const connectUserChatNotificationsSocket = (
   userIdChannel: string,
   roomId?: string,
+  isAppSocketConnection: boolean = false,
 ): Socket => {
   return io(`${BASE_URL}${CHAT_ROOM_URL}`, {
-    query: {userId: userIdChannel, roomId},
+    query: {userId: userIdChannel, roomId, isAppSocketConnection},
     transports: ['websocket'],
     reconnection: true,
   });

@@ -42,7 +42,7 @@ export interface IUserData {
 export interface IChatMessage {
   id: string;
   participantId: string;
-  senderNickame: string;
+  senderNickname: string;
   message: string;
   chatRoomId: string;
   chatRoomName?: string;

@@ -24,6 +24,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
     const currentChatSocket = connectUserChatNotificationsSocket(
       interlocutorId,
       chatId,
+      false,
     );
 
     const handleChatMessage = (message: any) => {
@@ -47,7 +48,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       socketEventStatus.JOIN_CHAT_SUCCESS,
       ({message, data}: {message: string; data: string[]}) => {
         console.info(`${message}`);
-
         setPublicKeys(data);
       },
     );

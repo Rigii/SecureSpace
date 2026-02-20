@@ -35,7 +35,7 @@ const createMockMessage = (
   chatRoomId,
   message: `Message ${messageId}`,
   participantId: 'user-123',
-  senderNickame: 'Test User',
+  senderNickname: 'Test User',
   created: new Date().toISOString(),
   isAdmin: false,
   updated: '',

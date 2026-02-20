@@ -77,7 +77,7 @@ function* handleRoomMessageListSaga({
       message: messageObject.message,
       created: new Date(messageObject.created).toLocaleString(),
       updated: new Date(messageObject.updated).toLocaleString(),
-      senderNickame: messageObject.senderNickame,
+      senderNickname: messageObject.senderNickname,
       participantId: messageObject.participantId,
       chatRoomId: messageObject.chatRoomId,
       isAdmin: messageObject.isAdmin || false,
@@ -113,7 +113,7 @@ function* handleRoomMessageNotificationSaga({
   ErrorNotificationHandler({
     type: EPopupType.INFO,
     text1: `${strings.room} ${message.chatRoomName}`,
-    text2: `${strings.newMessageFrom} ${message.senderNickame}`,
+    text2: `${strings.newMessageFrom} ${message.senderNickname}`,
   });
 }
 

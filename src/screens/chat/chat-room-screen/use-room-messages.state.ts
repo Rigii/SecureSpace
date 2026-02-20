@@ -72,7 +72,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
           (messageObject: {
             id: string;
             participantId: string;
-            senderNickame: string;
+            senderNickname: string;
             message: string;
             chatRoomId: string;
             isAdmin: boolean;
@@ -85,7 +85,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
             message: messageObject?.message,
             created: new Date(messageObject?.created).toLocaleString(),
             updated: new Date(messageObject?.updated).toLocaleString(),
-            senderNickame: messageObject?.senderNickame,
+            senderNickname: messageObject?.senderNickname,
             participantId: messageObject?.participantId,
             chatRoomId: messageObject?.chatRoomId,
             isAdmin: false,

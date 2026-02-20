@@ -71,7 +71,11 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       return;
     }
 
-    const newSocket = connectUserChatNotificationsSocket(interlocutorId);
+    const newSocket = connectUserChatNotificationsSocket(
+      interlocutorId,
+      undefined,
+      true,
+    );
 
     newSocket.on(socketEventStatus.CONNECT, () => {
       console.info(strings.connectedChatServer);
@@ -187,12 +191,18 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
         return;
       }
 
-      const updatedRoom = await joinChatRoomSocket(socket, {
+      const updatedRoom = (await joinChatRoomSocket(socket, {
         userChatIds: [chatId],
         interlocutorId,
-      });
+      })) as IChatRoom;
 
-      dispatch(updateChatRoom(updatedRoom as IChatRoom));
+      const roomData = {
+        ...currentRoom,
+        invitedUserIds: updatedRoom.invitedUserIds,
+        usersData: updatedRoom.usersData,
+      };
+
+      dispatch(updateChatRoom(roomData));
 
       console.info(`${strings.joinedChatRoom} ${chatId}`);
     } catch (error) {
