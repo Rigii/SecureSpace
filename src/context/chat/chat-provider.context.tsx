@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useState} from 'react';
 import {Socket} from 'socket.io-client';
 import {
-  connectUserChatNotificationsSocket,
+  connectUserChatAppSocket,
   createChatRoomSocket,
   declineChatRoomInvitationSocket,
   deleteChatRoomSocket,
@@ -71,11 +71,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       return;
     }
 
-    const newSocket = connectUserChatNotificationsSocket(
-      interlocutorId,
-      undefined,
-      true,
-    );
+    const newSocket = connectUserChatAppSocket(interlocutorId);
 
     newSocket.on(socketEventStatus.CONNECT, () => {
       console.info(strings.connectedChatServer);
@@ -112,16 +108,8 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       );
     };
 
-    if (!currentActiveChatId || currentActiveChatId === null) {
-      console.info('Subscribing to chat room NOTIFICATION messages');
-      socket.on(socketEventStatus.ROOM_NOTIFICATION_MESSAGE, handleChatMessage);
-    } else {
-      console.info('Unsubscribing from chat room NOTIFICATION messages');
-      socket.off(
-        socketEventStatus.ROOM_NOTIFICATION_MESSAGE,
-        handleChatMessage,
-      );
-    }
+    console.info('Subscribing to chat room NOTIFICATION messages');
+    socket.on(socketEventStatus.ROOM_NOTIFICATION_MESSAGE, handleChatMessage);
     socket.on(socketEventStatus.USER_CHAT_INVITATION, handleInvitation);
 
     return () => {
