@@ -1,18 +1,22 @@
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
-import {connectUserChatNotificationsSocket} from '../../../services/sockets/chat/chat.socket';
 import {strings} from '../../../context/chat/chat-provider.strings';
-import {socketEventStatus} from '../../../context/chat/chat-provider.constants';
+import {
+  socketEventStatus,
+  socketMessageNamespaces,
+} from '../../../context/chat/chat-provider.constants';
 import {useDispatch} from 'react-redux';
 
 import {handleChatSocketSaga} from '../../../app/store/saga/chat-account-saga/chat-account.actions';
 import {chatSocketSagaHandlers} from '../../../app/store/saga/chat-account-saga/workers/constants';
+import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
 
 interface IChatRoomSocketState {
   chatId: string;
 }
 
 export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
+  const {socket} = useContext(ChatSocketProviderContext);
   const [publicKeys, setPublicKeys] = useState<string[]>([]);
   const dispatch = useDispatch();
 
@@ -21,13 +25,11 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   );
 
   useEffect(() => {
-    const currentChatSocket = connectUserChatNotificationsSocket(
-      interlocutorId,
-      chatId,
-      false,
-    );
-
+    if (!socket) {
+      return;
+    }
     const handleChatMessage = (message: any) => {
+      console.log(22222, 'Received chat message:', message);
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER,
@@ -36,15 +38,15 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       );
     };
 
-    currentChatSocket.on(socketEventStatus.CONNECT, () => {
+    socket.on(socketEventStatus.CONNECT, () => {
       console.info(`${strings.connectedChatWithId} ${chatId}`);
     });
 
-    currentChatSocket.on(socketEventStatus.DISCONNECT, () => {
+    socket.on(socketEventStatus.DISCONNECT, () => {
       console.info(`${strings.disconnectedChatWithId} ${chatId}`);
     });
 
-    currentChatSocket.on(
+    socket.on(
       socketEventStatus.JOIN_CHAT_SUCCESS,
       ({message, data}: {message: string; data: string[]}) => {
         console.info(`${message}`);
@@ -52,23 +54,30 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       },
     );
 
-    currentChatSocket.on(socketEventStatus.USER_LEFT_CHAT, () => {
+    socket.on(socketEventStatus.USER_LEFT_CHAT, () => {
       console.info(`${strings.disconnectedChatWithId} ${chatId}`);
     });
 
-    currentChatSocket.on(
-      socketEventStatus.CHAT_ROOM_MESSAGE,
-      handleChatMessage,
-    );
+    socket.on(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
+
+    socket.emit(socketMessageNamespaces.JOIN_ROOM, {
+      roomId: chatId,
+      interlocutorId,
+    });
 
     return () => {
-      currentChatSocket.off(
-        socketEventStatus.CHAT_ROOM_MESSAGE,
-        handleChatMessage,
-      );
-      currentChatSocket.disconnect();
+      socket.emit(socketMessageNamespaces.LEAVE_ROOM, {
+        roomId: chatId,
+        interlocutorId,
+      });
+
+      socket.off(socketEventStatus.CONNECT);
+      socket.off(socketEventStatus.DISCONNECT);
+      socket.off(socketEventStatus.JOIN_CHAT_SUCCESS);
+      socket.off(socketEventStatus.USER_LEFT_CHAT);
+      socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
     };
-  }, [chatId, interlocutorId, privateChatKey, dispatch]);
+  }, [chatId, interlocutorId, privateChatKey, dispatch, socket]);
 
   return {publicKeys};
 };

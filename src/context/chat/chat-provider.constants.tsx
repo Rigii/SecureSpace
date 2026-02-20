@@ -16,8 +16,9 @@ export const socketMessageNamespaces = {
   INVITE_CHAT_PARTICIPIANTS: 'invite_chat_participiants',
   ADD_CHAT_PARTICIPIANTS: 'add_chat_participiants',
   FIND_ALL_USER_CHAT_ROOMS: 'find_all_user_chats',
-  DELETE_CHAT: 'DELETE_CHAT',
-  JOIN_CHAT: 'join_chat',
+  JOIN_ROOM: 'join_room',
+  LEAVE_ROOM: 'leave_room',
+  JOIN_NEW_ROOM: 'join_new_room',
   SEND_MESSAGE: 'send_message',
   LEAVE_CHAT: 'leave_chat',
 };

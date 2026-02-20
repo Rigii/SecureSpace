@@ -14,7 +14,7 @@ import {
 } from '../../../components/popup-message/error-notification-handler';
 import {IChatRoom} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 
-const CHAT_ROOM_URL = '/chat_room';
+const CHAT_APP_URL = '/application-chat';
 
 export const socketMessageNamespaces = {
   CREATE_CHAT: 'create_chat',
@@ -23,7 +23,8 @@ export const socketMessageNamespaces = {
   ADD_CHAT_PARTICIPANTS: 'add_chat_participants',
   FIND_ALL_USER_CHAT_ROOMS: 'find_all_user_chats',
   DELETE_CHAT_ROOM: 'delete_chat_room',
-  JOIN_CHAT: 'join_chat',
+  JOIN_ROOM: 'join_room',
+  JOIN_NEW_ROOM: 'join_new_room',
   DECLINE_CHAT: 'decline_chat',
   LEAVE_CHAT: 'leave_chat',
   CHAT_ROOM_MESSAGE: 'chat_room_message',
@@ -43,13 +44,9 @@ export const chatEvents = {
   ROOM_MESSAGE_SEEN: 'room_message_seen',
 };
 
-export const connectUserChatNotificationsSocket = (
-  userIdChannel: string,
-  roomId?: string,
-  isAppSocketConnection: boolean = false,
-): Socket => {
-  return io(`${BASE_URL}${CHAT_ROOM_URL}`, {
-    query: {userId: userIdChannel, roomId, isAppSocketConnection},
+export const connectUserChatAppSocket = (userIdChannel: string): Socket => {
+  return io(`${BASE_URL}${CHAT_APP_URL}`, {
+    query: {userId: userIdChannel},
     transports: ['websocket'],
     reconnection: true,
   });
@@ -117,7 +114,7 @@ export const joinChatRoomSocket = (
     }
 
     socket.emit(
-      socketMessageNamespaces.JOIN_CHAT,
+      socketMessageNamespaces.JOIN_NEW_ROOM,
       {
         userChatId: chatData.userChatIds[0],
         interlocutorId: chatData.interlocutorId,
