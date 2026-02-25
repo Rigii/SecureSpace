@@ -13,36 +13,12 @@ import {
   ErrorNotificationHandler,
 } from '../../../components/popup-message/error-notification-handler';
 import {IChatRoom} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
+import {
+  socketEventStatus,
+  socketMessageNamespaces,
+} from '../../../context/chat/chat-provider.constants';
 
 const CHAT_APP_URL = '/application-chat';
-
-export const socketMessageNamespaces = {
-  CREATE_CHAT: 'create_chat',
-  UPDATE_CHAT_OPTIONS: 'update_chat_options',
-  INVITE_CHAT_PARTICIPANTS: 'invite_chat_participants',
-  ADD_CHAT_PARTICIPANTS: 'add_chat_participants',
-  FIND_ALL_USER_CHAT_ROOMS: 'find_all_user_chats',
-  DELETE_CHAT_ROOM: 'delete_chat_room',
-  JOIN_ROOM: 'join_room',
-  JOIN_NEW_ROOM: 'join_new_room',
-  DECLINE_CHAT: 'decline_chat',
-  UNSUBSCRIBE_ROOM: 'leave_chat',
-  CHAT_ROOM_MESSAGE: 'chat_room_message',
-};
-
-export const chatEvents = {
-  USER_CHAT_INVITATION: 'user_chat_invitation',
-  USER_CHAT_JOIN: 'user_chat_join',
-  CREATE_CHAT_SUCCESS: 'create_chat_success',
-  CREATE_CHAT_ERROR: 'create_chat_error',
-  JOIN_CHAT_SUCCESS: 'join_chat_success',
-  JOIN_CHAT_ERROR: 'join_chat_error',
-  DELETE_CHAT_ROOM_SUCCESS: 'delete_chat_room_success',
-  DELETE_CHAT_ROOM_ERROR: 'delete_chat_room_error',
-  DECLINE_CHAT_INVITATION_SUCCESS: 'decline_chat_invitation_success',
-  DECLINE_CHAT_INVITATION_ERROR: 'decline_chat_invitation_error',
-  ROOM_MESSAGE_SEEN: 'room_message_seen',
-};
 
 export const connectUserChatAppSocket = ({token}: {token: string}): Socket => {
   return io(`${BASE_URL}${CHAT_APP_URL}`, {
@@ -94,11 +70,11 @@ export const deleteChatRoomSocket = (
   }
   socket.emit(socketMessageNamespaces.DELETE_CHAT_ROOM, chatData);
 
-  socket.on(chatEvents.DELETE_CHAT_ROOM_SUCCESS, data => {
+  socket.on(socketEventStatus.DELETE_CHAT_ROOM_SUCCESS, data => {
     console.info(strings.roomDeleted, data);
   });
 
-  socket.on(chatEvents.DELETE_CHAT_ROOM_ERROR, error => {
+  socket.on(socketEventStatus.DELETE_CHAT_ROOM_ERROR, error => {
     console.error(strings.errorDeletingChatRoom, error);
   });
 };
@@ -183,12 +159,12 @@ export const declineChatRoomInvitationSocket = (
 
   socket.emit(socketMessageNamespaces.DECLINE_CHAT, chatData);
 
-  socket.on(chatEvents.DECLINE_CHAT_INVITATION_SUCCESS, data => {
+  socket.on(socketEventStatus.DECLINE_CHAT_INVITATION_SUCCESS, data => {
     console.info(strings.roomInvitationDeclinedDone, data);
     return data;
   });
 
-  socket.on(chatEvents.DECLINE_CHAT_INVITATION_ERROR, error => {
+  socket.on(socketEventStatus.DECLINE_CHAT_INVITATION_ERROR, error => {
     console.error(strings.errorRoomInvitationDeclined, error);
     throw new Error(error);
   });

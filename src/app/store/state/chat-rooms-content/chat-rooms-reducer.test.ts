@@ -293,21 +293,6 @@ describe('Chat Rooms Reducer', () => {
 
       expect(nextState).toEqual(existingState);
     });
-
-    // it('should handle empty messages array', () => {
-    //   const existingState = {
-    //     'room-1': createMockChatRoom('room-1', {
-    //       messages: [createMockMessage('room-1', 'msg-1')],
-    //     }),
-    //   };
-
-    //   const nextState = chatRoomsSlice(
-    //     existingState,
-    //     addMessagesToChatRoom([]),
-    //   );
-
-    //   expect(nextState['room-1'].messages).toHaveLength(0);
-    // });
   });
 
   describe('addMessageToChatRoom', () => {
