@@ -24,6 +24,8 @@ interface IChatRoomMessagesState {
 
 export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   const flatListRef = useRef<FlatList>(null);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
 
   const {setCurrentActiveChatId, leaveChatRoom, deleteChatRoom} = useContext(
     ChatSocketProviderContext,
@@ -31,17 +33,13 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
   const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
-
   const userChatRooms = useReduxSelector(state => state.chatRoomsSlice);
   const {interlocutorId, privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const storedMessages = userChatRooms[chatId]?.messages || [];
-
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  const dispatch = useDispatch();
+  const roomName = userChatRooms[chatId]?.chatName;
 
   const isInvitationNotAccepted =
     userChatRooms[chatId]?.invitedUserIds?.includes(interlocutorId);
@@ -204,6 +202,7 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     },
   ];
   return {
+    roomName,
     messages: storedMessages,
     participantId: interlocutorId,
     chatRoomOptions,

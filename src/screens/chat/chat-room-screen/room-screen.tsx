@@ -15,6 +15,7 @@ interface IChatRoomScreen {
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
   const {publicKeys} = useChatRoomSocketState({chatId});
   const {
+    roomName,
     participantId,
     chatRoomOptions,
     messages,
@@ -26,7 +27,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
 
   return (
     <View className="flex-1">
-      <ComponentsTopBar settingsData={chatRoomOptions} />
+      <ComponentsTopBar settingsData={chatRoomOptions} title={roomName} />
       {isInvitationNotAccepted ? <AcceptDecline chatId={chatId} /> : null}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

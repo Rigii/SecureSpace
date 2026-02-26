@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, SafeAreaView} from 'react-native';
+import {View, TouchableOpacity, SafeAreaView, Text} from 'react-native';
 import {RootStackParamList} from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LogoutSmallIcon} from '../../../assets/icons';
@@ -21,8 +21,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ESecureStoredKeys} from '../../../services/async-secure-storage/secure-storage-services';
 
 const ComponentsTopBar = ({
+  title,
   settingsData,
 }: {
+  title: string;
   settingsData: ISidebarDropdownDataSet[];
 }) => {
   const dispatch = useDispatch();
@@ -50,9 +52,14 @@ const ComponentsTopBar = ({
   return (
     <SafeAreaView className="bg-gray-900 overflow-auto">
       <View className="relative flex-row items-center justify-between px-4 py-3">
-        <TouchableOpacity onPress={navigateBack}>
-          <BackIcon />
-        </TouchableOpacity>
+        <View className="flex-row">
+          <TouchableOpacity onPress={navigateBack}>
+            <BackIcon />
+          </TouchableOpacity>
+          <Text className="text-lg font-medium ml-4 text-[#645050]">
+            {title}
+          </Text>
+        </View>
         <View className="flex-row">
           <View className="mr-3">
             <TouchableOpacity onPress={onLogOut}>
