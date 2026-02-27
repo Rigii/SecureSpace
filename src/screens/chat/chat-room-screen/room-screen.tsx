@@ -13,7 +13,8 @@ interface IChatRoomScreen {
 }
 
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
-  const {publicKeys} = useChatRoomSocketState({chatId});
+  const {publicKeys, activeConnections, roomInterlocutors} =
+    useChatRoomSocketState({chatId});
   const {
     roomName,
     participantId,
@@ -27,7 +28,12 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
 
   return (
     <View className="flex-1">
-      <ComponentsTopBar settingsData={chatRoomOptions} title={roomName} />
+      <ComponentsTopBar
+        settingsData={chatRoomOptions}
+        title={roomName}
+        activeConnections={activeConnections}
+        roomInterlocutors={roomInterlocutors}
+      />
       {isInvitationNotAccepted ? <AcceptDecline chatId={chatId} /> : null}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

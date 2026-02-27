@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, TouchableOpacity, SafeAreaView, Text} from 'react-native';
 import {RootStackParamList} from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -23,12 +23,32 @@ import {ESecureStoredKeys} from '../../../services/async-secure-storage/secure-s
 const ComponentsTopBar = ({
   title,
   settingsData,
+  activeConnections,
+  roomInterlocutors,
 }: {
   title: string;
   settingsData: ISidebarDropdownDataSet[];
+  activeConnections: Set<string>;
+  roomInterlocutors: {
+    interlocutor_id: string;
+    email: string;
+    public_chat_key: string;
+  }[];
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const [
+    roomActualisedActivityInterlocutors,
+    setRoomActualisedActivityInterlocutors,
+  ] = React.useState<
+    {
+      interlocutor_id: string;
+      email: string;
+      public_chat_key: string;
+      isActive: boolean;
+    }[]
+  >([]);
 
   const navigateBack = () => {
     navigation.goBack();
@@ -48,6 +68,22 @@ const ComponentsTopBar = ({
     await EncryptedStorage.removeItem(ESecureStoredKeys.anonymousUser);
     await AsyncStorage.clear();
   };
+
+  useEffect(() => {
+    const acualiseInterlocutorsActivity = (activeConnectionIds: string[]) => {
+      const actualisedActivityInterlocutors = roomInterlocutors.map(
+        interlocutor => ({
+          ...interlocutor,
+          isActive: activeConnectionIds.includes(interlocutor.interlocutor_id),
+        }),
+      );
+      setRoomActualisedActivityInterlocutors(actualisedActivityInterlocutors);
+    };
+
+    acualiseInterlocutorsActivity(Array.from(activeConnections));
+  }, [activeConnections, roomInterlocutors]);
+
+  console.log(1111, roomActualisedActivityInterlocutors);
 
   return (
     <SafeAreaView className="bg-gray-900 overflow-auto">

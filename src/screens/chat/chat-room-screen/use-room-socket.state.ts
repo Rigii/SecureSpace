@@ -20,9 +20,16 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const [activeConnections, setActiveConnections] = useState<Set<string>>(
     new Set(),
   );
+  const [roomInterlocutors, setRoomInterlocutors] = useState<
+    {
+      interlocutor_id: string;
+      email: string;
+      public_chat_key: string;
+    }[]
+  >([]);
   const dispatch = useDispatch();
 
-  const {interlocutorId, privateChatKey} = useReduxSelector(
+  const {interlocutorId} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
 
@@ -49,6 +56,11 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
           interlocutorId: string;
           chatRoomId: string;
           activeConnections: string[];
+          roomInterlocutors: {
+            interlocutor_id: string;
+            email: string;
+            public_chat_key: string;
+          }[];
         };
       }) => {
         console.info(`${strings.userJoinedChatWithId} ${data.interlocutorId}`);
@@ -83,11 +95,20 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         data,
       }: {
         message: string;
-        data: {publicKeys: string[]; activeConnections: string[]};
+        data: {
+          publicKeys: string[];
+          activeConnections: string[];
+          roomInterlocutors: {
+            interlocutor_id: string;
+            email: string;
+            public_chat_key: string;
+          }[];
+        };
       }) => {
         console.info(`${message}`);
         setPublicKeys(data.publicKeys);
         setActiveConnections(new Set(data.activeConnections));
+        setRoomInterlocutors(data.roomInterlocutors);
       },
     );
 
@@ -108,8 +129,8 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       socket.off(socketEventStatus.USER_LEFT_CHAT);
       socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
     };
-  }, [chatId, interlocutorId, privateChatKey, dispatch, socket]);
+  }, [chatId, interlocutorId, socket, dispatch]);
   console.log(7777777, 'CONNECTIONS', activeConnections);
 
-  return {publicKeys, activeConnections};
+  return {publicKeys, activeConnections, roomInterlocutors};
 };
