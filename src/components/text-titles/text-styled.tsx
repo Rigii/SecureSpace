@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleProp, Text, TouchableOpacity, ViewStyle} from 'react-native';
+import {
+  StyleProp,
+  Text,
+  TextProps,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 
 export const TextBold = ({
   children,
@@ -20,19 +27,19 @@ export const TextBold = ({
   </Text>
 );
 
+type Props = TextProps & {
+  className?: string;
+  style?: StyleProp<TextStyle>;
+};
+
 export const TextNormal = ({
   children,
-  className,
-  props,
+  className = '',
   style,
-}: {
-  children: string;
-  className?: string;
-  props?: any;
-  style?: StyleProp<ViewStyle>;
-}) => (
+  ...rest
+}: Props) => (
   <Text
-    {...props}
+    {...rest}
     style={style}
     className={`dark:text-white text-center text-base ${className}`}>
     {children}

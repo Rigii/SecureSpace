@@ -10,7 +10,7 @@ export interface ISidebarProps {
   popupClassName?: string;
 }
 
-const DropdownButton: React.FC<ISidebarProps> = ({data, popupClassName}) => {
+const ModalBar: React.FC<ISidebarProps> = ({data, popupClassName}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleSidebarPress = () => {
@@ -54,4 +54,4 @@ const DropdownButton: React.FC<ISidebarProps> = ({data, popupClassName}) => {
   );
 };
 
-export default DropdownButton;
+export default ModalBar;

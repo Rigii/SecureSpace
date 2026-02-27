@@ -64,8 +64,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         };
       }) => {
         console.info(`${strings.userJoinedChatWithId} ${data.interlocutorId}`);
-        console.log(111111, 'JOINED', data.activeConnections);
-
         setActiveConnections(new Set(data.activeConnections));
       },
     );
@@ -83,7 +81,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         };
       }) => {
         console.info(`${strings.userLeftChatWithId} ${data.interlocutorId}`);
-        console.log(222222, 'LEFT', data.activeConnections);
         setActiveConnections(new Set(data.activeConnections));
       },
     );
@@ -130,7 +127,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
     };
   }, [chatId, interlocutorId, socket, dispatch]);
-  console.log(7777777, 'CONNECTIONS', activeConnections);
 
   return {publicKeys, activeConnections, roomInterlocutors};
 };

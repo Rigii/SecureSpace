@@ -3,7 +3,7 @@ import {View, TouchableOpacity, SafeAreaView, Text} from 'react-native';
 import {RootStackParamList} from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LogoutSmallIcon} from '../../../assets/icons';
-import DropdownButton from '../../modal-side-bar/modal-bar';
+import ModalBar from '../../modal-side-bar/modal-bar';
 import {BackIcon} from '../../../assets/icons/backIcon';
 import {ISidebarDropdownDataSet} from '../../modal-side-bar/modal-bar.types';
 import {useDispatch} from 'react-redux';
@@ -19,6 +19,8 @@ import {resetForm} from '../../../app/store/state/onboarding-state/onboarding.sl
 import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ESecureStoredKeys} from '../../../services/async-secure-storage/secure-storage-services';
+import InterlocutorList from '../../interlocutor-list/interlocutor-list';
+import {UserIcon} from '../../../assets/icons/userIcon';
 
 const ComponentsTopBar = ({
   title,
@@ -83,8 +85,6 @@ const ComponentsTopBar = ({
     acualiseInterlocutorsActivity(Array.from(activeConnections));
   }, [activeConnections, roomInterlocutors]);
 
-  console.log(1111, roomActualisedActivityInterlocutors);
-
   return (
     <SafeAreaView className="bg-gray-900 overflow-auto">
       <View className="relative flex-row items-center justify-between px-4 py-3">
@@ -97,12 +97,27 @@ const ComponentsTopBar = ({
           </Text>
         </View>
         <View className="flex-row">
+          <InterlocutorList
+            buttonClassName="mr-3"
+            popupClassName="right-4"
+            data={roomActualisedActivityInterlocutors.map(interlocutor => ({
+              icon: (
+                <UserIcon
+                  color={interlocutor.isActive ? '#1a8f39' : '#645050'}
+                />
+              ),
+              label: interlocutor.email,
+              action: () => {},
+              id: interlocutor.interlocutor_id,
+              isActive: interlocutor.isActive,
+            }))}
+          />
           <View className="mr-3">
             <TouchableOpacity onPress={onLogOut}>
               <LogoutSmallIcon />
             </TouchableOpacity>
           </View>
-          <DropdownButton data={settingsData} popupClassName="right-4" />
+          <ModalBar data={settingsData} popupClassName="right-4" />
         </View>
       </View>
     </SafeAreaView>
