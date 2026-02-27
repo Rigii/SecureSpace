@@ -39,14 +39,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       );
     };
 
-    // socket.on(socketEventStatus.CONNECT, () => {
-    //   console.info(`${strings.connectedChatWithId} ${chatId}`);
-    // });
-
-    // socket.on(socketEventStatus.DISCONNECT, () => {
-    //   console.info(`${strings.disconnectedChatWithId} ${chatId}`);
-    // });
-
     socket.on(
       socketEventStatus.USER_JOINED_CHAT,
       ({
@@ -60,6 +52,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         };
       }) => {
         console.info(`${strings.userJoinedChatWithId} ${data.interlocutorId}`);
+        console.log(111111, 'JOINED', data.activeConnections);
 
         setActiveConnections(new Set(data.activeConnections));
       },
@@ -78,15 +71,23 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         };
       }) => {
         console.info(`${strings.userLeftChatWithId} ${data.interlocutorId}`);
+        console.log(222222, 'LEFT', data.activeConnections);
         setActiveConnections(new Set(data.activeConnections));
       },
     );
 
     socket.on(
       socketEventStatus.JOIN_CHAT_SUCCESS,
-      ({message, data}: {message: string; data: string[]}) => {
+      ({
+        message,
+        data,
+      }: {
+        message: string;
+        data: {publicKeys: string[]; activeConnections: string[]};
+      }) => {
         console.info(`${message}`);
-        setPublicKeys(data);
+        setPublicKeys(data.publicKeys);
+        setActiveConnections(new Set(data.activeConnections));
       },
     );
 
@@ -103,13 +104,12 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         interlocutorId,
       });
 
-      socket.off(socketEventStatus.CONNECT);
-      socket.off(socketEventStatus.DISCONNECT);
       socket.off(socketEventStatus.JOIN_CHAT_SUCCESS);
       socket.off(socketEventStatus.USER_LEFT_CHAT);
       socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
     };
   }, [chatId, interlocutorId, privateChatKey, dispatch, socket]);
+  console.log(7777777, 'CONNECTIONS', activeConnections);
 
   return {publicKeys, activeConnections};
 };
