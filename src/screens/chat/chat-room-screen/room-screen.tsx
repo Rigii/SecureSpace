@@ -37,7 +37,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
       {isInvitationNotAccepted ? <AcceptDecline chatId={chatId} /> : null}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1"
+        className="flex-1 mt-3"
         keyboardVerticalOffset={100}>
         <FlatList
           data={messages}
