@@ -17,6 +17,9 @@ interface IChatRoomSocketState {
 export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const {socket} = useContext(ChatSocketProviderContext);
   const [publicKeys, setPublicKeys] = useState<string[]>([]);
+  const [activeConnections, setActiveConnections] = useState<Set<string>>(
+    new Set(),
+  );
   const dispatch = useDispatch();
 
   const {interlocutorId, privateChatKey} = useReduxSelector(
@@ -36,13 +39,48 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       );
     };
 
-    socket.on(socketEventStatus.CONNECT, () => {
-      console.info(`${strings.connectedChatWithId} ${chatId}`);
-    });
+    // socket.on(socketEventStatus.CONNECT, () => {
+    //   console.info(`${strings.connectedChatWithId} ${chatId}`);
+    // });
 
-    socket.on(socketEventStatus.DISCONNECT, () => {
-      console.info(`${strings.disconnectedChatWithId} ${chatId}`);
-    });
+    // socket.on(socketEventStatus.DISCONNECT, () => {
+    //   console.info(`${strings.disconnectedChatWithId} ${chatId}`);
+    // });
+
+    socket.on(
+      socketEventStatus.USER_JOINED_CHAT,
+      ({
+        data,
+      }: {
+        message: string;
+        data: {
+          interlocutorId: string;
+          chatRoomId: string;
+          activeConnections: string[];
+        };
+      }) => {
+        console.info(`${strings.userJoinedChatWithId} ${data.interlocutorId}`);
+
+        setActiveConnections(new Set(data.activeConnections));
+      },
+    );
+
+    socket.on(
+      socketEventStatus.USER_LEFT_CHAT,
+      ({
+        data,
+      }: {
+        message: string;
+        data: {
+          interlocutorId: string;
+          chatRoomId: string;
+          activeConnections: string[];
+        };
+      }) => {
+        console.info(`${strings.userLeftChatWithId} ${data.interlocutorId}`);
+        setActiveConnections(new Set(data.activeConnections));
+      },
+    );
 
     socket.on(
       socketEventStatus.JOIN_CHAT_SUCCESS,
@@ -51,10 +89,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         setPublicKeys(data);
       },
     );
-
-    socket.on(socketEventStatus.USER_LEFT_CHAT, () => {
-      console.info(`${strings.disconnectedChatWithId} ${chatId}`);
-    });
 
     socket.on(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
 
@@ -77,5 +111,5 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
     };
   }, [chatId, interlocutorId, privateChatKey, dispatch, socket]);
 
-  return {publicKeys};
+  return {publicKeys, activeConnections};
 };

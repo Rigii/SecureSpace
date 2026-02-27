@@ -21,4 +21,6 @@ export const strings = {
   noPrivateChatKeyFound:
     "Can't decrypt the messages. No private chat key found",
   errorJoiningChatRoom: 'Error joining chat room:',
+  userJoinedChatWithId: 'User joined the chat. Interlocutor ID:',
+  userLeftChatWithId: 'User left the chat. Interlocutor ID:',
 };

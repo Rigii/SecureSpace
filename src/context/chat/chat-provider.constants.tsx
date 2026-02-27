@@ -9,6 +9,7 @@ export const socketEventStatus = {
   JOIN_CHAT_SUCCESS: 'join_chat_success',
   JOIN_CHAT_ERROR: 'join_chat_error',
   USER_LEFT_CHAT: 'user_left_chat',
+  USER_JOINED_CHAT: 'user_joined_chat',
   DELETE_CHAT_ROOM_SUCCESS: 'delete_chat_room_success',
   DELETE_CHAT_ROOM_ERROR: 'delete_chat_room_error',
   DECLINE_CHAT_INVITATION_SUCCESS: 'decline_chat_invitation_success',
