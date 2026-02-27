@@ -7,7 +7,7 @@ import {
 } from '../../../app/navigator/screens';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {ChatIcon, HomeIcon, LogoutSmallIcon} from '../../../assets/icons';
-import DropdownButton from '../../modal-side-bar/modal-bar';
+import ModalBar from '../../modal-side-bar/modal-bar';
 import {ITopBarMenuActions} from '../../../HOC/combined-bar-component/combined-component';
 import {useDispatch} from 'react-redux';
 import {
@@ -73,7 +73,7 @@ const TopBar = ({
   return (
     <SafeAreaView className="bg-gray-900 overflow-auto">
       <View className="relative flex-row items-center justify-between px-4 py-3">
-        {menuActions && <DropdownButton data={menuActions} />}
+        {menuActions && <ModalBar data={menuActions} />}
 
         <View className="flex-row gap-4">
           <TouchableOpacity onPress={onLogOut}>

@@ -17,9 +17,19 @@ interface IChatRoomSocketState {
 export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const {socket} = useContext(ChatSocketProviderContext);
   const [publicKeys, setPublicKeys] = useState<string[]>([]);
+  const [activeConnections, setActiveConnections] = useState<Set<string>>(
+    new Set(),
+  );
+  const [roomInterlocutors, setRoomInterlocutors] = useState<
+    {
+      interlocutor_id: string;
+      email: string;
+      public_chat_key: string;
+    }[]
+  >([]);
   const dispatch = useDispatch();
 
-  const {interlocutorId, privateChatKey} = useReduxSelector(
+  const {interlocutorId} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
 
@@ -36,25 +46,68 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       );
     };
 
-    socket.on(socketEventStatus.CONNECT, () => {
-      console.info(`${strings.connectedChatWithId} ${chatId}`);
-    });
-
-    socket.on(socketEventStatus.DISCONNECT, () => {
-      console.info(`${strings.disconnectedChatWithId} ${chatId}`);
-    });
-
     socket.on(
-      socketEventStatus.JOIN_CHAT_SUCCESS,
-      ({message, data}: {message: string; data: string[]}) => {
-        console.info(`${message}`);
-        setPublicKeys(data);
+      socketEventStatus.USER_JOINED_CHAT,
+      ({
+        data,
+      }: {
+        message: string;
+        data: {
+          interlocutorId: string;
+          chatRoomId: string;
+          activeConnections: string[];
+          roomInterlocutors: {
+            interlocutor_id: string;
+            email: string;
+            public_chat_key: string;
+          }[];
+        };
+      }) => {
+        console.info(`${strings.userJoinedChatWithId} ${data.interlocutorId}`);
+        setActiveConnections(new Set(data.activeConnections));
       },
     );
 
-    socket.on(socketEventStatus.USER_LEFT_CHAT, () => {
-      console.info(`${strings.disconnectedChatWithId} ${chatId}`);
-    });
+    socket.on(
+      socketEventStatus.USER_LEFT_CHAT,
+      ({
+        data,
+      }: {
+        message: string;
+        data: {
+          interlocutorId: string;
+          chatRoomId: string;
+          activeConnections: string[];
+        };
+      }) => {
+        console.info(`${strings.userLeftChatWithId} ${data.interlocutorId}`);
+        setActiveConnections(new Set(data.activeConnections));
+      },
+    );
+
+    socket.on(
+      socketEventStatus.JOIN_CHAT_SUCCESS,
+      ({
+        message,
+        data,
+      }: {
+        message: string;
+        data: {
+          publicKeys: string[];
+          activeConnections: string[];
+          roomInterlocutors: {
+            interlocutor_id: string;
+            email: string;
+            public_chat_key: string;
+          }[];
+        };
+      }) => {
+        console.info(`${message}`);
+        setPublicKeys(data.publicKeys);
+        setActiveConnections(new Set(data.activeConnections));
+        setRoomInterlocutors(data.roomInterlocutors);
+      },
+    );
 
     socket.on(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
 
@@ -69,13 +122,11 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
         interlocutorId,
       });
 
-      socket.off(socketEventStatus.CONNECT);
-      socket.off(socketEventStatus.DISCONNECT);
       socket.off(socketEventStatus.JOIN_CHAT_SUCCESS);
       socket.off(socketEventStatus.USER_LEFT_CHAT);
       socket.off(socketEventStatus.CHAT_ROOM_MESSAGE, handleChatMessage);
     };
-  }, [chatId, interlocutorId, privateChatKey, dispatch, socket]);
+  }, [chatId, interlocutorId, socket, dispatch]);
 
-  return {publicKeys};
+  return {publicKeys, activeConnections, roomInterlocutors};
 };
