@@ -64,8 +64,10 @@ function* handleInvitationSaga(message: {
 
 function* handleRoomMessageListSaga({
   messageObject,
+  senderPublicKey,
 }: {
   messageObject: IChatMessage;
+  senderPublicKey?: string;
 }): Generator<any, void, any> {
   try {
     const {privateChatKey} = yield select(
@@ -91,6 +93,7 @@ function* handleRoomMessageListSaga({
 
     const decryptedMessage = yield call(decryptMessage, {
       privateKey: privateChatKey,
+      senderPublicKey: senderPublicKey || '',
       passphrase: '',
       encryptedMessage: storeData.message,
     });

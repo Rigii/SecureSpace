@@ -9,10 +9,7 @@ import {useDispatch} from 'react-redux';
 import {handleChatSocketSaga} from '../../../app/store/saga/chat-account-saga/chat-account.actions';
 import {chatSocketSagaHandlers} from '../../../app/store/saga/chat-account-saga/workers/constants';
 import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
-
-interface IChatRoomSocketState {
-  chatId: string;
-}
+import {IChatRoomSocketState, IRoomInterlocutor} from './types';
 
 export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const {socket} = useContext(ChatSocketProviderContext);
@@ -21,11 +18,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
     new Set(),
   );
   const [roomInterlocutors, setRoomInterlocutors] = useState<
-    {
-      interlocutor_id: string;
-      email: string;
-      public_chat_key: string;
-    }[]
+    IRoomInterlocutor[]
   >([]);
   const dispatch = useDispatch();
 

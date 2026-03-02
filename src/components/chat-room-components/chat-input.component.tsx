@@ -8,7 +8,8 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../popup-message/error-notification-handler';
-import {encryptMessageForMultipleRecipients} from '../../services/pgp-encryption-service/encrypt-decrypt-message';
+import {encryptSignMessageForMultipleRecipients} from '../../services/pgp-encryption-service/encrypt-decrypt-message';
+import {useReduxSelector} from '../../app/store/store';
 
 interface IChatInput {
   chatId: string;
@@ -22,6 +23,9 @@ const ChatInput: React.FC<IChatInput> = ({
   publicKeys,
 }) => {
   const {handleSendChatRoomMessage} = useContext(ChatSocketProviderContext);
+  const {privateChatKey, publicChatKey} = useReduxSelector(
+    state => state.userChatAccountReducer,
+  );
 
   const [currentMessage, setCurrentMessage] = React.useState<string>('');
 
@@ -39,9 +43,13 @@ const ChatInput: React.FC<IChatInput> = ({
       return;
     }
 
-    const encryptedMessage = await encryptMessageForMultipleRecipients({
+    const encryptedMessage = await encryptSignMessageForMultipleRecipients({
       message: currentMessage,
       publicKeys,
+      userPublicKey: publicChatKey,
+      userPrivateKey: privateChatKey,
+      privateKey: privateChatKey,
+      passphrase: '',
     });
 
     handleSendChatRoomMessage({message: encryptedMessage, chatRoomId: chatId});

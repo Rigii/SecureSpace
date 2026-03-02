@@ -23,6 +23,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
     isInvitationNotAccepted,
     flatListRef,
   } = useChatRoomMessagesState({
+    roomInterlocutors,
     chatId,
   });
 

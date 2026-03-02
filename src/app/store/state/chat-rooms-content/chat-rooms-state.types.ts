@@ -45,6 +45,7 @@ export interface IChatMessage {
   senderNickname: string;
   message: string;
   chatRoomId: string;
+  decryptionError?: boolean;
   chatRoomName?: string;
   lifeCycleLimitHours?: number;
   isAdmin: boolean;
