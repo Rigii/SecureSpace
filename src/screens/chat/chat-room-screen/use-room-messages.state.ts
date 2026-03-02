@@ -118,13 +118,7 @@ export const useChatRoomMessagesState = ({
             if (!privateChatKey) {
               throw new Error(strings.noPrivateChatKeyFound);
             }
-            // console.log(
-            //   8888888888888, "CHECK_INTERLOCUTORS",
-            //   roomInterlocutors.find(
-            //     interlocutor =>
-            //       interlocutor.interlocutor_id === message.participantId,
-            //   ),
-            // );
+
             const currentInterlocutorPublicKey = roomInterlocutors.find(
               interlocutor =>
                 interlocutor.interlocutor_id === message.participantId,
@@ -144,12 +138,7 @@ export const useChatRoomMessagesState = ({
               senderPublicKey: currentInterlocutorPublicKey || '',
               encryptedMessage: message.message,
             });
-            console.log(
-              77788888,
-              'ALL MESSGES IDENTITY',
-              decryptedMessage.verifiedOrigin,
-              currentInterlocutorPublicKey,
-            );
+
             return {
               ...message,
               message: decryptedMessage.message,
@@ -157,6 +146,7 @@ export const useChatRoomMessagesState = ({
             };
           }),
         );
+
         dispatch(addMessagesToChatRoom(decryptedMessages));
       } catch (error) {
         const currentError = error as Error;

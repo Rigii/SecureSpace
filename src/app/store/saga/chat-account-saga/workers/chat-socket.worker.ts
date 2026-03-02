@@ -97,12 +97,6 @@ function* handleRoomMessageListSaga({
       passphrase: '',
       encryptedMessage: storeData.message,
     });
-    console.log(
-      888888888,
-      'SINGLE MESSAGE IDENTITY',
-      decryptedMessage,
-      senderPublicKey?.slice(-50),
-    );
 
     yield put(
       addMessageToChatRoom({

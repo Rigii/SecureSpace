@@ -23,7 +23,7 @@ const ChatInput: React.FC<IChatInput> = ({
   publicKeys,
 }) => {
   const {handleSendChatRoomMessage} = useContext(ChatSocketProviderContext);
-  const {privateChatKey, publicChatKey} = useReduxSelector(
+  const {privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
 
@@ -45,7 +45,6 @@ const ChatInput: React.FC<IChatInput> = ({
     const encryptedMessage = await encryptSignMessageForMultipleRecipients({
       message: currentMessage,
       publicKeys,
-      userPublicKey: publicChatKey,
       userPrivateKey: privateChatKey,
       passphrase: '',
     });
