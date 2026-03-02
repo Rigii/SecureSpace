@@ -42,13 +42,11 @@ const ChatInput: React.FC<IChatInput> = ({
 
       return;
     }
-
     const encryptedMessage = await encryptSignMessageForMultipleRecipients({
       message: currentMessage,
       publicKeys,
       userPublicKey: publicChatKey,
       userPrivateKey: privateChatKey,
-      privateKey: privateChatKey,
       passphrase: '',
     });
 

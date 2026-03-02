@@ -11,6 +11,8 @@ import {chatSocketSagaHandlers} from '../../../app/store/saga/chat-account-saga/
 import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
 import {IChatRoomSocketState, IRoomInterlocutor} from './types';
 
+import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
+
 export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const {socket} = useContext(ChatSocketProviderContext);
   const [publicKeys, setPublicKeys] = useState<string[]>([]);
@@ -30,11 +32,15 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
     if (!socket) {
       return;
     }
-    const handleChatMessage = (message: any) => {
+    const handleChatMessage = (message: IChatMessage) => {
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER,
-          data: {currentActiveChatId: chatId, message},
+          data: {
+            currentActiveChatId: chatId,
+            message,
+            senderPublicKey: message.senderPublicKey,
+          },
         }),
       );
     };
@@ -95,8 +101,11 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
           }[];
         };
       }) => {
+        const fetchedPublicKeys = data.roomInterlocutors.map(
+          interlocutor => interlocutor.public_chat_key,
+        );
         console.info(`${message}`);
-        setPublicKeys(data.publicKeys);
+        setPublicKeys(fetchedPublicKeys);
         setActiveConnections(new Set(data.activeConnections));
         setRoomInterlocutors(data.roomInterlocutors);
       },

@@ -99,7 +99,11 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.ROOM_MESSAGE_NOTIFICATION_WORKER,
-          data: {currentActiveChatId, message},
+          data: {
+            currentActiveChatId,
+            message,
+            senderPublicKey: message.senderPublicKey,
+          },
         }),
       );
     };
@@ -108,7 +112,11 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.USER_CHAT_INVITATION_WORKER,
-          data: {currentActiveChatId, message},
+          data: {
+            currentActiveChatId,
+            message,
+            senderPublicKey: message.senderPublicKey,
+          },
         }),
       );
     };

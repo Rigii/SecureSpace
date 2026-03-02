@@ -71,6 +71,7 @@ export interface IChatMessage {
   message: string;
   senderId: string;
   senderName: string;
+  verifiedOrigin?: boolean;
 }
 
 export interface IDeleteChatRoom {

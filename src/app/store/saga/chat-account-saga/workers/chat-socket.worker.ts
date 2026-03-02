@@ -97,8 +97,20 @@ function* handleRoomMessageListSaga({
       passphrase: '',
       encryptedMessage: storeData.message,
     });
+    console.log(
+      888888888,
+      'SINGLE MESSAGE IDENTITY',
+      decryptedMessage,
+      senderPublicKey?.slice(-50),
+    );
 
-    yield put(addMessageToChatRoom({...storeData, message: decryptedMessage}));
+    yield put(
+      addMessageToChatRoom({
+        ...storeData,
+        message: decryptedMessage.message,
+        verifiedOrigin: decryptedMessage.verifiedOrigin,
+      }),
+    );
   } catch (error) {
     const currentError = error as Error;
     ErrorNotificationHandler({
@@ -144,6 +156,7 @@ export function* handleSocketEventWorker(action: {
       yield call(handleRoomMessageListSaga, {
         messageObject:
           message as IChatSocketMessageType[typeof chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER],
+        senderPublicKey: data.senderPublicKey,
       });
       break;
   }

@@ -53,4 +53,6 @@ export interface IChatMessage {
   voiceMessageUrl?: string;
   created: string;
   updated: string;
+  senderPublicKey?: string;
+  verifiedOrigin?: boolean;
 }

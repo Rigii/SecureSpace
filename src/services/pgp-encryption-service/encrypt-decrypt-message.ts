@@ -2,7 +2,7 @@ import OpenPGP from 'react-native-fast-openpgp';
 
 export const encryptSignMessageForMultipleRecipients = async ({
   publicKeys,
-  userPublicKey,
+  // userPublicKey,
   userPrivateKey,
   passphrase,
   message,
@@ -15,41 +15,15 @@ export const encryptSignMessageForMultipleRecipients = async ({
   message: string;
 }): Promise<string> => {
   const concatenatedKeys = publicKeys.join('\n');
+  const encrypted = await OpenPGP.encrypt(message, concatenatedKeys);
 
-  if (userPublicKey && userPrivateKey) {
-    return await OpenPGP.encrypt(
-      message,
-      concatenatedKeys,
-      /* message signing settings */
-      {
-        publicKey: userPublicKey,
-        privateKey: userPrivateKey,
-        passphrase: passphrase || '',
-      },
-    );
-  }
+  /* PubKey identity signing/verification*/
+  const signature =
+    userPrivateKey &&
+    (await OpenPGP.sign(encrypted, userPrivateKey, passphrase || ''));
 
-  return await OpenPGP.encrypt(message, concatenatedKeys);
+  return JSON.stringify({encrypted, signature});
 };
-
-// export const decryptMessage = async ({
-//   privateKey,
-//   passphrase,
-//   encryptedMessage,
-// }: {
-//   privateKey: string;
-//   passphrase: string;
-//   encryptedMessage: string;
-// }): Promise<string> => {
-//   const decrypted = await OpenPGP.decrypt(
-//     encryptedMessage,
-//     privateKey,
-//     passphrase,
-//   );
-
-//   return decrypted;
-// };
-
 export const decryptMessage = async ({
   privateKey,
   passphrase,
@@ -60,24 +34,59 @@ export const decryptMessage = async ({
   passphrase?: string;
   senderPublicKey: string;
   encryptedMessage: string;
-}): Promise<string> => {
-  console.log(1111122, {
+}) => {
+  const {encrypted, signature} = JSON.parse(encryptedMessage);
+
+  const verifiedOrigin = await OpenPGP.verify(
+    signature,
+    encrypted,
     senderPublicKey,
-    encryptedMessage,
-  });
-  const decrypted = await OpenPGP.decrypt(
-    encryptedMessage,
-    privateKey,
-    passphrase || '',
-    undefined,
-    {
-      publicKey: senderPublicKey,
-      privateKey: '', // not needed for verification
-    },
   );
 
-  return decrypted;
+  const message = await OpenPGP.decrypt(
+    encrypted,
+    privateKey,
+    passphrase || '',
+  );
+
+  return {message, verifiedOrigin};
 };
+// export const decryptMessage = async ({
+//   privateKey,
+//   passphrase,
+//   senderPublicKey,
+//   encryptedMessage,
+// }: {
+//   privateKey: string;
+//   passphrase?: string;
+//   senderPublicKey: string;
+//   encryptedMessage: string;
+// }): Promise<{message: string; verifiedOrigin: boolean}> => {
+//   console.log(555555555, 'START ENCRYPTION PUB', senderPublicKey);
+
+//   try {
+//     const decrypted = await OpenPGP.decrypt(
+//       encryptedMessage,
+//       privateKey,
+//       passphrase || '',
+//       undefined,
+//       {
+//         publicKey: senderPublicKey,
+//         privateKey: '', // not needed for verification
+//       },
+//     );
+
+//     return {message: decrypted, verifiedOrigin: true};
+//   } catch (error) {
+//     /* If decryption with signature verification fails, attempt decryption without verification. */
+//     const decrypted = await OpenPGP.decrypt(
+//       encryptedMessage,
+//       privateKey,
+//       passphrase || '',
+//     );
+//     return {message: decrypted, verifiedOrigin: false};
+//   }
+// };
 
 export const isEncryptedMessage = (message: string): boolean => {
   return message.includes('-----BEGIN PGP MESSAGE-----');
