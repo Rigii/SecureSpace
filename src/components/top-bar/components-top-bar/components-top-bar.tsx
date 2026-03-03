@@ -112,12 +112,12 @@ const ComponentsTopBar = ({
               isActive: interlocutor.isActive,
             }))}
           />
-          <View className="mr-3">
+          <ModalBar data={settingsData} popupClassName="right-4" />
+          <View className="ml-6">
             <TouchableOpacity onPress={onLogOut}>
               <LogoutSmallIcon />
             </TouchableOpacity>
           </View>
-          <ModalBar data={settingsData} popupClassName="right-4" />
         </View>
       </View>
     </SafeAreaView>
