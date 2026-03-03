@@ -184,6 +184,7 @@ export const CreateChatRoom: React.FC = () => {
               />
               <ChatLocationRestrictions
                 availabilityAreaRadius={values.availabilityAreaRadius}
+                availabilityAreaData={values.availabilityAreaData}
                 touched={touched}
                 errors={errors}
                 onNextPage={onNextPage}

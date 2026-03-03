@@ -1,5 +1,9 @@
 import {GOOGLE_API_KEY} from '@env';
 import React, {useCallback, useState} from 'react';
+import {ThemedButton} from '../themed-button';
+import {Title3} from '../text-titles/title';
+import {ISecurePlaceData} from '../../app/types/encrypt.types';
+
 import {View} from 'react-native';
 
 import {
@@ -8,26 +12,36 @@ import {
   GooglePlacesAutocomplete,
 } from 'react-native-google-places-autocomplete';
 
+const strings = {
+  next: 'Add',
+  address: 'Selected Address (area center): ',
+};
+
 export const AddressInput = ({
+  availabilityAreaData,
   placeholder,
   classNameWrapper,
-  isError,
   onUpdatePlaceCoordinates,
 }: {
+  availabilityAreaData: {} | ISecurePlaceData;
   classNameWrapper?: string;
   placeholder: string;
-  isError?: boolean;
   onUpdatePlaceCoordinates: (
     value: GooglePlaceData | null,
     detail: GooglePlaceDetail | null,
   ) => Promise<void>;
 }) => {
   const [placeText, setPlaceText] = useState('');
+  const [placeCoordinates, setPlaceCoordinates] = useState<{
+    data: GooglePlaceData | null;
+    detail: GooglePlaceDetail | null;
+  } | null>(null);
 
   const onChangeText = useCallback(
     (text: string) => {
       if (text.length < 1 && placeText.length > 0) {
         setPlaceText('');
+        setPlaceCoordinates(null);
         onUpdatePlaceCoordinates(null, null);
         return;
       }
@@ -37,26 +51,56 @@ export const AddressInput = ({
     [onUpdatePlaceCoordinates, placeText.length],
   );
 
-  const isShowError = isError && placeText.length > 0;
+  const onUpdateCoordinatesLocal = (
+    data: GooglePlaceData | null,
+    details: GooglePlaceDetail | null = null,
+  ) => setPlaceCoordinates({data, detail: details});
+
+  const onUpdateCoordinates = () =>
+    onUpdatePlaceCoordinates(
+      placeCoordinates?.data || null,
+      placeCoordinates?.detail || null,
+    );
+
+  const isShowError = placeText.length > 0 && !placeCoordinates;
 
   return (
-    <View className={`w-80 ${classNameWrapper}`}>
-      <GooglePlacesAutocomplete
-        placeholder={placeholder}
-        onPress={onUpdatePlaceCoordinates}
-        fetchDetails={true}
-        query={{
-          key: GOOGLE_API_KEY,
-          language: 'en',
-        }}
-        textInputProps={{
-          onChangeText: onChangeText,
-          placeholderTextColor: isShowError ? '#FF0000' : '#717170',
-          padding: 0,
-          paddingLeft: 0,
-        }}
-        styles={addressInputStyles(isShowError)}
-      />
+    <View className="flex flex-col items-center relative">
+      <Title3 className="break-words mb-6">
+        {`${strings.address} ${
+          availabilityAreaData.hasOwnProperty('address')
+            ? (availabilityAreaData as ISecurePlaceData).address
+            : ''
+        }`}
+      </Title3>
+
+      <View className={`w-80 flex flex-row ${classNameWrapper}`}>
+        <View className="flex-1">
+          <GooglePlacesAutocomplete
+            placeholder={placeholder}
+            onPress={onUpdateCoordinatesLocal}
+            fetchDetails={true}
+            query={{
+              key: GOOGLE_API_KEY,
+              language: 'en',
+            }}
+            textInputProps={{
+              onChangeText: onChangeText,
+              placeholderTextColor: isShowError ? '#FF0000' : '#717170',
+              padding: 0,
+              paddingLeft: 0,
+            }}
+            styles={addressInputStyles(isShowError)}
+          />
+        </View>
+        <ThemedButton
+          text={strings.next}
+          disabled={!placeCoordinates}
+          theme="filled"
+          onPress={onUpdateCoordinates}
+          classCustomBody="w-20"
+        />
+      </View>
     </View>
   );
 };
