@@ -98,7 +98,7 @@ export const AddressInput = ({
           disabled={!placeCoordinates}
           theme="filled"
           onPress={onUpdateCoordinates}
-          classCustomBody="w-20"
+          classCustomBody="w-20 left-3"
         />
       </View>
     </View>
