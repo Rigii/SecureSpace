@@ -25,6 +25,8 @@ export const ChatParticipiantEmails: React.FC<{
     email = 'email',
   }
 
+  const emailIndexPostfix = 'participant_email_input_index';
+
   const updateEmailAtIndex = (
     value: string,
     name?: string,
@@ -54,7 +56,7 @@ export const ChatParticipiantEmails: React.FC<{
   };
 
   const renderEmailInput = ({item, index}: {item: string; index: number}) => (
-    <View className="mb-6" key={index}>
+    <View className="mb-6">
       <Input
         isError={item.length > 0 && item.length < 6}
         value={item}
@@ -79,7 +81,9 @@ export const ChatParticipiantEmails: React.FC<{
           <FlatList<string>
             data={emailArray}
             renderItem={renderEmailInput}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) =>
+              `${index.toString()}-${emailIndexPostfix}`
+            }
             className="grow-0"
           />
         </View>

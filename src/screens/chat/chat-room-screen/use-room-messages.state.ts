@@ -17,12 +17,17 @@ import {
   EPopupType,
   ErrorNotificationHandler,
 } from '../../../components/popup-message/error-notification-handler';
+import {IRoomInterlocutor} from './types';
 
 interface IChatRoomMessagesState {
   chatId: string;
+  roomInterlocutors: IRoomInterlocutor[];
 }
 
-export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
+export const useChatRoomMessagesState = ({
+  chatId,
+  roomInterlocutors,
+}: IChatRoomMessagesState) => {
   const flatListRef = useRef<FlatList>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
@@ -54,7 +59,6 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
 
   useEffect(() => {
     // TODO: moove flow to the saga
-
     const getMessages = async () => {
       try {
         const roomMessagesResponce = await getChatRoomMessages({
@@ -115,18 +119,34 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
               throw new Error(strings.noPrivateChatKeyFound);
             }
 
+            const currentInterlocutorPublicKey = roomInterlocutors.find(
+              interlocutor =>
+                interlocutor.interlocutor_id === message.participantId,
+            )?.public_chat_key;
+
+            if (!currentInterlocutorPublicKey) {
+              return {
+                ...message,
+                message: strings.noPublicKeyForInterlocutorFound,
+                decryptionError: true,
+              };
+            }
+
             const decryptedMessage = await decryptMessage({
               privateKey: privateChatKey,
               passphrase: '',
+              senderPublicKey: currentInterlocutorPublicKey || '',
               encryptedMessage: message.message,
             });
 
             return {
               ...message,
-              message: decryptedMessage,
+              message: decryptedMessage.message,
+              verifiedOrigin: decryptedMessage.verifiedOrigin,
             };
           }),
         );
+
         dispatch(addMessagesToChatRoom(decryptedMessages));
       } catch (error) {
         const currentError = error as Error;
@@ -142,7 +162,14 @@ export const useChatRoomMessagesState = ({chatId}: IChatRoomMessagesState) => {
     return () => {
       setCurrentActiveChatId(null);
     };
-  }, [chatId, privateChatKey, token, dispatch, setCurrentActiveChatId]);
+  }, [
+    chatId,
+    privateChatKey,
+    token,
+    roomInterlocutors,
+    dispatch,
+    setCurrentActiveChatId,
+  ]);
 
   const onLeaveChatRoom = async () => {
     try {

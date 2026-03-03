@@ -1,33 +1,53 @@
 import OpenPGP from 'react-native-fast-openpgp';
 
-export const encryptMessageForMultipleRecipients = async ({
+export const encryptSignMessageForMultipleRecipients = async ({
   publicKeys,
+  userPrivateKey,
+  passphrase,
   message,
 }: {
   publicKeys: string[];
+  userPrivateKey?: string;
+  privateKey?: string;
+  passphrase?: string;
   message: string;
 }): Promise<string> => {
   const concatenatedKeys = publicKeys.join('\n');
+  const encrypted = await OpenPGP.encrypt(message, concatenatedKeys);
 
-  return await OpenPGP.encrypt(message, concatenatedKeys);
+  /* PubKey identity signing/verification*/
+  const signature =
+    userPrivateKey &&
+    (await OpenPGP.sign(encrypted, userPrivateKey, passphrase || ''));
+
+  return JSON.stringify({encrypted, signature});
 };
-
 export const decryptMessage = async ({
   privateKey,
   passphrase,
+  senderPublicKey,
   encryptedMessage,
 }: {
   privateKey: string;
-  passphrase: string;
+  passphrase?: string;
+  senderPublicKey: string;
   encryptedMessage: string;
-}): Promise<string> => {
-  const decrypted = await OpenPGP.decrypt(
-    encryptedMessage,
-    privateKey,
-    passphrase,
+}) => {
+  const {encrypted, signature} = JSON.parse(encryptedMessage);
+
+  const verifiedOrigin = await OpenPGP.verify(
+    signature,
+    encrypted,
+    senderPublicKey,
   );
 
-  return decrypted;
+  const message = await OpenPGP.decrypt(
+    encrypted,
+    privateKey,
+    passphrase || '',
+  );
+
+  return {message, verifiedOrigin};
 };
 
 export const isEncryptedMessage = (message: string): boolean => {

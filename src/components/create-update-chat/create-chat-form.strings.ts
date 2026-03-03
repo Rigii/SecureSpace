@@ -7,6 +7,7 @@ export const strings = {
   password: 'Password',
   createChat: 'Create Chat',
   next: 'Next',
+  skip: 'Skip',
   chatPassword: 'Chat Password',
   locationRestrictions: 'Location Restrictions',
   participiantEmail: 'Participiant Email',

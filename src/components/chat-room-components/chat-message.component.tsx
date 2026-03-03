@@ -6,6 +6,7 @@ type ChatMessageProps = {
   isOwnMessage?: boolean;
   senderName?: string;
   time?: string;
+  isVerified?: boolean;
 };
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
@@ -13,6 +14,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   isOwnMessage = false,
   senderName,
   time,
+  isVerified,
 }) => {
   return (
     <View
@@ -33,6 +35,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           className={`text-base ${isOwnMessage ? 'text-white' : 'text-black'}`}>
           {message}
         </Text>
+        {!isVerified && (
+          <Text className="text-[10px] text-red-500 mt-1">
+            Origin is not verified
+          </Text>
+        )}
       </View>
 
       {time && <Text className="text-[10px] text-gray-400 mt-1">{time}</Text>}

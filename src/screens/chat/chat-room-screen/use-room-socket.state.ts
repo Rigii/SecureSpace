@@ -9,10 +9,9 @@ import {useDispatch} from 'react-redux';
 import {handleChatSocketSaga} from '../../../app/store/saga/chat-account-saga/chat-account.actions';
 import {chatSocketSagaHandlers} from '../../../app/store/saga/chat-account-saga/workers/constants';
 import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
+import {IChatRoomSocketState, IRoomInterlocutor} from './types';
 
-interface IChatRoomSocketState {
-  chatId: string;
-}
+import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 
 export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
   const {socket} = useContext(ChatSocketProviderContext);
@@ -21,11 +20,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
     new Set(),
   );
   const [roomInterlocutors, setRoomInterlocutors] = useState<
-    {
-      interlocutor_id: string;
-      email: string;
-      public_chat_key: string;
-    }[]
+    IRoomInterlocutor[]
   >([]);
   const dispatch = useDispatch();
 
@@ -37,11 +32,15 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
     if (!socket) {
       return;
     }
-    const handleChatMessage = (message: any) => {
+    const handleChatMessage = (message: IChatMessage) => {
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER,
-          data: {currentActiveChatId: chatId, message},
+          data: {
+            currentActiveChatId: chatId,
+            message,
+            senderPublicKey: message.senderPublicKey,
+          },
         }),
       );
     };
@@ -102,8 +101,11 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
           }[];
         };
       }) => {
+        const fetchedPublicKeys = data.roomInterlocutors.map(
+          interlocutor => interlocutor.public_chat_key,
+        );
         console.info(`${message}`);
-        setPublicKeys(data.publicKeys);
+        setPublicKeys(fetchedPublicKeys);
         setActiveConnections(new Set(data.activeConnections));
         setRoomInterlocutors(data.roomInterlocutors);
       },

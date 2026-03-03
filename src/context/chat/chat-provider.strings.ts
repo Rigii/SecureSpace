@@ -23,4 +23,6 @@ export const strings = {
   errorJoiningChatRoom: 'Error joining chat room:',
   userJoinedChatWithId: 'User joined the chat. Interlocutor ID:',
   userLeftChatWithId: 'User left the chat. Interlocutor ID:',
+  noPublicKeyForInterlocutorFound:
+    'No public key found for the interlocutor, unable to decrypt message',
 };

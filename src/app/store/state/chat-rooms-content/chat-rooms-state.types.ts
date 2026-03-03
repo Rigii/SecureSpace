@@ -45,6 +45,7 @@ export interface IChatMessage {
   senderNickname: string;
   message: string;
   chatRoomId: string;
+  decryptionError?: boolean;
   chatRoomName?: string;
   lifeCycleLimitHours?: number;
   isAdmin: boolean;
@@ -52,4 +53,6 @@ export interface IChatMessage {
   voiceMessageUrl?: string;
   created: string;
   updated: string;
+  senderPublicKey?: string;
+  verifiedOrigin?: boolean;
 }

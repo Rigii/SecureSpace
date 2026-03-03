@@ -7,6 +7,7 @@ import {FormikErrors, FormikTouched} from 'formik';
 import {strings} from '../create-chat-form.strings';
 import {ICreateRoomFormValues} from '../create-update-chat.types';
 import {AddressInput} from '../../address-input/address-input';
+import {ISecurePlaceData} from '../../../app/types/encrypt.types';
 import {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -14,6 +15,7 @@ import {
 
 export const ChatLocationRestrictions: React.FC<{
   availabilityAreaRadius: string;
+  availabilityAreaData: {} | ISecurePlaceData;
   touched: FormikTouched<ICreateRoomFormValues>;
   errors: FormikErrors<ICreateRoomFormValues>;
   onNextPage: () => void;
@@ -24,6 +26,7 @@ export const ChatLocationRestrictions: React.FC<{
   handleChange: (field: keyof ICreateRoomFormValues) => (value: string) => void;
 }> = ({
   availabilityAreaRadius,
+  availabilityAreaData,
   touched,
   errors,
   onNextPage,
@@ -37,8 +40,8 @@ export const ChatLocationRestrictions: React.FC<{
         <Title2 className="break-words">{`${strings.locationRestrictions} (${strings.optional})`}</Title2>
         <View>
           <AddressInput
-            isError={!!errors.availabilityAreaData}
             placeholder={strings.address}
+            availabilityAreaData={availabilityAreaData}
             onUpdatePlaceCoordinates={onUpdatePlaceCoordinates}
           />
         </View>
@@ -56,7 +59,6 @@ export const ChatLocationRestrictions: React.FC<{
       </View>
       <ThemedButton
         text={strings.next}
-        disabled={!!errors.availabilityAreaData}
         theme="filled"
         onPress={onNextPage}
         classCustomBody="w-80"

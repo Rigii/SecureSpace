@@ -21,6 +21,7 @@ import {SafeAreaView, TouchableOpacity} from 'react-native';
 import {BackIcon} from '../../assets/icons/backIcon';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../app/navigator/screens';
+import {ThemedButton} from '../themed-button';
 
 export const CreateChatRoom: React.FC = () => {
   const swiperRef = useRef<React.ElementRef<typeof Swiper>>(null);
@@ -44,6 +45,14 @@ export const CreateChatRoom: React.FC = () => {
     availabilityAreaData: {},
     availabilityAreaRadius: '1000',
     password: '',
+  };
+
+  const onNextPage = () => {
+    swiperRef?.current?.scrollBy(1, true);
+  };
+
+  const onPrevPage = () => {
+    swiperRef?.current?.scrollBy(-1, true);
   };
 
   const onSubmit = async (values: ICreateRoomFormValues) => {
@@ -84,8 +93,14 @@ export const CreateChatRoom: React.FC = () => {
 
   return (
     <>
-      <SafeAreaView className="absolute z-50">
-        <TouchableOpacity onPress={navigateBack} className="top-3 left-3">
+      <SafeAreaView className="absolute z-50 justify-between w-full flex-row">
+        <ThemedButton
+          text={strings.skip}
+          theme="lightBordered"
+          onPress={navigateBack}
+          classCustomBody="w-20 left-3"
+        />
+        <TouchableOpacity onPress={onPrevPage} className="top-2 right-3">
           <BackIcon />
         </TouchableOpacity>
       </SafeAreaView>
@@ -103,10 +118,6 @@ export const CreateChatRoom: React.FC = () => {
           errors,
           touched,
         }) => {
-          const onNextPage = () => {
-            swiperRef?.current?.scrollBy(1, true);
-          };
-
           const handleFieldChange =
             (field: keyof ICreateRoomFormValues) => (value: string) => {
               // dispatch(updateFormField({field, value}));
@@ -173,6 +184,7 @@ export const CreateChatRoom: React.FC = () => {
               />
               <ChatLocationRestrictions
                 availabilityAreaRadius={values.availabilityAreaRadius}
+                availabilityAreaData={values.availabilityAreaData}
                 touched={touched}
                 errors={errors}
                 onNextPage={onNextPage}

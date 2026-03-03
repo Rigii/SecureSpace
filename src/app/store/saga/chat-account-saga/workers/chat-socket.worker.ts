@@ -64,8 +64,10 @@ function* handleInvitationSaga(message: {
 
 function* handleRoomMessageListSaga({
   messageObject,
+  senderPublicKey,
 }: {
   messageObject: IChatMessage;
+  senderPublicKey?: string;
 }): Generator<any, void, any> {
   try {
     const {privateChatKey} = yield select(
@@ -91,11 +93,18 @@ function* handleRoomMessageListSaga({
 
     const decryptedMessage = yield call(decryptMessage, {
       privateKey: privateChatKey,
+      senderPublicKey: senderPublicKey || '',
       passphrase: '',
       encryptedMessage: storeData.message,
     });
 
-    yield put(addMessageToChatRoom({...storeData, message: decryptedMessage}));
+    yield put(
+      addMessageToChatRoom({
+        ...storeData,
+        message: decryptedMessage.message,
+        verifiedOrigin: decryptedMessage.verifiedOrigin,
+      }),
+    );
   } catch (error) {
     const currentError = error as Error;
     ErrorNotificationHandler({
@@ -141,6 +150,7 @@ export function* handleSocketEventWorker(action: {
       yield call(handleRoomMessageListSaga, {
         messageObject:
           message as IChatSocketMessageType[typeof chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER],
+        senderPublicKey: data.senderPublicKey,
       });
       break;
   }

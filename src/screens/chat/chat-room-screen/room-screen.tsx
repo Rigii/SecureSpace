@@ -23,6 +23,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
     isInvitationNotAccepted,
     flatListRef,
   } = useChatRoomMessagesState({
+    roomInterlocutors,
     chatId,
   });
 
@@ -52,6 +53,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
               isOwnMessage={item.participantId === participantId}
               senderName={item.senderNickname}
               time={item.created}
+              isVerified={item.verifiedOrigin}
             />
           )}
           showsVerticalScrollIndicator={false}
