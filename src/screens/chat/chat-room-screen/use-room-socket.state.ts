@@ -92,7 +92,6 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       }: {
         message: string;
         data: {
-          publicKeys: string[];
           activeConnections: string[];
           roomInterlocutors: {
             interlocutor_id: string;

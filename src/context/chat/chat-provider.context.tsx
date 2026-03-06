@@ -96,6 +96,10 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     }
 
     const handleChatMessage = (message: any) => {
+      if (currentActiveChatId && currentActiveChatId !== null) {
+        return;
+      }
+
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.ROOM_MESSAGE_NOTIFICATION_WORKER,
@@ -121,7 +125,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       );
     };
 
-    console.info('Subscribing to chat room NOTIFICATION messages');
+    console.info(strings.subscribingToChatRoomNotifications);
     socket.on(socketEventStatus.ROOM_NOTIFICATION_MESSAGE, handleChatMessage);
     socket.on(socketEventStatus.USER_CHAT_INVITATION, handleInvitation);
 
@@ -132,7 +136,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       );
       socket.off(socketEventStatus.USER_CHAT_INVITATION, handleInvitation);
     };
-  }, [socket, currentActiveChatId, dispatch, email]);
+  }, [socket, currentActiveChatId, email, dispatch]);
 
   const handleCreateChat = async (chatData: ICreateChatRoom) => {
     if (!socket) {

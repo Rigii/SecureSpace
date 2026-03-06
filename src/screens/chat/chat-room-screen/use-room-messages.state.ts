@@ -32,9 +32,7 @@ export const useChatRoomMessagesState = ({
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
 
-  const {setCurrentActiveChatId, leaveChatRoom, deleteChatRoom} = useContext(
-    ChatSocketProviderContext,
-  );
+  const {leaveChatRoom, deleteChatRoom} = useContext(ChatSocketProviderContext);
   const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
@@ -158,18 +156,7 @@ export const useChatRoomMessagesState = ({
       }
     };
     getMessages();
-
-    return () => {
-      setCurrentActiveChatId(null);
-    };
-  }, [
-    chatId,
-    privateChatKey,
-    token,
-    roomInterlocutors,
-    dispatch,
-    setCurrentActiveChatId,
-  ]);
+  }, [chatId, privateChatKey, token, roomInterlocutors, dispatch]);
 
   const onLeaveChatRoom = async () => {
     try {

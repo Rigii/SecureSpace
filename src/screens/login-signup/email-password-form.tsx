@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input, KeyboardTypes} from '../../components/input';
+import {EAutoCapitalize, Input, KeyboardTypes} from '../../components/input';
 import {ThemedButton} from '../../components/themed-button';
 import {View} from 'react-native';
 import {Formik} from 'formik';
@@ -27,8 +27,7 @@ export const EmailPasswordForm: React.FC<{
 
   const createEmailChangeHandler = (handleChange: any) => {
     return (text: string) => {
-      const lowerCaseText = text.toLowerCase();
-      handleChange('email')(lowerCaseText);
+      handleChange('email')(text);
     };
   };
 
@@ -54,6 +53,7 @@ export const EmailPasswordForm: React.FC<{
               placeholder={strings.emailHolder}
               keyboardType={KeyboardTypes.emailAddress}
               className="w-80"
+              autoCapitalize={EAutoCapitalize.none}
             />
             <Input
               name="password"
@@ -64,6 +64,7 @@ export const EmailPasswordForm: React.FC<{
               keyboardType={KeyboardTypes.emailAddress}
               className="w-80"
               isSecure={true}
+              autoCapitalize={EAutoCapitalize.none}
             />
           </View>
           <ThemedButton

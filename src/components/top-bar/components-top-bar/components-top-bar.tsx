@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ESecureStoredKeys} from '../../../services/async-secure-storage/secure-storage-services';
 import InterlocutorList from '../../interlocutor-list/interlocutor-list';
 import {UserIcon} from '../../../assets/icons/userIcon';
+import {ChatSocketProviderContext} from '../../../context/chat/chat-provider.context';
 
 const ComponentsTopBar = ({
   title,
@@ -39,6 +40,7 @@ const ComponentsTopBar = ({
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {setCurrentActiveChatId} = React.useContext(ChatSocketProviderContext);
 
   const [
     roomActualisedActivityInterlocutors,
@@ -53,6 +55,7 @@ const ComponentsTopBar = ({
   >([]);
 
   const navigateBack = () => {
+    setCurrentActiveChatId(null);
     navigation.goBack();
   };
 

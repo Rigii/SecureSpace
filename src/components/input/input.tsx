@@ -9,7 +9,7 @@ import {
   TextInputKeyPressEventData,
 } from 'react-native';
 import {HIT_SLOP} from '../../constants/themes';
-import {IInputProps, EAutoCapitalize} from './input.typings';
+import {IInputProps} from './input.typings';
 
 export const Input = (props: IInputProps) => {
   const [isFocused, setIsFocused] = React.useState(false);
@@ -115,12 +115,7 @@ export const Input = (props: IInputProps) => {
             editable={props.editable}
             multiline={props.multiline}
             numberOfLines={props.numberOfLines}
-            autoCapitalize={
-              props.autoCapitalize ||
-              (props.isSecure
-                ? EAutoCapitalize.none
-                : EAutoCapitalize.sentences)
-            }
+            autoCapitalize={props.autoCapitalize || 'none'}
           />
         </View>
       </TouchableOpacity>

@@ -15,7 +15,7 @@ export const encryptSignMessageForMultipleRecipients = async ({
   const concatenatedKeys = publicKeys.join('\n');
   const encrypted = await OpenPGP.encrypt(message, concatenatedKeys);
 
-  /* PubKey identity signing/verification*/
+  /* PubKey identity signing/verification */
   const signature =
     userPrivateKey &&
     (await OpenPGP.sign(encrypted, userPrivateKey, passphrase || ''));

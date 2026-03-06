@@ -25,4 +25,6 @@ export const strings = {
   userLeftChatWithId: 'User left the chat. Interlocutor ID:',
   noPublicKeyForInterlocutorFound:
     'No public key found for the interlocutor, unable to decrypt message',
+  subscribingToChatRoomNotifications:
+    'Subscribing to chat room NOTIFICATION messages',
 };

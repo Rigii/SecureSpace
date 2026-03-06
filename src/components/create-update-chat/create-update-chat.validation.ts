@@ -9,6 +9,7 @@ export const validationCreateChatSchema = Yup.object().shape({
   participiantEmails: Yup.array()
     .min(1, 'At least 1 participiant required')
     .required('Participiant are required'),
+  /* Validation done in component. Could be activated here in final implementation */
   // availabilityAreaData: Yup.object().shape({
   //   id: Yup.string(),
   //   address: Yup.string(),
@@ -21,7 +22,9 @@ export const validationCreateChatSchema = Yup.object().shape({
     'is-greater-than-five-and-less-than-twenty',
     'Value must be greater than 5 and less than 20',
     value => {
-      if (!value) return true;
+      if (!value) {
+        return true;
+      }
       return value?.length > 5 && value.length < 20;
     },
   ),
