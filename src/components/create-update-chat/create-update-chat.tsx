@@ -57,7 +57,7 @@ export const CreateChatRoom: React.FC = () => {
 
   const onSubmit = async (values: ICreateRoomFormValues) => {
     try {
-      const awailabilityAreaData =
+      const availabilityAreaData =
         values.availabilityAreaData as ISecurePlaceData;
 
       const postChatRoomData = {
@@ -67,10 +67,10 @@ export const CreateChatRoom: React.FC = () => {
         ownerNickName: email,
         chatType: values.chatType,
         creatorPublicChatKey: publicChatKey,
-        locationAreaAvailability: awailabilityAreaData
+        locationAreaAvailability: availabilityAreaData
           ? [
               {
-                securePlaceData: awailabilityAreaData,
+                securePlaceData: availabilityAreaData,
                 securePlaceRadius: values.availabilityAreaRadius,
                 name: 'home',
               },

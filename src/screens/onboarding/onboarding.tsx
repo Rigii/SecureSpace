@@ -80,6 +80,7 @@ export const OnboardingFlow = () => {
               errors={errors}
               touched={touched}
               securePlaceRadiusValue={values.securePlaceRadius}
+              availabilityAreaData={values.securePlaceData}
               handleChange={handleFieldChange}
               setFieldValue={handleSetFieldValue}
               onNextPage={onNextPage}

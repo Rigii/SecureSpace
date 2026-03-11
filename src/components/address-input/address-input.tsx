@@ -68,7 +68,7 @@ export const AddressInput = ({
     <View className="flex flex-col items-center relative">
       <Title3 className="break-words mb-6">
         {`${strings.address} ${
-          availabilityAreaData.hasOwnProperty('address')
+          availabilityAreaData?.hasOwnProperty('address')
             ? (availabilityAreaData as ISecurePlaceData).address
             : ''
         }`}

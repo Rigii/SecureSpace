@@ -12,12 +12,14 @@ import {
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
 import {IOnboardingFormValues} from '../../../app/store/state/onboarding-state/onboarding-state.types';
+import {ISecurePlaceData} from '../../../app/types/encrypt.types';
 
 export const SecurePlaces = ({
   securePlaceNameValue,
   securePlaceRadiusValue,
   errors,
   touched,
+  availabilityAreaData,
   handleChange,
   setFieldValue,
   onNextPage,
@@ -26,6 +28,7 @@ export const SecurePlaces = ({
   securePlaceRadiusValue: string;
   errors: FormikErrors<IOnboardingFormValues>;
   touched: FormikTouched<IOnboardingFormValues>;
+  availabilityAreaData: {} | ISecurePlaceData;
   handleChange: (field: keyof IOnboardingFormValues) => (value: string) => void;
   setFieldValue: FormikActions<IOnboardingFormValues>['setFieldValue'];
   onNextPage: () => void;
@@ -69,9 +72,9 @@ export const SecurePlaces = ({
           <Title1>{strings.securePlace}</Title1>
           <View>
             <AddressInput
-              isError={!!errors.securePlaceData}
               placeholder={strings.address}
               onUpdatePlaceCoordinates={onUpdatePlaceCoordinates}
+              availabilityAreaData={availabilityAreaData}
             />
             <Input
               isError={!!errors.securePlaceName}
