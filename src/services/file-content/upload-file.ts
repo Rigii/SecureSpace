@@ -1,31 +1,45 @@
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
+import {launchImageLibrary, Asset} from 'react-native-image-picker';
 import {generateThumbnail} from './thumbnail';
-import {getFileContentRoomUploadUrl} from '../api/content/content-api';
+import {
+  getFileContentRoomUploadUrl,
+  uploadThumbnailToMinio,
+} from '../api/content/content-api';
 import {encryptThumbnail} from '../pgp-encryption-service/encrypt-decrypt-thumbnail';
 
-export const uploadThumbnailToMinio = async ({
-  presignedUrl,
-  encryptedThumbnail,
-}: {
-  presignedUrl: string;
-  encryptedThumbnail: string;
-}): Promise<void> =>
-  fetch(presignedUrl, {
-    method: 'PUT',
-    body: encryptedThumbnail,
-    headers: {'Content-Type': 'application/octet-stream'},
-  }).then(response => {
-    if (!response.ok) {
-      throw new Error(`Thumbnail upload failed: ${response.status}`);
-    }
+const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
+  new Promise((resolve, reject) => {
+    launchImageLibrary({mediaType: 'mixed', selectionLimit: 0}, response => {
+      if (response.didCancel) {
+        reject(new Error('User cancelled'));
+        return;
+      }
+      if (response.errorCode) {
+        reject(new Error(response.errorMessage));
+        return;
+      }
+      // Map Asset to DocumentPickerResponse shape
+      const mapped: DocumentPickerResponse[] = (response.assets ?? []).map(
+        (asset: Asset) => ({
+          uri: asset.uri ?? '',
+          fileCopyUri: asset.uri ?? '',
+          type: asset.type ?? 'image/jpeg',
+          name: asset.fileName ?? 'unknown',
+          size: asset.fileSize ?? 0,
+        }),
+      );
+      resolve(mapped);
+    });
   });
 
-const pickFiles = (): Promise<DocumentPickerResponse[]> =>
-  DocumentPicker.pick({
-    type: [DocumentPicker.types.images, DocumentPicker.types.video],
+const pickDocumentFiles = async (): Promise<DocumentPickerResponse[]> =>
+  await DocumentPicker.pick({
+    type: [DocumentPicker.types.allFiles],
     copyTo: 'cachesDirectory',
+    mode: 'open',
+    allowMultiSelection: true,
   });
 
 const processFile = async (
@@ -68,19 +82,19 @@ const processFile = async (
   };
 };
 
-// --- Main service ---
-
 export const pickAndUploadFiles = async ({
   roomId,
   publicKeys,
   userPrivateKey,
   passphrase,
+  type,
   token,
 }: {
   roomId: string;
   publicKeys: string[];
   userPrivateKey: string;
   passphrase: string;
+  type: 'media' | 'document';
   token: string;
 }): Promise<
   {
@@ -90,9 +104,9 @@ export const pickAndUploadFiles = async ({
     fileName: string;
   }[]
 > => {
-  const files = await pickFiles();
+  const files =
+    type === 'media' ? await pickMediaFiles() : await pickDocumentFiles();
 
-  // request 2 urls per file (origin + thumbnail) in one call
   const [uploadUrlsResponse, thumbnailUploadUrlsResponse] = await Promise.all([
     getFileContentRoomUploadUrl({roomId, token}),
     getFileContentRoomUploadUrl({roomId, token}),

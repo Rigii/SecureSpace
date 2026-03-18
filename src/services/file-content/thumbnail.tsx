@@ -1,4 +1,3 @@
-// thumbnail.service.ts
 import {Image} from 'react-native-compressor';
 import {createThumbnail} from 'react-native-create-thumbnail';
 

@@ -16,8 +16,6 @@ export const getInstance = (token: string) => {
   });
 
   instance.interceptors.request.use(async (config: any) => {
-    // const user = store.getState().authReducer;
-    // if (!user.token) {
     if (!token) {
       return config;
     }
