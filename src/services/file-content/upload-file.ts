@@ -49,12 +49,18 @@ const pickDocumentFiles = async (): Promise<DocumentPickerResponse[]> =>
 
 const processFile = async (
   file: DocumentPickerResponse,
-  uploadUrl: {presignedUrl: string; objectKey: string; thumbnailUrl: string},
+  uploadUrl: {
+    presignedUrl: string;
+    thumbnailObjectName: string;
+    objectName: string;
+    thumbnailUrl: string;
+  },
   publicKeys: string[],
   userPrivateKey: string,
   passphrase: string,
 ): Promise<{
-  objectKey: string;
+  contentPathName: string;
+  thumbnailPathName: string;
   mimeType: string;
   fileName: string;
 }> => {
@@ -77,14 +83,14 @@ const processFile = async (
     passphrase,
   });
 
-  const urlTransactionData = await uploadThumbnailToMinio({
-    presignedUrl: uploadUrl.thumbnailUrl,
-    encryptedThumbnail,
-  });
+  // const urlTransactionData = await uploadThumbnailToMinio({
+  //   presignedUrl: uploadUrl.thumbnailUrl,
+  //   encryptedThumbnail,
+  // });
 
   return {
-    objectKey: uploadUrl.objectKey,
-    thumbnailKey: urlTransactionData.thumbnailUrl,
+    thumbnailPathName: uploadUrl.thumbnailObjectName,
+    contentPathName: uploadUrl.objectName,
     mimeType: file.type,
     fileName: file.name,
   };
@@ -112,56 +118,64 @@ export const pickAndUploadFiles = async ({
   generateThumbnailUrl: boolean;
 }): Promise<
   {
-    objectKey: string;
-    thumbnailKey: string;
+    contentPathName: string;
+    thumbnailPathName: string;
     mimeType: string;
     fileName: string;
   }[]
 > => {
-  const files =
-    type === EFileType.MEDIA
-      ? await pickMediaFiles()
-      : await pickDocumentFiles();
+  try {
+    const files =
+      type === EFileType.MEDIA
+        ? await pickMediaFiles()
+        : await pickDocumentFiles();
 
-  const filesMetadata: {
-    fileName: string;
-    fileSize: number;
-    fileType: EFileType;
-    generateThumbnailUrl: boolean;
-  }[] = [];
+    const filesMetadata: {
+      fileName: string;
+      fileSize: number;
+      fileType: EFileType;
+      generateThumbnailUrl: boolean;
+    }[] = [];
 
-  files.forEach(file => {
-    if (!file.name || !file.size) {
-      return;
-    }
+    files.forEach(file => {
+      if (!file.name || !file.size) {
+        return;
+      }
 
-    filesMetadata.push({
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: type,
-      generateThumbnailUrl,
+      filesMetadata.push({
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: type,
+        generateThumbnailUrl,
+      });
     });
-  });
 
-  const uploadUrlsResponse = await getFileContentRoomUploadUrl({
-    interlocutorId,
-    userId,
-    roomId,
-    token,
-    filesMetadata,
-  });
+    const uploadUrlsResponse = await getFileContentRoomUploadUrl({
+      interlocutorId,
+      userId,
+      roomId,
+      token,
+      filesMetadata,
+    });
 
-  const uploadUrlTransaktionData = uploadUrlsResponse.data;
-  console.log(55555555555, uploadUrlTransaktionData.uploadUrls);
-  return Promise.all(
-    files.map((file, index) =>
-      processFile(
-        file,
-        uploadUrlTransaktionData.uploadUrls[index],
-        publicKeys,
-        userPrivateKey,
-        passphrase,
+    const uploadUrlTransaktionData = uploadUrlsResponse.data;
+
+    const data = await Promise.all(
+      files.map((file, index) =>
+        processFile(
+          file,
+          uploadUrlTransaktionData.uploadUrls[index],
+          publicKeys,
+          userPrivateKey,
+          passphrase,
+        ),
       ),
-    ),
-  );
+    );
+
+    console.log(111112222333333, data);
+    return data;
+  } catch (error) {
+    console.error('Error picking or uploading files:', error);
+    throw error;
+  }
 };
