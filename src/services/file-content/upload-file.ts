@@ -9,6 +9,11 @@ import {
 } from '../api/content/content-api';
 import {encryptThumbnail} from '../pgp-encryption-service/encrypt-decrypt-thumbnail';
 
+export enum EFileType {
+  MEDIA = 'media',
+  DOCUMENT = 'document',
+}
+
 const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
   new Promise((resolve, reject) => {
     launchImageLibrary({mediaType: 'mixed', selectionLimit: 0}, response => {
@@ -44,23 +49,26 @@ const pickDocumentFiles = async (): Promise<DocumentPickerResponse[]> =>
 
 const processFile = async (
   file: DocumentPickerResponse,
-  uploadUrl: {presignedUrl: string; objectKey: string},
-  thumbnailUploadUrl: {presignedUrl: string; objectKey: string},
+  uploadUrl: {presignedUrl: string; objectKey: string; thumbnailUrl: string},
   publicKeys: string[],
   userPrivateKey: string,
   passphrase: string,
 ): Promise<{
   objectKey: string;
-  thumbnailKey: string;
   mimeType: string;
   fileName: string;
 }> => {
   if (!file.fileCopyUri || !file.type || !file.name) {
     throw new Error('File URI is not available');
   }
-  const thumbnailUri = await generateThumbnail(file.fileCopyUri, file.type);
+  const thumbnailLocalUri = await generateThumbnail(
+    file.fileCopyUri,
+    file.type,
+  );
 
-  const thumbnailBuffer = await fetch(thumbnailUri).then(r => r.arrayBuffer());
+  const thumbnailBuffer = await fetch(thumbnailLocalUri).then(r =>
+    r.arrayBuffer(),
+  );
 
   const encryptedThumbnail = await encryptThumbnail({
     thumbnailBuffer,
@@ -69,14 +77,14 @@ const processFile = async (
     passphrase,
   });
 
-  await uploadThumbnailToMinio({
-    presignedUrl: thumbnailUploadUrl.presignedUrl,
+  const urlTransactionData = await uploadThumbnailToMinio({
+    presignedUrl: uploadUrl.thumbnailUrl,
     encryptedThumbnail,
   });
 
   return {
     objectKey: uploadUrl.objectKey,
-    thumbnailKey: thumbnailUploadUrl.objectKey,
+    thumbnailKey: urlTransactionData.thumbnailUrl,
     mimeType: file.type,
     fileName: file.name,
   };
@@ -85,17 +93,23 @@ const processFile = async (
 export const pickAndUploadFiles = async ({
   roomId,
   publicKeys,
+  interlocutorId,
+  userId,
   userPrivateKey,
   passphrase,
   type,
   token,
+  generateThumbnailUrl,
 }: {
   roomId: string;
   publicKeys: string[];
+  interlocutorId: string;
+  userId: string;
   userPrivateKey: string;
   passphrase: string;
-  type: 'media' | 'document';
+  type: EFileType;
   token: string;
+  generateThumbnailUrl: boolean;
 }): Promise<
   {
     objectKey: string;
@@ -105,22 +119,45 @@ export const pickAndUploadFiles = async ({
   }[]
 > => {
   const files =
-    type === 'media' ? await pickMediaFiles() : await pickDocumentFiles();
+    type === EFileType.MEDIA
+      ? await pickMediaFiles()
+      : await pickDocumentFiles();
 
-  const [uploadUrlsResponse, thumbnailUploadUrlsResponse] = await Promise.all([
-    getFileContentRoomUploadUrl({roomId, token}),
-    getFileContentRoomUploadUrl({roomId, token}),
-  ]);
+  const filesMetadata: {
+    fileName: string;
+    fileSize: number;
+    fileType: EFileType;
+    generateThumbnailUrl: boolean;
+  }[] = [];
 
-  const uploadUrls = uploadUrlsResponse.data;
-  const thumbnailUploadUrls = thumbnailUploadUrlsResponse.data;
+  files.forEach(file => {
+    if (!file.name || !file.size) {
+      return;
+    }
 
+    filesMetadata.push({
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: type,
+      generateThumbnailUrl,
+    });
+  });
+
+  const uploadUrlsResponse = await getFileContentRoomUploadUrl({
+    interlocutorId,
+    userId,
+    roomId,
+    token,
+    filesMetadata,
+  });
+
+  const uploadUrlTransaktionData = uploadUrlsResponse.data;
+  console.log(55555555555, uploadUrlTransaktionData.uploadUrls);
   return Promise.all(
     files.map((file, index) =>
       processFile(
         file,
-        uploadUrls[index],
-        thumbnailUploadUrls[index],
+        uploadUrlTransaktionData.uploadUrls[index],
         publicKeys,
         userPrivateKey,
         passphrase,

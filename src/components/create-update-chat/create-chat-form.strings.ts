@@ -21,4 +21,6 @@ export const strings = {
   publicChatKeyMissing:
     'Public chat key is missing. Please create chat account',
   noPBKeysReenterRoom: 'No public keys available. Please reenter chat room',
+  uploadMedia: 'Media',
+  uploadDocument: 'Document',
 };

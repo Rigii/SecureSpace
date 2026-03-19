@@ -12,9 +12,13 @@ import {encryptSignMessageForMultipleRecipients} from '../../services/pgp-encryp
 import {useReduxSelector} from '../../app/store/store';
 import {HIT_SLOP} from '../../constants/themes';
 import {AttachIcon} from '../../assets/icons/attachIcon';
-import {pickAndUploadFiles} from '../../services/file-content/upload-file';
+import {
+  EFileType,
+  pickAndUploadFiles,
+} from '../../services/file-content/upload-file';
 import {PhotoIcon} from '../../assets/icons/photoContentIcon';
 import {DocumentIcon} from '../../assets/icons/documentContentIcon';
+import {Title3} from '../text-titles/title';
 
 interface IChatInput {
   chatId: string;
@@ -29,8 +33,12 @@ const ChatInput: React.FC<IChatInput> = ({
 }) => {
   const [attachMenuVisible, setAttachMenuVisible] = React.useState(false);
   const {handleSendChatRoomMessage} = useContext(ChatSocketProviderContext);
-  const {privateChatKey} = useReduxSelector(
+
+  const {privateChatKey, interlocutorId} = useReduxSelector(
     state => state.userChatAccountReducer,
+  );
+  const {token, id: userId} = useReduxSelector(
+    state => state.anonymousUserReducer.userAccountData,
   );
 
   const [currentMessage, setCurrentMessage] = React.useState<string>('');
@@ -38,22 +46,28 @@ const ChatInput: React.FC<IChatInput> = ({
   const onAttachMedia = () => {
     pickAndUploadFiles({
       roomId: chatId,
+      userId,
       publicKeys,
       userPrivateKey: privateChatKey,
+      interlocutorId,
       passphrase: '',
-      token: '',
-      type: 'media',
+      token,
+      generateThumbnailUrl: true,
+      type: EFileType.MEDIA,
     });
   };
 
   const onAttachDocument = () => {
     pickAndUploadFiles({
       roomId: chatId,
+      interlocutorId,
+      userId,
       publicKeys,
       userPrivateKey: privateChatKey,
       passphrase: '',
-      token: '',
-      type: 'document',
+      token,
+      generateThumbnailUrl: false,
+      type: EFileType.DOCUMENT,
     });
   };
 
@@ -103,18 +117,19 @@ const ChatInput: React.FC<IChatInput> = ({
 
   const inputMenu = (
     <View className={'flex flex-row flex-auto self-center space-x-8 top-3'}>
-      <TouchableOpacity
-        hitSlop={HIT_SLOP}
-        className={'w-5'}
-        onPress={onAttachMedia}>
-        <View className="m-0 p-0 z-50">{<PhotoIcon />}</View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        hitSlop={HIT_SLOP}
-        className={'w-5'}
-        onPress={onAttachDocument}>
-        <View className="m-0 p-0 z-50">{<DocumentIcon />}</View>
-      </TouchableOpacity>
+      <View className="flex flex-col items-center">
+        <Title3 className="text-opacity-gray">{strings.uploadMedia}</Title3>
+        <TouchableOpacity hitSlop={HIT_SLOP} onPress={onAttachMedia}>
+          <View className="m-0 p-0 z-50">{<PhotoIcon />}</View>
+        </TouchableOpacity>
+      </View>
+
+      <View className="flex flex-col items-center">
+        <Title3 className="text-opacity-gray">{strings.uploadDocument}</Title3>
+        <TouchableOpacity hitSlop={HIT_SLOP} onPress={onAttachDocument}>
+          <View className="m-0 p-0 z-50">{<DocumentIcon />}</View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 

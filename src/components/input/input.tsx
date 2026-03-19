@@ -27,7 +27,9 @@ export const Input = (props: IInputProps) => {
   const catchKey = ({
     nativeEvent,
   }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-    if (!props.catchKey) return;
+    if (!props.catchKey) {
+      return;
+    }
     props.catchKey(nativeEvent.key);
   };
 

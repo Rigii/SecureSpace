@@ -1,17 +1,27 @@
 import {putContentToMinio} from '../../xhr-services/api-content-service';
 import {postData} from '../../xhr-services/api-service';
 
-const GET_CHAT_MESSAGE_UPLOAD_URL = '/content-storage/chat-message-upload-url';
+const GET_CHAT_MESSAGE_UPLOAD_URL = '/content-storage/content-upload-url';
 
 export const getFileContentRoomUploadUrl = async ({
+  filesMetadata,
   roomId,
-  pagination,
+  interlocutorId,
+  userId,
   token,
 }: {
+  filesMetadata: {fileName: string; fileSize: number}[];
   roomId: string;
-  pagination?: {page: number; limit: number};
+  interlocutorId: string;
+  userId: string;
   token: string;
-}) => postData(token, GET_CHAT_MESSAGE_UPLOAD_URL, {roomId, pagination});
+}) =>
+  postData(token, GET_CHAT_MESSAGE_UPLOAD_URL, {
+    filesMetadata,
+    roomId,
+    interlocutorId,
+    userId,
+  });
 
 export const uploadThumbnailToMinio = async ({
   presignedUrl,
@@ -19,4 +29,4 @@ export const uploadThumbnailToMinio = async ({
 }: {
   presignedUrl: string;
   encryptedThumbnail: string;
-}) => putContentToMinio(presignedUrl, encryptedThumbnail);
+}): Promise<any> => putContentToMinio(presignedUrl, encryptedThumbnail);
