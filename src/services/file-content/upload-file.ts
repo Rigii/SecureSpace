@@ -2,17 +2,22 @@ import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
 import {launchImageLibrary, Asset} from 'react-native-image-picker';
+import OpenPGP from 'react-native-fast-openpgp';
+import {Buffer} from 'buffer';
 import {generateThumbnail} from './thumbnail';
 import {
   getFileContentRoomUploadUrl,
+  updateContentTransaction,
+  updateTransactionFileStatus,
+  uploadFileContentToMinio,
   uploadThumbnailToMinio,
 } from '../api/content/content-api';
 import {encryptThumbnail} from '../pgp-encryption-service/encrypt-decrypt-thumbnail';
-
-export enum EFileType {
-  MEDIA = 'media',
-  DOCUMENT = 'document',
-}
+import {
+  EContentFileStatus,
+  EFileType,
+  EUploadContentRecipientType,
+} from './types';
 
 const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
   new Promise((resolve, reject) => {
@@ -47,7 +52,30 @@ const pickDocumentFiles = async (): Promise<DocumentPickerResponse[]> =>
     allowMultiSelection: true,
   });
 
-const processFile = async (
+const encryptFileContent = async ({
+  fileBuffer,
+  publicKeys,
+  userPrivateKey,
+  passphrase,
+}: {
+  fileBuffer: ArrayBuffer;
+  publicKeys: string[];
+  userPrivateKey?: string;
+  passphrase?: string;
+}): Promise<string> => {
+  const base64Content = Buffer.from(fileBuffer).toString('base64');
+  const concatenatedKeys = publicKeys.join('\n');
+
+  const encrypted = await OpenPGP.encrypt(base64Content, concatenatedKeys);
+
+  const signature =
+    userPrivateKey &&
+    (await OpenPGP.sign(encrypted, userPrivateKey, passphrase || ''));
+
+  return JSON.stringify({encrypted, signature});
+};
+
+const uploadContentToMinio = async (
   file: DocumentPickerResponse,
   uploadUrl: {
     presignedUrl: string;
@@ -58,6 +86,83 @@ const processFile = async (
   publicKeys: string[],
   userPrivateKey: string,
   passphrase: string,
+  token: string,
+  sessionId: string,
+) => {
+  const thumbnailUploadResult = await processThumbnail(
+    file,
+    uploadUrl,
+    publicKeys,
+    userPrivateKey,
+    passphrase,
+    token,
+    sessionId,
+  );
+
+  const sourceUri = file.fileCopyUri || file.uri;
+
+  if (!sourceUri || !file.name) {
+    throw new Error('File URI is not available');
+  }
+
+  try {
+    await updateTransactionFileStatus({
+      sessionType: EUploadContentRecipientType.CHAT_ROOM,
+      sessionId,
+      fileName: file.name,
+      status: EContentFileStatus.file_uploading,
+      token,
+    });
+
+    const fileBuffer = await fetch(sourceUri).then(r => r.arrayBuffer());
+
+    const encryptedFileContent = await encryptFileContent({
+      fileBuffer,
+      publicKeys,
+      userPrivateKey,
+      passphrase,
+    });
+
+    await uploadFileContentToMinio({
+      presignedUrl: uploadUrl.presignedUrl,
+      encryptedFileContent,
+    });
+
+    await updateTransactionFileStatus({
+      sessionType: EUploadContentRecipientType.CHAT_ROOM,
+      sessionId,
+      fileName: file.name,
+      status: EContentFileStatus.file_uploaded,
+      token,
+    });
+
+    return thumbnailUploadResult;
+  } catch (error) {
+    await updateTransactionFileStatus({
+      sessionType: EUploadContentRecipientType.CHAT_ROOM,
+      sessionId,
+      fileName: file.name,
+      status: EContentFileStatus.file_failed,
+      token,
+    });
+
+    throw error;
+  }
+};
+
+const processThumbnail = async (
+  file: DocumentPickerResponse,
+  uploadUrl: {
+    presignedUrl: string;
+    thumbnailObjectName: string;
+    objectName: string;
+    thumbnailUrl: string;
+  },
+  publicKeys: string[],
+  userPrivateKey: string,
+  passphrase: string,
+  token: string,
+  sessionId: string,
 ): Promise<{
   contentPathName: string;
   thumbnailPathName: string;
@@ -71,29 +176,51 @@ const processFile = async (
     file.fileCopyUri,
     file.type,
   );
+  try {
+    const thumbnailBuffer = await fetch(thumbnailLocalUri).then(r =>
+      r.arrayBuffer(),
+    );
 
-  const thumbnailBuffer = await fetch(thumbnailLocalUri).then(r =>
-    r.arrayBuffer(),
-  );
+    const encryptedThumbnail = await encryptThumbnail({
+      thumbnailBuffer,
+      publicKeys,
+      userPrivateKey,
+      passphrase,
+    });
 
-  const encryptedThumbnail = await encryptThumbnail({
-    thumbnailBuffer,
-    publicKeys,
-    userPrivateKey,
-    passphrase,
-  });
+    await uploadThumbnailToMinio({
+      presignedUrl: uploadUrl.thumbnailUrl,
+      encryptedThumbnail,
+    });
 
-  // const urlTransactionData = await uploadThumbnailToMinio({
-  //   presignedUrl: uploadUrl.thumbnailUrl,
-  //   encryptedThumbnail,
-  // });
+    /* Transaction File Update */
+    const fileStatusUpdateResult = await updateTransactionFileStatus({
+      sessionType: EUploadContentRecipientType.CHAT_ROOM,
+      sessionId,
+      fileName: file.name,
+      status: EContentFileStatus.thumbnail_uploaded,
+      token,
+    });
+    console.log(7777777, fileStatusUpdateResult);
 
-  return {
-    thumbnailPathName: uploadUrl.thumbnailObjectName,
-    contentPathName: uploadUrl.objectName,
-    mimeType: file.type,
-    fileName: file.name,
-  };
+    return {
+      thumbnailPathName: uploadUrl.thumbnailObjectName,
+      contentPathName: uploadUrl.objectName,
+      mimeType: file.type,
+      fileName: file.name,
+    };
+  } catch (error) {
+    /* Transaction File Update */
+    await updateTransactionFileStatus({
+      sessionType: EUploadContentRecipientType.CHAT_ROOM,
+      sessionId,
+      fileName: file.name,
+      status: EContentFileStatus.thumbnail_uploaded,
+      token,
+    });
+    console.error('Error processing thumbnail:', error);
+    throw error;
+  }
 };
 
 export const pickAndUploadFiles = async ({
@@ -160,19 +287,28 @@ export const pickAndUploadFiles = async ({
 
     const uploadUrlTransaktionData = uploadUrlsResponse.data;
 
+    const contentTransactionUpdateResult = await updateContentTransaction({
+      sessionType: EUploadContentRecipientType.CHAT_ROOM,
+      sessionId: uploadUrlTransaktionData.transactionId,
+      status: 'uploading',
+      token,
+    });
+    console.log(55555555555, contentTransactionUpdateResult);
+
     const data = await Promise.all(
       files.map((file, index) =>
-        processFile(
+        uploadContentToMinio(
           file,
           uploadUrlTransaktionData.uploadUrls[index],
           publicKeys,
           userPrivateKey,
           passphrase,
+          token,
+          uploadUrlTransaktionData.transactionId,
         ),
       ),
     );
 
-    console.log(111112222333333, data);
     return data;
   } catch (error) {
     console.error('Error picking or uploading files:', error);

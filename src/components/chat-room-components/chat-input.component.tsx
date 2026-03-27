@@ -12,13 +12,11 @@ import {encryptSignMessageForMultipleRecipients} from '../../services/pgp-encryp
 import {useReduxSelector} from '../../app/store/store';
 import {HIT_SLOP} from '../../constants/themes';
 import {AttachIcon} from '../../assets/icons/attachIcon';
-import {
-  EFileType,
-  pickAndUploadFiles,
-} from '../../services/file-content/upload-file';
+import {pickAndUploadFiles} from '../../services/file-content/upload-file';
 import {PhotoIcon} from '../../assets/icons/photoContentIcon';
 import {DocumentIcon} from '../../assets/icons/documentContentIcon';
 import {Title3} from '../text-titles/title';
+import {EFileType} from '../../services/file-content/types';
 
 interface IChatInput {
   chatId: string;
