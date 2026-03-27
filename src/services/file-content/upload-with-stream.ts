@@ -1,42 +1,29 @@
-import {
-  abortMultipartUpload,
-  completeMultipartUpload,
-  getPresignedUrl,
-  initMultipartUpload,
-  UploadedPart,
-} from './upload-by-chunks';
+import OpenPGP from 'react-native-fast-openpgp';
+
+export interface UploadedPart {
+  PartNumber: number;
+  ETag: string;
+}
 
 export async function uploadVideoEncryptedStreamOptimized(
   file: File,
   encryptionKey: string,
+  publicKey: string,
+  uploadUrl: {uploadId: string; presignedUrl: string},
 ): Promise<void> {
   const CHUNK_SIZE = 5 * 1024 * 1024;
-  const {uploadId} = await initMultipartUpload(file.name);
+  //   const {uploadId} = await initMultipartUpload(file.name);
   const parts: UploadedPart[] = [];
 
   const stream = file.stream();
   const reader = stream.getReader();
-  const writer = stream.getWriter();
+  //   const writer = stream.getWriter();
 
   let buffer = new Uint8Array(CHUNK_SIZE);
   let bufferOffset = 0;
   let partNumber = 1;
 
   try {
-    const publicKey = await openpgp.readKey({armoredKey: encryptionKey});
-
-    // 2. Создание encryptor ОДИН раз для всего файла
-    const encryptor = await openpgp.createMessage({
-      binary: true,
-      format: 'binary',
-    });
-
-    const encrypted = await openpgp.encrypt({
-      message: encryptor,
-      encryptionKeys: publicKey,
-      format: 'binary',
-    });
-
     while (true) {
       const {done, value} = await reader.read();
 
@@ -46,9 +33,10 @@ export async function uploadVideoEncryptedStreamOptimized(
           await processAndUploadChunk(
             buffer.slice(0, bufferOffset),
             encryptionKey,
-            uploadId,
+            uploadUrl.uploadId,
             partNumber,
             parts,
+            uploadUrl.presignedUrl,
           );
         }
         break;
@@ -60,9 +48,10 @@ export async function uploadVideoEncryptedStreamOptimized(
         bufferOffset,
         CHUNK_SIZE,
         encryptionKey,
-        uploadId,
+        uploadUrl.uploadId,
         partNumber,
         parts,
+        uploadUrl.presignedUrl,
       );
 
       if (bufferOffset === 0) {
@@ -72,9 +61,9 @@ export async function uploadVideoEncryptedStreamOptimized(
       }
     }
 
-    await completeMultipartUpload(uploadId, parts);
+    // await completeMultipartUpload(uploadUrl.uploadId, parts);
   } catch (error) {
-    await abortMultipartUpload(uploadId);
+    // await abortMultipartUpload(uploadUrl.uploadId);
     throw error;
   } finally {
     reader.releaseLock();
@@ -90,6 +79,7 @@ async function processChunkData(
   uploadId: string,
   partNumber: number,
   parts: UploadedPart[],
+  presignedUrl: string,
 ): Promise<number> {
   const remaining = chunkSize - bufferOffset;
 
@@ -106,6 +96,7 @@ async function processChunkData(
         uploadId,
         partNumber,
         parts,
+        presignedUrl,
       );
       return 0; // Buffer sent, starting a new one
     }
@@ -126,6 +117,7 @@ async function processChunkData(
       uploadId,
       partNumber,
       parts,
+      presignedUrl,
     );
 
     // Starting a new buffer with the second part
@@ -141,12 +133,10 @@ async function processAndUploadChunk(
   uploadId: string,
   partNumber: number,
   parts: UploadedPart[],
+  presignedUrl: string,
 ): Promise<void> {
   // Encrypting the chunk
   const encryptedData = chunkData; //await encryptChunk(chunkData, encryptionKey);
-
-  // Getting pre-signed URL
-  const {url: presignedUrl} = await getPresignedUrl(uploadId, partNumber);
 
   // Sending encrypted data
   const etag = ''; //await uploadChunkStream(presignedUrl, encryptedData);
