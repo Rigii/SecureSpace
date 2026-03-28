@@ -17,14 +17,14 @@ export type TFileSessionProceedingStatus =
   | 'failed';
 
 export enum EContentFileStatus {
-  initialized = 'initialized',
+  initialized = 'file_initialized',
   thumbnail_uploaded = 'thumbnail_uploaded',
   thumbnail_failed = 'thumbnail_failed',
   file_uploading = 'file_uploading',
   file_uploaded = 'file_uploaded',
   file_failed = 'file_failed',
-  failed = 'failed',
-  completed = 'completed',
+  failed = 'file_failed',
+  completed = 'file_completed',
 }
 
 export enum EUploadContentRecipientType {

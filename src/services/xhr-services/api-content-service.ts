@@ -63,3 +63,25 @@ export const uploadDiskContentInStream = async ({
 
   return result;
 };
+
+export const downloadDiskContentInStream = async ({
+  presignedUrl,
+  outputPath,
+}: {
+  presignedUrl: string;
+  outputPath: string;
+}): Promise<void> => {
+  const download = RNFS.downloadFile({
+    fromUrl: presignedUrl,
+    toFile: outputPath,
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  });
+
+  const result = await download.promise;
+
+  if (result.statusCode < 200 || result.statusCode >= 300) {
+    throw new Error(`Content download failed: ${result.statusCode}`);
+  }
+};
