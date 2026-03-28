@@ -1,8 +1,7 @@
-import DocumentPicker, {
-  DocumentPickerResponse,
-} from 'react-native-document-picker';
+import {DocumentPickerResponse} from 'react-native-document-picker';
 import RNFS, {UploadResult} from 'react-native-fs';
 import OpenPGP from 'react-native-fast-openpgp';
+import {uploadDiskContentInStream} from '../xhr-services/api-content-service';
 
 const resolveLocalFilePath = async (
   file: DocumentPickerResponse,
@@ -31,41 +30,6 @@ const createEncryptedTempPath = (fileName?: string): string => {
   return `${baseDirectory}/encrypted-${Date.now()}-${safeFileName}.pgp`;
 };
 
-const uploadEncryptedFile = async ({
-  presignedUrl,
-  encryptedFilePath,
-  fileName,
-}: {
-  presignedUrl: string;
-  encryptedFilePath: string;
-  fileName: string;
-}): Promise<UploadResult> => {
-  const upload = RNFS.uploadFiles({
-    toUrl: presignedUrl,
-    binaryStreamOnly: true,
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/octet-stream',
-    },
-    files: [
-      {
-        name: fileName,
-        filename: fileName,
-        filepath: encryptedFilePath,
-        filetype: 'application/octet-stream',
-      },
-    ],
-  });
-
-  const result = await upload.promise;
-
-  if (result.statusCode < 200 || result.statusCode >= 300) {
-    throw new Error(`Content upload failed: ${result.statusCode}`);
-  }
-
-  return result;
-};
-
 export const uploadContentWithStream = async ({
   file,
   publicKeys,
@@ -82,6 +46,7 @@ export const uploadContentWithStream = async ({
   const sourceFilePath = await resolveLocalFilePath(file);
   const encryptedFilePath = createEncryptedTempPath(file.name);
 
+  /* Chunk streaming into the encrypted file */
   try {
     await OpenPGP.encryptFile(
       sourceFilePath,
@@ -94,7 +59,7 @@ export const uploadContentWithStream = async ({
       },
     );
 
-    return await uploadEncryptedFile({
+    return await uploadDiskContentInStream({
       presignedUrl: uploadUrl.presignedUrl,
       encryptedFilePath,
       fileName: `${file.name}.pgp`,
@@ -104,25 +69,4 @@ export const uploadContentWithStream = async ({
       await RNFS.unlink(encryptedFilePath);
     }
   }
-};
-
-export const pickDocumentAndUploadWithStream = async ({
-  publicKeys,
-  uploadUrl,
-}: {
-  publicKeys: string[];
-  uploadUrl: {presignedUrl: string};
-}): Promise<UploadResult> => {
-  const [file] = await DocumentPicker.pick({
-    type: [DocumentPicker.types.allFiles],
-    copyTo: 'cachesDirectory',
-    mode: 'open',
-    allowMultiSelection: false,
-  });
-
-  return uploadContentWithStream({
-    file,
-    publicKeys,
-    uploadUrl,
-  });
 };

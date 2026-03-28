@@ -3,7 +3,7 @@ import {
   EUploadContentRecipientType,
   TFileSessionProceedingStatus,
 } from '../../file-content/types';
-import {putContentToMinio} from '../../xhr-services/api-content-service';
+import {uploadMemoryContentToMinio} from '../../xhr-services/api-content-service';
 import {postData} from '../../xhr-services/api-service';
 
 const GET_CHAT_MESSAGE_UPLOAD_URL = '/content-storage/content-upload-url';
@@ -74,7 +74,8 @@ export const uploadThumbnailToMinio = async ({
 }: {
   presignedUrl: string;
   encryptedThumbnail: string;
-}): Promise<any> => putContentToMinio(presignedUrl, encryptedThumbnail);
+}): Promise<any> =>
+  uploadMemoryContentToMinio(presignedUrl, encryptedThumbnail);
 
 export const uploadFileContentToMinio = async ({
   presignedUrl,
@@ -82,4 +83,5 @@ export const uploadFileContentToMinio = async ({
 }: {
   presignedUrl: string;
   encryptedFileContent: string;
-}): Promise<any> => putContentToMinio(presignedUrl, encryptedFileContent);
+}): Promise<any> =>
+  uploadMemoryContentToMinio(presignedUrl, encryptedFileContent);

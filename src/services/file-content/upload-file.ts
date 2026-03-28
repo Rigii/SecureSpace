@@ -15,6 +15,7 @@ import {
   EFileType,
   EUploadContentRecipientType,
 } from './types';
+import {uploadContentWithStream} from './upload-with-stream';
 
 const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
   new Promise((resolve, reject) => {
@@ -72,6 +73,12 @@ const uploadContentToMinio = async (
     token,
     sessionId,
   );
+
+  const uploadResult = await uploadContentWithStream({
+    file,
+    publicKeys,
+    uploadUrl,
+  });
 };
 
 const processThumbnail = async (
