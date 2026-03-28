@@ -7,3 +7,11 @@ export const pathConstants = {
 export const fileNames = {
   KEY_FILE: 'key.pgp',
 };
+
+export const fileExtensions = {
+  CONTENT_ENCRYPTED_EXT: '.pgp',
+};
+
+export const encryptedSubdir = {
+  CONTENT_ENCRYPTED_SUBDIR: 'encrypted',
+};

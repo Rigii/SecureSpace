@@ -2,6 +2,8 @@ import {DocumentPickerResponse} from 'react-native-document-picker';
 import RNFS, {UploadResult} from 'react-native-fs';
 import OpenPGP from 'react-native-fast-openpgp';
 import {uploadDiskContentInStream} from '../xhr-services/api-content-service';
+import {strings} from './file-content.strings';
+import {encryptedSubdir, fileExtensions} from './constants';
 
 const resolveLocalFilePath = async (
   file: DocumentPickerResponse,
@@ -9,7 +11,7 @@ const resolveLocalFilePath = async (
   const sourceUri = file.fileCopyUri || file.uri;
 
   if (!sourceUri) {
-    throw new Error('File URI is not available');
+    throw new Error(strings.fileURLIsNotAvailable);
   }
 
   const statTarget = sourceUri.startsWith('file://')
@@ -27,7 +29,9 @@ const createEncryptedTempPath = (fileName?: string): string => {
     '_',
   );
 
-  return `${baseDirectory}/encrypted-${Date.now()}-${safeFileName}.pgp`;
+  return `${baseDirectory}/${
+    encryptedSubdir.CONTENT_ENCRYPTED_SUBDIR
+  }/${Date.now()}-${safeFileName}${fileExtensions.CONTENT_ENCRYPTED_EXT}`;
 };
 
 export const uploadContentWithStream = async ({
@@ -40,33 +44,42 @@ export const uploadContentWithStream = async ({
   uploadUrl: {presignedUrl: string};
 }): Promise<UploadResult> => {
   if (!file.name) {
-    throw new Error('File name is not available');
+    throw new Error(strings.fileNameIsNotAvailable);
   }
 
   const sourceFilePath = await resolveLocalFilePath(file);
   const encryptedFilePath = createEncryptedTempPath(file.name);
 
   /* Chunk streaming into the encrypted file */
-  try {
-    await OpenPGP.encryptFile(
-      sourceFilePath,
-      encryptedFilePath,
-      publicKeys.join('\n'),
-      undefined,
-      {
-        isBinary: true,
-        fileName: file.name,
-      },
-    );
+  await OpenPGP.encryptFile(
+    sourceFilePath,
+    encryptedFilePath,
+    publicKeys.join('\n'),
+    undefined,
+    {
+      isBinary: true,
+      fileName: file.name,
+    },
+  );
 
-    return await uploadDiskContentInStream({
+  let uploadResult: UploadResult;
+  try {
+    uploadResult = await uploadDiskContentInStream({
       presignedUrl: uploadUrl.presignedUrl,
       encryptedFilePath,
-      fileName: `${file.name}.pgp`,
+      fileName: `${file.name}${fileExtensions.CONTENT_ENCRYPTED_EXT}`,
     });
-  } finally {
+  } catch (error) {
     if (await RNFS.exists(encryptedFilePath)) {
       await RNFS.unlink(encryptedFilePath);
     }
+
+    throw error;
   }
+
+  if (await RNFS.exists(encryptedFilePath)) {
+    await RNFS.unlink(encryptedFilePath);
+  }
+
+  return uploadResult;
 };

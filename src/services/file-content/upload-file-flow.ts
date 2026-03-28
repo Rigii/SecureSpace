@@ -15,13 +15,14 @@ import {
   EFileType,
   EUploadContentRecipientType,
 } from './types';
-import {uploadContentWithStream} from './upload-with-stream';
+import {uploadContentWithStream} from './upload-download-stream';
+import {strings} from './file-content.strings';
 
 const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
   new Promise((resolve, reject) => {
     launchImageLibrary({mediaType: 'mixed', selectionLimit: 0}, response => {
       if (response.didCancel) {
-        reject(new Error('User cancelled'));
+        reject(new Error(strings.userCancelled));
         return;
       }
       if (response.errorCode) {
@@ -101,7 +102,7 @@ const processThumbnail = async (
   fileName: string;
 }> => {
   if (!file.fileCopyUri || !file.type || !file.name) {
-    throw new Error('File URI is not available');
+    throw new Error(strings.fileURLIsNotAvailable);
   }
   const thumbnailLocalUri = await generateThumbnail(
     file.fileCopyUri,
@@ -149,7 +150,7 @@ const processThumbnail = async (
       status: EContentFileStatus.thumbnail_uploaded,
       token,
     });
-    console.error('Error processing thumbnail:', error);
+    console.error(strings.errorProcessingThumbnail, error);
     throw error;
   }
 };
@@ -242,7 +243,7 @@ export const pickAndUploadFiles = async ({
 
     return data;
   } catch (error) {
-    console.error('Error picking or uploading files:', error);
+    console.error(strings.errorPickingOrUploadingFiles, error);
     throw error;
   }
 };
