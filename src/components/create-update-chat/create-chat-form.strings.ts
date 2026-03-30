@@ -23,4 +23,6 @@ export const strings = {
   noPBKeysReenterRoom: 'No public keys available. Please reenter chat room',
   uploadMedia: 'Media',
   uploadDocument: 'Document',
+  fileUploadFailed: 'File upload failed. Please try again.',
+  unsetName: 'Unset file name',
 };

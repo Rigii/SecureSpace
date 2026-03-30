@@ -18,7 +18,7 @@ import {
 import {uploadContentWithStream} from './upload-download-stream';
 import {strings} from './file-content.strings';
 
-const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
+export const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
   new Promise((resolve, reject) => {
     launchImageLibrary({mediaType: 'mixed', selectionLimit: 0}, response => {
       if (response.didCancel) {
@@ -29,7 +29,7 @@ const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
         reject(new Error(response.errorMessage));
         return;
       }
-      // Map Asset to DocumentPickerResponse shape
+
       const mapped: DocumentPickerResponse[] = (response.assets ?? []).map(
         (asset: Asset) => ({
           uri: asset.uri ?? '',
@@ -43,7 +43,7 @@ const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
     });
   });
 
-const pickDocumentFiles = async (): Promise<DocumentPickerResponse[]> =>
+export const pickDocumentFiles = async (): Promise<DocumentPickerResponse[]> =>
   await DocumentPicker.pick({
     type: [DocumentPicker.types.allFiles],
     copyTo: 'cachesDirectory',
@@ -261,7 +261,7 @@ const processThumbnail = async ({
   }
 };
 
-export const pickAndUploadFiles = async ({
+export const uploadFiles = async ({
   roomId,
   publicKeys,
   interlocutorId,
@@ -271,6 +271,7 @@ export const pickAndUploadFiles = async ({
   type,
   token,
   generateThumbnailUrl,
+  files,
 }: {
   roomId: string;
   publicKeys: string[];
@@ -281,6 +282,7 @@ export const pickAndUploadFiles = async ({
   type: EFileType;
   token: string;
   generateThumbnailUrl: boolean;
+  files: DocumentPickerResponse[];
 }): Promise<
   {
     contentPathName: string;
@@ -289,11 +291,6 @@ export const pickAndUploadFiles = async ({
     fileName: string | null;
   }[]
 > => {
-  const files =
-    type === EFileType.MEDIA
-      ? await pickMediaFiles()
-      : await pickDocumentFiles();
-
   const filesMetadata: {
     fileName: string;
     fileSize: number;

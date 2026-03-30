@@ -9,7 +9,7 @@ export const PhotoIcon = (props?: SvgProps): ReactElement => (
       cy="24"
       r="22"
       stroke={props?.color || '#CE8946'}
-      strokeWidth="2"
+      strokeWidth="1"
     />
     {/* Outer frame */}
     <Rect
@@ -19,7 +19,7 @@ export const PhotoIcon = (props?: SvgProps): ReactElement => (
       height="18"
       rx="3"
       stroke={props?.color || '#CE8946'}
-      strokeWidth="2"
+      strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -27,7 +27,7 @@ export const PhotoIcon = (props?: SvgProps): ReactElement => (
     <Path
       d="M10 28L17 20L22 26L27 22L38 28"
       stroke={props?.color || '#CE8946'}
-      strokeWidth="2"
+      strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -37,7 +37,7 @@ export const PhotoIcon = (props?: SvgProps): ReactElement => (
       cy="21"
       r="2"
       stroke={props?.color || '#CE8946'}
-      strokeWidth="2"
+      strokeWidth="1"
     />
   </Svg>
 );

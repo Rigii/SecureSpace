@@ -1,5 +1,11 @@
 import React, {useContext} from 'react';
-import {SafeAreaView, TouchableOpacity, View} from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {EnvelopeIcon} from '../../assets/icons/evenlopeIcon';
 import {ChatSocketProviderContext} from '../../context/chat/chat-provider.context';
 import {Input, KeyboardTypes} from '../input';
@@ -12,11 +18,16 @@ import {encryptSignMessageForMultipleRecipients} from '../../services/pgp-encryp
 import {useReduxSelector} from '../../app/store/store';
 import {HIT_SLOP} from '../../constants/themes';
 import {AttachIcon} from '../../assets/icons/attachIcon';
-import {pickAndUploadFiles} from '../../services/file-content/upload-file-flow';
+import {
+  uploadFiles,
+  pickDocumentFiles,
+  pickMediaFiles,
+} from '../../services/file-content/upload-file-flow';
 import {PhotoIcon} from '../../assets/icons/photoContentIcon';
 import {DocumentIcon} from '../../assets/icons/documentContentIcon';
 import {Title3} from '../text-titles/title';
 import {EFileType} from '../../services/file-content/types';
+import {DocumentPickerResponse} from 'react-native-document-picker';
 
 interface IChatInput {
   chatId: string;
@@ -30,6 +41,12 @@ const ChatInput: React.FC<IChatInput> = ({
   publicKeys,
 }) => {
   const [attachMenuVisible, setAttachMenuVisible] = React.useState(false);
+  const [selectedMediaFiles, setSelectedMediaFiles] = React.useState<
+    DocumentPickerResponse[]
+  >([]);
+  const [selectedDocumentFiles, setSelectedDocumentFiles] = React.useState<
+    DocumentPickerResponse[]
+  >([]);
   const {handleSendChatRoomMessage} = useContext(ChatSocketProviderContext);
 
   const {privateChatKey, interlocutorId} = useReduxSelector(
@@ -41,32 +58,50 @@ const ChatInput: React.FC<IChatInput> = ({
 
   const [currentMessage, setCurrentMessage] = React.useState<string>('');
 
-  const onAttachMedia = () => {
-    pickAndUploadFiles({
-      roomId: chatId,
-      userId,
-      publicKeys,
-      userPrivateKey: privateChatKey,
-      interlocutorId,
-      passphrase: '',
-      token,
-      generateThumbnailUrl: true,
-      type: EFileType.MEDIA,
-    });
+  const onAttachMedia = async () => {
+    const files = await pickMediaFiles();
+    setSelectedMediaFiles(files);
   };
 
-  const onAttachDocument = () => {
-    pickAndUploadFiles({
-      roomId: chatId,
-      interlocutorId,
-      userId,
-      publicKeys,
-      userPrivateKey: privateChatKey,
-      passphrase: '',
-      token,
-      generateThumbnailUrl: false,
-      type: EFileType.DOCUMENT,
-    });
+  const onAttachDocument = async () => {
+    const files = await pickDocumentFiles();
+    setSelectedDocumentFiles(files);
+  };
+
+  const onUploadFiles = async () => {
+    try {
+      await uploadFiles({
+        roomId: chatId,
+        interlocutorId,
+        userId,
+        publicKeys,
+        userPrivateKey: privateChatKey,
+        passphrase: '',
+        token,
+        generateThumbnailUrl: false,
+        type: EFileType.MEDIA,
+        files: selectedMediaFiles,
+      });
+
+      await uploadFiles({
+        roomId: chatId,
+        interlocutorId,
+        userId,
+        publicKeys,
+        userPrivateKey: privateChatKey,
+        passphrase: '',
+        token,
+        generateThumbnailUrl: false,
+        type: EFileType.DOCUMENT,
+        files: selectedDocumentFiles,
+      });
+    } catch (error) {
+      ErrorNotificationHandler({
+        text1: strings.fileUploadFailed,
+        text2: error instanceof Error ? error.message : undefined,
+        type: EPopupType.ERROR,
+      });
+    }
   };
 
   const onSendMessage = async () => {
@@ -113,6 +148,54 @@ const ChatInput: React.FC<IChatInput> = ({
     </View>
   );
 
+  const selectedFilesMenu =
+    selectedMediaFiles.length > 0 || selectedDocumentFiles.length > 0 ? (
+      <ScrollView className="max-h-32 px-3 py-1 bg-white">
+        {selectedMediaFiles.map((file, index) => (
+          <View
+            key={`media-${index}`}
+            className="flex flex-row items-center py-1 space-x-2">
+            <PhotoIcon />
+            <Title3 className="flex-1 text-gray-700">
+              {'...' + (file.name || strings.unsetName).slice(-20)}
+            </Title3>
+            <TouchableOpacity
+              hitSlop={HIT_SLOP}
+              onPress={() =>
+                setSelectedMediaFiles(prev =>
+                  prev.filter((_, i) => i !== index),
+                )
+              }>
+              <Text className="text-red-500 text-lg px-1">
+                {String.fromCharCode(0x2715)}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+        {selectedDocumentFiles.map((file, index) => (
+          <View
+            key={`doc-${index}`}
+            className="flex flex-row items-center py-1 space-x-2">
+            <DocumentIcon />
+            <Title3 className="flex-1 text-gray-700">
+              {'...' + (file.name || strings.unsetName).slice(-20)}
+            </Title3>
+            <TouchableOpacity
+              hitSlop={HIT_SLOP}
+              onPress={() =>
+                setSelectedDocumentFiles(prev =>
+                  prev.filter((_, i) => i !== index),
+                )
+              }>
+              <Text className="text-red-500 text-lg px-1">
+                {String.fromCharCode(0x2715)}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
+    ) : null;
+
   const inputMenu = (
     <View className={'flex flex-row flex-auto self-center space-x-8 top-3'}>
       <View className="flex flex-col items-center">
@@ -145,6 +228,7 @@ const ChatInput: React.FC<IChatInput> = ({
         multiline={true}
         childComponent={actions}
       />
+      {selectedFilesMenu}
       {attachMenuVisible && inputMenu}
     </SafeAreaView>
   );

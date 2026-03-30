@@ -8,23 +8,6 @@ import {
 import {strings} from './file-content.strings';
 import {encryptedSubdir, fileExtensions} from './constants';
 
-// const resolveLocalFilePath = async (
-//   file: DocumentPickerResponse,
-// ): Promise<string> => {
-//   const sourceUri = file.fileCopyUri || file.uri;
-
-//   if (!sourceUri) {
-//     throw new Error(strings.fileURLIsNotAvailable);
-//   }
-
-//   const statTarget = sourceUri.startsWith('file://')
-//     ? sourceUri.replace('file://', '')
-//     : sourceUri;
-//   const statResult = await RNFS.stat(statTarget);
-
-//   return statResult.originalFilepath || statResult.path;
-// };
-
 const createEncryptedTempPath = (fileName?: string): string => {
   const baseDirectory = RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath;
   const safeFileName = (fileName || 'upload.bin').replace(
