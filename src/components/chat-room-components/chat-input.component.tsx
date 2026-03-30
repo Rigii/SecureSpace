@@ -105,6 +105,7 @@ const ChatInput: React.FC<IChatInput> = ({
   };
 
   const onSendMessage = async () => {
+    await onUploadFiles();
     if (currentMessage.trim() === '') {
       return;
     }
