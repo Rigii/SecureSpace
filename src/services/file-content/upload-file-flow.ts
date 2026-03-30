@@ -17,7 +17,6 @@ import {
 } from './types';
 import {uploadContentWithStream} from './upload-download-stream';
 import {strings} from './file-content.strings';
-import {UploadResult} from 'react-native-fs';
 
 const pickMediaFiles = (): Promise<DocumentPickerResponse[]> =>
   new Promise((resolve, reject) => {
@@ -332,20 +331,6 @@ export const pickAndUploadFiles = async ({
       status: 'uploading',
       token,
     });
-    // console.log(101010101001010101, {
-    //   uploadUrl: {
-    //     presignedUrl: uploadUrlTransaktionData.uploadUrls[0].url,
-    //     thumbnailObjectName:
-    //       uploadUrlTransaktionData.uploadUrls[0].thumbnailObjectName,
-    //     objectName: uploadUrlTransaktionData.uploadUrls[0].objectName,
-    //     thumbnailUrl: uploadUrlTransaktionData.uploadUrls[0].thumbnailUrl,
-    //   },
-    //   publicKeys,
-    //   userPrivateKey,
-    //   passphrase,
-    //   token,
-    //   sessionId: uploadUrlTransaktionData.contentUploadTransaktionData.id,
-    // });
 
     const data = await Promise.all(
       files.map((file, index) =>
