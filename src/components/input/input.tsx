@@ -27,7 +27,9 @@ export const Input = (props: IInputProps) => {
   const catchKey = ({
     nativeEvent,
   }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-    if (!props.catchKey) return;
+    if (!props.catchKey) {
+      return;
+    }
     props.catchKey(nativeEvent.key);
   };
 
@@ -125,15 +127,8 @@ export const Input = (props: IInputProps) => {
           {props.placeholderIcon}
         </View>
       )}
-
-      {props.iconEnd && (
-        <TouchableOpacity
-          hitSlop={HIT_SLOP}
-          className={`flex z-50 flex-auto self-end absolute justify-center items-center text-center	w-5 right-0 ${props.iconEndClassName}`}
-          onPress={props.onIconEndPress}>
-          <View className="flex flex-auto m-0 p-0 z-50">{props.iconEnd}</View>
-        </TouchableOpacity>
-      )}
+      {/* className={`flex z-50 flex-auto self-end absolute justify-center items-center text-center	w-5 right-0 ${props.iconEndClassName}`} */}
+      {props.childComponent}
 
       <TouchableOpacity
         hitSlop={HIT_SLOP}

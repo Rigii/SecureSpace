@@ -41,14 +41,11 @@ export interface IInputProps {
   option?: string;
   className?: string;
   linkClassName?: string;
-  iconEndStyle?: StyleProp<ViewStyle>;
   placeholderTextColor?: string;
   label?: string;
   isSecure?: boolean;
   inputClassName?: string;
   icon?: any;
-  iconEnd?: JSX.Element;
-  iconEndClassName?: string;
   placeholderIcon?: any;
   iconRight?: any;
   textRight?: boolean;
@@ -60,11 +57,11 @@ export interface IInputProps {
   onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   linkText?: string;
   onLinkPress?: () => void;
-  onIconEndPress?: () => void;
   multiline?: boolean;
   hideLabelOnFocus?: boolean;
   isFocusOnLink?: boolean;
   numberOfLines?: number;
   autoCapitalize?: TAutoCapitalize;
   isPointerEventsBlocked?: boolean;
+  childComponent?: React.ReactNode;
 }
