@@ -73,6 +73,16 @@ const uploadContentToMinio = async ({
   token: string;
   sessionId: string;
 }) => {
+  console.log(3333333, 'THUMB', {
+    file,
+    uploadUrl,
+    publicKeys,
+    userPrivateKey,
+    passphrase,
+    token,
+    sessionId,
+  });
+
   const thumbnailUploadResult = await processThumbnail({
     file,
     uploadUrl,
@@ -82,7 +92,6 @@ const uploadContentToMinio = async ({
     token,
     sessionId,
   });
-  console.log(11111111111, 'THUMBNAIL_UPLOADED', thumbnailUploadResult);
 
   const uploadResult = await processContentTransaction({
     file,
@@ -100,7 +109,6 @@ const uploadContentToMinio = async ({
     status: EContentFileStatus.completed,
     token,
   });
-  console.log(22222222222, 'CONTENT_UPLOADED', uploadResult);
 
   return {
     contentPathName: uploadResult.contentPathName,
@@ -356,8 +364,6 @@ export const uploadFiles = async ({
       status: 'completed',
       token,
     });
-
-    console.log(3333333, 'SUCCESS', data);
 
     return data;
   } catch (error) {

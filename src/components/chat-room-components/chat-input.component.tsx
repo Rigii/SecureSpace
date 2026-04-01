@@ -60,6 +60,7 @@ const ChatInput: React.FC<IChatInput> = ({
 
   const onAttachMedia = async () => {
     const files = await pickMediaFiles();
+    console.log(88888, files);
     setSelectedMediaFiles(files);
   };
 
@@ -70,35 +71,50 @@ const ChatInput: React.FC<IChatInput> = ({
 
   const onUploadFiles = async () => {
     try {
-      await uploadFiles({
-        roomId: chatId,
-        interlocutorId,
-        userId,
-        publicKeys,
-        userPrivateKey: privateChatKey,
-        passphrase: '',
-        token,
-        generateThumbnailUrl: false,
-        type: EFileType.MEDIA,
-        files: selectedMediaFiles,
-      });
-
-      await uploadFiles({
-        roomId: chatId,
-        interlocutorId,
-        userId,
-        publicKeys,
-        userPrivateKey: privateChatKey,
-        passphrase: '',
-        token,
-        generateThumbnailUrl: false,
-        type: EFileType.DOCUMENT,
-        files: selectedDocumentFiles,
-      });
+      if (selectedDocumentFiles.length !== 0) {
+        const uploadDocumentsResult = await uploadFiles({
+          roomId: chatId,
+          interlocutorId,
+          userId,
+          publicKeys,
+          userPrivateKey: privateChatKey,
+          passphrase: '',
+          token,
+          generateThumbnailUrl: false,
+          type: EFileType.DOCUMENT,
+          files: selectedDocumentFiles,
+        });
+        console.log(111111111, uploadDocumentsResult);
+        setSelectedDocumentFiles([]);
+      }
     } catch (error) {
       ErrorNotificationHandler({
-        text1: strings.fileUploadFailed,
+        text1: strings.documentsUploadFailed,
         text2: error instanceof Error ? error.message : undefined,
+        type: EPopupType.ERROR,
+      });
+    }
+    try {
+      if (selectedMediaFiles.length !== 0) {
+        const uploadMediaResult = await uploadFiles({
+          roomId: chatId,
+          interlocutorId,
+          userId,
+          publicKeys,
+          userPrivateKey: privateChatKey,
+          passphrase: '',
+          token,
+          generateThumbnailUrl: true,
+          type: EFileType.MEDIA,
+          files: selectedMediaFiles,
+        });
+        console.log(2222222222, uploadMediaResult);
+        setSelectedMediaFiles([]);
+      }
+    } catch (error) {
+      ErrorNotificationHandler({
+        text1: strings.mediaUploadFailed,
+        // text2: error instanceof Error ? error.message : undefined,
         type: EPopupType.ERROR,
       });
     }
@@ -106,6 +122,7 @@ const ChatInput: React.FC<IChatInput> = ({
 
   const onSendMessage = async () => {
     await onUploadFiles();
+
     if (currentMessage.trim() === '') {
       return;
     }
