@@ -36,9 +36,18 @@ export const ChatSocketProviderContext = createContext<{
   handleSendChatRoomMessage: ({
     message,
     chatRoomId,
+    attachments,
   }: {
     message: string;
     chatRoomId: string;
+    attachments?:
+      | {
+          url: string;
+          thumbnailUrl?: string;
+          mimeType?: string | null;
+          fileName?: string | null;
+        }[]
+      | [];
   }) => void;
   leaveChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
   deleteChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
@@ -222,9 +231,11 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   const handleSendChatRoomMessage = ({
     message,
     chatRoomId,
+    attachments,
   }: {
     message: string;
     chatRoomId: string;
+    attachments?: {url: string; thumbnailUrl?: string}[] | [];
   }) => {
     const messageData = {
       chatRoomId,
@@ -232,6 +243,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
       message,
       senderId: interlocutorId,
       senderName: email,
+      attachments,
     };
     sendChatRoomMessage(socket, messageData);
   };

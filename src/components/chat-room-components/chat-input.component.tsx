@@ -60,7 +60,6 @@ const ChatInput: React.FC<IChatInput> = ({
 
   const onAttachMedia = async () => {
     const files = await pickMediaFiles();
-    console.log(88888, files);
     setSelectedMediaFiles(files);
   };
 
@@ -70,9 +69,10 @@ const ChatInput: React.FC<IChatInput> = ({
   };
 
   const onUploadFiles = async () => {
+    let uploadDocumentResults, uploadMediaResults;
     try {
       if (selectedDocumentFiles.length !== 0) {
-        const uploadDocumentsResult = await uploadFiles({
+        uploadDocumentResults = await uploadFiles({
           roomId: chatId,
           interlocutorId,
           userId,
@@ -84,7 +84,7 @@ const ChatInput: React.FC<IChatInput> = ({
           type: EFileType.DOCUMENT,
           files: selectedDocumentFiles,
         });
-        console.log(111111111, uploadDocumentsResult);
+
         setSelectedDocumentFiles([]);
       }
     } catch (error) {
@@ -96,7 +96,7 @@ const ChatInput: React.FC<IChatInput> = ({
     }
     try {
       if (selectedMediaFiles.length !== 0) {
-        const uploadMediaResult = await uploadFiles({
+        uploadMediaResults = await uploadFiles({
           roomId: chatId,
           interlocutorId,
           userId,
@@ -108,9 +108,13 @@ const ChatInput: React.FC<IChatInput> = ({
           type: EFileType.MEDIA,
           files: selectedMediaFiles,
         });
-        console.log(2222222222, uploadMediaResult);
         setSelectedMediaFiles([]);
       }
+
+      return {
+        uploadDocumentResults,
+        uploadMediaResults,
+      };
     } catch (error) {
       ErrorNotificationHandler({
         text1: strings.mediaUploadFailed,
@@ -121,7 +125,7 @@ const ChatInput: React.FC<IChatInput> = ({
   };
 
   const onSendMessage = async () => {
-    await onUploadFiles();
+    const attachments = await onUploadFiles();
 
     if (currentMessage.trim() === '') {
       return;
@@ -142,7 +146,21 @@ const ChatInput: React.FC<IChatInput> = ({
       passphrase: '',
     });
 
-    handleSendChatRoomMessage({message: encryptedMessage, chatRoomId: chatId});
+    const currentAttachments = [
+      ...(attachments?.uploadDocumentResults || []),
+      ...(attachments?.uploadMediaResults || []),
+    ].map(file => ({
+      url: file.contentPathName,
+      thumbnailUrl: file.thumbnailPathName,
+      mimeType: file.mimeType,
+      fileName: file.fileName,
+    }));
+
+    handleSendChatRoomMessage({
+      message: encryptedMessage,
+      chatRoomId: chatId,
+      attachments: currentAttachments,
+    });
     setCurrentMessage('');
   };
 

@@ -9,7 +9,9 @@ import {strings} from './file-content.strings';
 import {encryptedSubdir, fileExtensions} from './constants';
 
 const createEncryptedTempPath = (fileName?: string): string => {
-  const baseDirectory = RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath;
+  const baseDirectory = (
+    RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath
+  ).replace(/\/+$/, '');
   const safeFileName = (fileName || 'upload.bin').replace(
     /[^a-zA-Z0-9._-]/g,
     '_',
@@ -21,7 +23,9 @@ const createEncryptedTempPath = (fileName?: string): string => {
 };
 
 const createDownloadedEncryptedTempPath = (fileName?: string): string => {
-  const baseDirectory = RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath;
+  const baseDirectory = (
+    RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath
+  ).replace(/\/+$/, '');
   const safeFileName = (fileName || 'download.bin').replace(
     /[^a-zA-Z0-9._-]/g,
     '_',
@@ -44,6 +48,39 @@ const ensureParentDir = async (filePath: string): Promise<void> => {
   if (!(await RNFS.exists(parentDir))) {
     await RNFS.mkdir(parentDir);
   }
+};
+
+const resolveExistingNativeFilePath = async (
+  uriLikePath: string,
+): Promise<string> => {
+  const strippedPath = uriLikePath.startsWith('file://')
+    ? uriLikePath.replace('file://', '')
+    : uriLikePath;
+
+  let decodedPath = strippedPath;
+  try {
+    decodedPath = decodeURI(strippedPath);
+  } catch {
+    decodedPath = strippedPath;
+  }
+
+  const pathCandidates = Array.from(new Set([decodedPath, strippedPath]));
+  const existingPath = (
+    await Promise.all(
+      pathCandidates.map(async candidate => ({
+        candidate,
+        exists: await RNFS.exists(candidate),
+      })),
+    )
+  ).find(item => item.exists);
+
+  if (!existingPath) {
+    throw new Error(
+      `${strings.fileLocalDataIsNotAvailable}: ${pathCandidates.join(', ')}`,
+    );
+  }
+
+  return existingPath.candidate;
 };
 
 const buildLocalContentPath = ({
@@ -87,12 +124,9 @@ export const uploadContentWithStream = async ({
   }
 
   const rawSourcePath = file.fileCopyUri || file.uri;
-
-  /* To get native path from file URI (no file://)  */
-  const sourceFilePath = rawSourcePath.startsWith('file://')
-    ? rawSourcePath.replace('file://', '')
-    : rawSourcePath;
+  const sourceFilePath = await resolveExistingNativeFilePath(rawSourcePath);
   const encryptedFilePath = createEncryptedTempPath(file.name);
+
   await ensureParentDir(encryptedFilePath);
 
   /* Chunk streaming into the encrypted file */
@@ -106,7 +140,6 @@ export const uploadContentWithStream = async ({
       fileName: file.name,
     },
   );
-
   let uploadResult: UploadResult;
   try {
     uploadResult = await uploadDiskContentInStream({

@@ -59,6 +59,7 @@ const uploadContentToMinio = async ({
   passphrase,
   token,
   sessionId,
+  generateThumbnailUrl,
 }: {
   file: DocumentPickerResponse;
   uploadUrl: {
@@ -72,26 +73,19 @@ const uploadContentToMinio = async ({
   passphrase: string;
   token: string;
   sessionId: string;
+  generateThumbnailUrl: boolean;
 }) => {
-  console.log(3333333, 'THUMB', {
-    file,
-    uploadUrl,
-    publicKeys,
-    userPrivateKey,
-    passphrase,
-    token,
-    sessionId,
-  });
-
-  const thumbnailUploadResult = await processThumbnail({
-    file,
-    uploadUrl,
-    publicKeys,
-    userPrivateKey,
-    passphrase,
-    token,
-    sessionId,
-  });
+  const thumbnailUploadResult = generateThumbnailUrl
+    ? await processThumbnail({
+        file,
+        uploadUrl,
+        publicKeys,
+        userPrivateKey,
+        passphrase,
+        token,
+        sessionId,
+      })
+    : null;
 
   const uploadResult = await processContentTransaction({
     file,
@@ -112,7 +106,9 @@ const uploadContentToMinio = async ({
 
   return {
     contentPathName: uploadResult.contentPathName,
-    thumbnailPathName: thumbnailUploadResult.thumbnailPathName,
+    thumbnailPathName: thumbnailUploadResult
+      ? thumbnailUploadResult.thumbnailPathName
+      : '',
     mimeType: file.type,
     fileName: file.name,
   };
@@ -354,6 +350,7 @@ export const uploadFiles = async ({
           passphrase,
           token,
           sessionId: uploadUrlTransaktionData.contentUploadTransaktionData.id,
+          generateThumbnailUrl,
         }),
       ),
     );
