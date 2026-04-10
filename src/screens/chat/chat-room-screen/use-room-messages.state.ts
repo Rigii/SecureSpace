@@ -18,6 +18,7 @@ import {
   ErrorNotificationHandler,
 } from '../../../components/popup-message/error-notification-handler';
 import {IRoomInterlocutor} from './types';
+import {IRoomAttachment} from '../../../app/store/saga/chat-account-saga/types';
 
 interface IChatRoomMessagesState {
   chatId: string;
@@ -80,6 +81,7 @@ export const useChatRoomMessagesState = ({
             voiceMessageUrl?: string;
             created: string;
             updated: string;
+            attachments?: IRoomAttachment[] | [];
           }) => ({
             id: messageObject?.id,
             message: messageObject?.message,
@@ -91,6 +93,7 @@ export const useChatRoomMessagesState = ({
             isAdmin: false,
             mediaUrl: messageObject?.mediaUrl,
             voiceMessageUrl: messageObject?.voiceMessageUrl,
+            attachments: messageObject?.attachments || [],
           }),
         );
 

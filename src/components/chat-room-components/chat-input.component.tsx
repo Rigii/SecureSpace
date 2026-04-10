@@ -127,7 +127,11 @@ export const ChatInput: React.FC<IChatInput> = ({
   const onSendMessage = async () => {
     const attachments = await onUploadFiles();
 
-    if (currentMessage.trim() === '') {
+    if (
+      currentMessage.trim() === '' &&
+      !attachments?.uploadDocumentResults?.length &&
+      !attachments?.uploadMediaResults?.length
+    ) {
       return;
     }
 
@@ -155,7 +159,11 @@ export const ChatInput: React.FC<IChatInput> = ({
       mimeType: file.mimeType,
       fileName: file.fileName,
     }));
-
+    console.log(111222233, {
+      message: encryptedMessage,
+      chatRoomId: chatId,
+      attachments: currentAttachments,
+    });
     handleSendChatRoomMessage({
       message: encryptedMessage,
       chatRoomId: chatId,
