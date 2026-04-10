@@ -12,7 +12,11 @@ import {IFetchedChatRoom} from '../../../../../screens/login-signup/login-sign-u
 import {IChatMessage} from '../../../state/chat-rooms-content/chat-rooms-state.types';
 import {decryptMessage} from '../../../../../services/pgp-encryption-service/encrypt-decrypt-message';
 import {chatSocketSagaHandlers} from './constants';
-import {IChatSocketEvent, IChatSocketMessageType} from '../types';
+import {
+  IChatSocketEvent,
+  IChatSocketMessageType,
+  IRoomAttachment,
+} from '../types';
 
 export type TChatSocketEventType = keyof typeof chatSocketSagaHandlers;
 
@@ -65,9 +69,11 @@ function* handleInvitationSaga(message: {
 function* handleRoomMessageListSaga({
   messageObject,
   senderPublicKey,
+  attachments,
 }: {
   messageObject: IChatMessage;
   senderPublicKey?: string;
+  attachments: IRoomAttachment[] | [];
 }): Generator<any, void, any> {
   try {
     const {privateChatKey} = yield select(
@@ -85,6 +91,7 @@ function* handleRoomMessageListSaga({
       isAdmin: messageObject.isAdmin || false,
       mediaUrl: messageObject.mediaUrl || '',
       voiceMessageUrl: messageObject.voiceMessageUrl || '',
+      attachments: attachments,
     };
 
     if (!privateChatKey) {
@@ -151,6 +158,7 @@ export function* handleSocketEventWorker(action: {
         messageObject:
           message as IChatSocketMessageType[typeof chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER],
         senderPublicKey: data.senderPublicKey,
+        attachments: data.attachments || [],
       });
       break;
   }

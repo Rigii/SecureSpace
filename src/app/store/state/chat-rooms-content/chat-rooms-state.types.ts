@@ -1,5 +1,6 @@
 import {IFetchedUserChatAccount} from '../../../../screens/login-signup/login-sign-up.types';
 import {ISecurePlace} from '../../../types/encrypt.types';
+import {IRoomAttachment} from '../../saga/chat-account-saga/types';
 
 export interface IChatRooms {
   [key: string]: IChatRoom;
@@ -55,4 +56,5 @@ export interface IChatMessage {
   updated: string;
   senderPublicKey?: string;
   verifiedOrigin?: boolean;
+  attachments?: IRoomAttachment[] | [];
 }

@@ -295,6 +295,7 @@ export const uploadFiles = async ({
     fileName: string | null;
   }[]
 > => {
+  let uploadUrlTransaktionData;
   const filesMetadata: {
     fileName: string;
     fileSize: number;
@@ -315,15 +316,19 @@ export const uploadFiles = async ({
     });
   });
 
-  const uploadUrlsResponse = await getFileContentRoomUploadUrl({
-    interlocutorId,
-    userId,
-    roomId,
-    token,
-    filesMetadata,
-  });
-
-  const uploadUrlTransaktionData = uploadUrlsResponse.data;
+  try {
+    const uploadUrlsResponse = await getFileContentRoomUploadUrl({
+      interlocutorId,
+      userId,
+      roomId,
+      token,
+      filesMetadata,
+    });
+    uploadUrlTransaktionData = uploadUrlsResponse.data;
+  } catch (error) {
+    console.error(strings.errorGettingUploadUrls, error);
+    throw error;
+  }
 
   try {
     await updateContentTransaction({

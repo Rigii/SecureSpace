@@ -35,7 +35,7 @@ interface IChatInput {
   inputPlaceholder?: string;
 }
 
-const ChatInput: React.FC<IChatInput> = ({
+export const ChatInput: React.FC<IChatInput> = ({
   chatId,
   inputPlaceholder,
   publicKeys,
@@ -150,7 +150,7 @@ const ChatInput: React.FC<IChatInput> = ({
       ...(attachments?.uploadDocumentResults || []),
       ...(attachments?.uploadMediaResults || []),
     ].map(file => ({
-      url: file.contentPathName,
+      mediaUrl: file.contentPathName,
       thumbnailUrl: file.thumbnailPathName,
       mimeType: file.mimeType,
       fileName: file.fileName,
@@ -269,5 +269,3 @@ const ChatInput: React.FC<IChatInput> = ({
     </SafeAreaView>
   );
 };
-
-export default ChatInput;

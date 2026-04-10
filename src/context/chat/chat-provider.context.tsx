@@ -42,7 +42,7 @@ export const ChatSocketProviderContext = createContext<{
     chatRoomId: string;
     attachments?:
       | {
-          url: string;
+          mediaUrl: string;
           thumbnailUrl?: string;
           mimeType?: string | null;
           fileName?: string | null;
@@ -235,7 +235,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   }: {
     message: string;
     chatRoomId: string;
-    attachments?: {url: string; thumbnailUrl?: string}[] | [];
+    attachments?: {mediaUrl: string; thumbnailUrl?: string}[] | [];
   }) => {
     const messageData = {
       chatRoomId,
