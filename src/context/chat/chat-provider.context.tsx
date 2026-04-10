@@ -116,6 +116,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
             currentActiveChatId,
             message,
             senderPublicKey: message.senderPublicKey,
+            attachments: message.attachments || [],
           },
         }),
       );
@@ -129,6 +130,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
             currentActiveChatId,
             message,
             senderPublicKey: message.senderPublicKey,
+            attachments: message.attachments || [],
           },
         }),
       );
