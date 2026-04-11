@@ -54,6 +54,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
               senderName={item.senderNickname}
               time={item.created}
               isVerified={item.verifiedOrigin}
+              attachments={item.attachments}
             />
           )}
           showsVerticalScrollIndicator={false}

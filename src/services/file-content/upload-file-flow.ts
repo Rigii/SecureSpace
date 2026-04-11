@@ -75,19 +75,19 @@ const uploadContentToMinio = async ({
   sessionId: string;
   generateThumbnailUrl: boolean;
 }) => {
-  const thumbnailUploadResult = generateThumbnailUrl
-    ? await processThumbnail({
-        file,
-        uploadUrl,
-        publicKeys,
-        userPrivateKey,
-        passphrase,
-        token,
-        sessionId,
-      })
-    : null;
+  if (generateThumbnailUrl) {
+    await processThumbnail({
+      file,
+      uploadUrl,
+      publicKeys,
+      userPrivateKey,
+      passphrase,
+      token,
+      sessionId,
+    });
+  }
 
-  const uploadResult = await processContent({
+  await processContent({
     file,
     uploadUrl,
     publicKeys,
@@ -105,10 +105,8 @@ const uploadContentToMinio = async ({
   });
 
   return {
-    contentPathName: uploadResult.contentPathName,
-    thumbnailPathName: thumbnailUploadResult
-      ? thumbnailUploadResult.thumbnailPathName
-      : '',
+    contentPathName: uploadUrl?.objectName || '',
+    thumbnailPathName: uploadUrl?.thumbnailObjectName || '',
     mimeType: file.type,
     fileName: file.name,
   };
@@ -219,7 +217,7 @@ const processThumbnail = async ({
       publicKeys,
     });
 
-    const uploadThumbnailResult = await uploadThumbnailToMinio({
+    await uploadThumbnailToMinio({
       presignedUrl: uploadUrl.thumbnailUrl,
       encryptedThumbnail,
     });
@@ -235,7 +233,7 @@ const processThumbnail = async ({
 
     return {
       thumbnailLocalPath: thumbnailLocalUri,
-      thumbnailPathName: uploadThumbnailResult.request.responseURL,
+      thumbnailPathName: uploadUrl.thumbnailObjectName,
       contentPathName: uploadUrl.objectName,
       mimeType: file.type,
       fileName: file.name,

@@ -28,6 +28,19 @@ export const uploadMemoryContentToMinio = (
     },
   });
 
+export const downloadContentFromMinio = async (
+  presignedUrl: string,
+): Promise<ArrayBuffer> => {
+  const response = await createMinioInstance().get(presignedUrl, {
+    responseType: 'arraybuffer',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  });
+
+  return response.data;
+};
+
 export const uploadDiskContentInStream = async ({
   presignedUrl,
   encryptedFilePath,
