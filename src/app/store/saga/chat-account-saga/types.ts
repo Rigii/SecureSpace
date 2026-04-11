@@ -13,7 +13,7 @@ export interface IChatSocketMessageType {
 }
 
 export interface IRoomAttachment {
-  id: string;
+  // id: string;
   mediaUrl: string;
   thumbnailUrl?: string;
   mimeType?: string | null;

@@ -150,6 +150,7 @@ export const ChatInput: React.FC<IChatInput> = ({
       passphrase: '',
     });
 
+    /* Sending Media and Document Attachments as a single array */
     const currentAttachments = [
       ...(attachments?.uploadDocumentResults || []),
       ...(attachments?.uploadMediaResults || []),
@@ -159,6 +160,8 @@ export const ChatInput: React.FC<IChatInput> = ({
       mimeType: file.mimeType,
       fileName: file.fileName,
     }));
+
+    console.log(888888999999, 'SENT ATTACHMENTS', currentAttachments);
 
     handleSendChatRoomMessage({
       message: encryptedMessage,

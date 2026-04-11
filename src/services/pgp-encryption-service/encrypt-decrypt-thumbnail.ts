@@ -4,9 +4,6 @@ import {Buffer} from 'buffer';
 const bufferToBase64 = (buffer: ArrayBuffer): string =>
   Buffer.from(buffer).toString('base64');
 
-const base64ToBuffer = (base64: string): ArrayBuffer =>
-  Buffer.from(base64, 'base64').buffer as ArrayBuffer;
-
 export const encryptThumbnail = async ({
   thumbnailBuffer,
   publicKeys,
@@ -35,14 +32,8 @@ export const decryptThumbnail = async ({
   encryptedThumbnail: ArrayBuffer;
   privateKey: string;
   passphrase?: string;
-}): Promise<ArrayBuffer> => {
+}): Promise<string> => {
   const encryptedString = Buffer.from(encryptedThumbnail).toString('utf-8');
 
-  const decrypted = await OpenPGP.decrypt(
-    encryptedString,
-    privateKey,
-    passphrase || '',
-  );
-
-  return base64ToBuffer(decrypted);
+  return await OpenPGP.decrypt(encryptedString, privateKey, passphrase || '');
 };

@@ -33,6 +33,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
       return;
     }
     const handleChatMessage = (message: IChatMessage) => {
+      console.log(11111111111111111, message.attachments);
       dispatch(
         handleChatSocketSaga({
           type: chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER,

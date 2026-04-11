@@ -237,7 +237,14 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   }: {
     message: string;
     chatRoomId: string;
-    attachments?: {mediaUrl: string; thumbnailUrl?: string}[] | [];
+    attachments?:
+      | {
+          mediaUrl: string;
+          thumbnailUrl?: string;
+          mimeType?: string | null;
+          fileName?: string | null;
+        }[]
+      | [];
   }) => {
     const messageData = {
       chatRoomId,

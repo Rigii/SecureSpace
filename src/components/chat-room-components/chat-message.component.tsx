@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {IRoomAttachment} from '../../app/store/saga/chat-account-saga/types';
 import {DocumentIcon} from '../../assets/icons/documentContentIcon';
 import {Title3} from '../text-titles/title';
@@ -21,12 +21,14 @@ type TDecryptedContentData = (
   | {
       decryptedThumbnail: null;
       decryptedUrl: string;
-      id: string;
+      fileName: string;
+      mimeType?: string | null;
     }
   | {
-      decryptedThumbnail: ArrayBuffer;
+      decryptedThumbnail: string;
       decryptedUrl: string;
-      id: string;
+      fileName: string;
+      mimeType?: string | null;
     }
 )[];
 
@@ -55,7 +57,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       const contentPathData = attachments.map(att => ({
         objectName: att.mediaUrl,
         thumbnailObjectName: att.thumbnailUrl,
-        id: att.id,
+        fileName: att.fileName,
+        mimeType: att.mimeType,
       }));
 
       const responce = await getRoomContentDownloadUrl({
@@ -67,37 +70,69 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         console.error('No download URLs received for attachments');
         return;
       }
+
       const downloadUrls = responce.data.downloadUrls as {
         thumbnailUrl: string;
         url: string;
+        fileName: string;
         mimeType?: string | null;
-        id: string;
       }[];
-      console.log(4444, downloadUrls);
+
       const decryptedContentData = await Promise.all(
-        downloadUrls.map(async ({thumbnailUrl, url, id}) => {
+        downloadUrls.map(async ({thumbnailUrl, url, fileName, mimeType}) => {
           if (!thumbnailUrl) {
-            return {decryptedThumbnail: null, decryptedUrl: url, id};
+            return {
+              decryptedThumbnail: null,
+              decryptedUrl: url,
+              fileName,
+              mimeType,
+            };
           }
 
           try {
-            const encryptedThumbnail = await downloadContentFromMinio(
-              thumbnailUrl,
-            );
+            if (thumbnailUrl) {
+              console.log(11111111, thumbnailUrl);
+              const encryptedThumbnail = await downloadContentFromMinio(
+                thumbnailUrl,
+              );
+              if (!encryptedThumbnail) {
+                return {
+                  decryptedThumbnail: null,
+                  decryptedUrl: url,
+                  fileName,
+                  mimeType,
+                };
+              }
+              const decryptedThumbnail = await decryptThumbnail({
+                encryptedThumbnail: encryptedThumbnail,
+                privateKey: privateChatKey,
+              });
 
-            const decryptedThumbnail = await decryptThumbnail({
-              encryptedThumbnail: encryptedThumbnail,
-              privateKey: privateChatKey,
-            });
-
-            console.log(55555555, decryptedThumbnail, url, id);
-            return {decryptedThumbnail, decryptedUrl: url, id};
+              return {
+                decryptedThumbnail,
+                decryptedUrl: url,
+                fileName,
+                mimeType,
+              };
+            } else {
+              return {
+                decryptedThumbnail: null,
+                decryptedUrl: url,
+                fileName,
+                mimeType,
+              };
+            }
           } catch (error) {
             console.error(
               `Failed to decrypt thumbnail for ${thumbnailUrl}:`,
               error,
             );
-            return {decryptedThumbnail: null, decryptedUrl: url, id};
+            return {
+              decryptedThumbnail: null,
+              decryptedUrl: url,
+              fileName,
+              mimeType,
+            };
           }
         }),
       );
@@ -106,8 +141,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
     decryptThumbnails();
   }, [attachments, token, privateChatKey, publicChatKey]);
-
-  console.log(88888, contentData);
 
   return (
     <View
@@ -135,13 +168,13 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         )}
 
         {contentData?.map((attachment, index) => (
-          <View
+          <TouchableOpacity
             key={index}
             className="flex flex-row items-center py-1 space-x-2 mt-2">
             {attachment?.decryptedThumbnail ? (
               <Image
                 source={{
-                  uri: `data:image/jpeg;base64,${attachment.decryptedThumbnail}`,
+                  uri: `data:${attachment.mimeType};base64,${attachment.decryptedThumbnail}`,
                 }}
                 className="w-40 h-40 rounded"
                 resizeMode="cover"
@@ -150,11 +183,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               <View className="flex flex-row items-center">
                 <DocumentIcon />
                 <Title3 className="text-gray-700 ml-2">
-                  {attachment.id || 'Unnamed file'}
+                  {attachment.fileName || 'Unnamed file'}
                 </Title3>
               </View>
             )}
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
 
