@@ -87,7 +87,7 @@ const uploadContentToMinio = async ({
       })
     : null;
 
-  const uploadResult = await processContentTransaction({
+  const uploadResult = await processContent({
     file,
     uploadUrl,
     publicKeys,
@@ -114,7 +114,7 @@ const uploadContentToMinio = async ({
   };
 };
 
-const processContentTransaction = async ({
+const processContent = async ({
   file,
   uploadUrl,
   publicKeys,
@@ -185,8 +185,6 @@ const processThumbnail = async ({
   file,
   uploadUrl,
   publicKeys,
-  userPrivateKey,
-  passphrase,
   token,
   sessionId,
 }: {
@@ -202,13 +200,7 @@ const processThumbnail = async ({
   passphrase: string;
   token: string;
   sessionId: string;
-}): Promise<{
-  contentPathName: string;
-  thumbnailLocalPath: string;
-  thumbnailPathName: string;
-  mimeType: string;
-  fileName: string;
-}> => {
+}) => {
   if (!file.fileCopyUri || !file.type || !file.name) {
     throw new Error(strings.fileURLIsNotAvailable);
   }
@@ -222,12 +214,9 @@ const processThumbnail = async ({
     const thumbnailBuffer = await fetch(thumbnailLocalUri).then(r =>
       r.arrayBuffer(),
     );
-
     const encryptedThumbnail = await encryptThumbnail({
       thumbnailBuffer,
       publicKeys,
-      userPrivateKey,
-      passphrase,
     });
 
     const uploadThumbnailResult = await uploadThumbnailToMinio({

@@ -79,7 +79,7 @@ export const uploadThumbnailToMinio = async ({
   encryptedThumbnail,
 }: {
   presignedUrl: string;
-  encryptedThumbnail: string;
+  encryptedThumbnail: Uint8Array<ArrayBufferLike>;
 }): Promise<any> =>
   uploadMemoryContentToMinio(presignedUrl, encryptedThumbnail);
 
@@ -88,6 +88,6 @@ export const uploadFileContentToMinio = async ({
   encryptedFileContent,
 }: {
   presignedUrl: string;
-  encryptedFileContent: string;
+  encryptedFileContent: Uint8Array<ArrayBufferLike>;
 }): Promise<any> =>
   uploadMemoryContentToMinio(presignedUrl, encryptedFileContent);

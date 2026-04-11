@@ -20,7 +20,7 @@ const createMinioInstance = () => {
 
 export const uploadMemoryContentToMinio = (
   presignedUrl: string,
-  payload: ArrayBuffer | string,
+  payload: Uint8Array<ArrayBufferLike>,
 ) =>
   createMinioInstance().put(presignedUrl, payload, {
     headers: {
