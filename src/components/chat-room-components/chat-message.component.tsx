@@ -71,50 +71,17 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         return;
       }
 
-      const downloadUrls = responce.data.downloadUrls as {
-        thumbnailUrl: string;
+      const downloadContentUrlData = responce.data.downloadUrls as {
+        thumbnailUrl: string | null;
         url: string;
         fileName: string;
         mimeType?: string | null;
       }[];
 
       const decryptedContentData = await Promise.all(
-        downloadUrls.map(async ({thumbnailUrl, url, fileName, mimeType}) => {
-          if (!thumbnailUrl) {
-            return {
-              decryptedThumbnail: null,
-              decryptedUrl: url,
-              fileName,
-              mimeType,
-            };
-          }
-
-          try {
-            if (thumbnailUrl) {
-              console.log(11111111, thumbnailUrl);
-              const encryptedThumbnail = await downloadContentFromMinio(
-                thumbnailUrl,
-              );
-              if (!encryptedThumbnail) {
-                return {
-                  decryptedThumbnail: null,
-                  decryptedUrl: url,
-                  fileName,
-                  mimeType,
-                };
-              }
-              const decryptedThumbnail = await decryptThumbnail({
-                encryptedThumbnail: encryptedThumbnail,
-                privateKey: privateChatKey,
-              });
-
-              return {
-                decryptedThumbnail,
-                decryptedUrl: url,
-                fileName,
-                mimeType,
-              };
-            } else {
+        downloadContentUrlData.map(
+          async ({thumbnailUrl, url, fileName, mimeType}) => {
+            if (!thumbnailUrl) {
               return {
                 decryptedThumbnail: null,
                 decryptedUrl: url,
@@ -122,19 +89,53 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                 mimeType,
               };
             }
-          } catch (error) {
-            console.error(
-              `Failed to decrypt thumbnail for ${thumbnailUrl}:`,
-              error,
-            );
-            return {
-              decryptedThumbnail: null,
-              decryptedUrl: url,
-              fileName,
-              mimeType,
-            };
-          }
-        }),
+
+            try {
+              if (thumbnailUrl) {
+                const encryptedThumbnail = await downloadContentFromMinio(
+                  thumbnailUrl,
+                );
+                if (!encryptedThumbnail) {
+                  return {
+                    decryptedThumbnail: null,
+                    decryptedUrl: url,
+                    fileName,
+                    mimeType,
+                  };
+                }
+                const decryptedThumbnail = await decryptThumbnail({
+                  encryptedThumbnail: encryptedThumbnail,
+                  privateKey: privateChatKey,
+                });
+
+                return {
+                  decryptedThumbnail,
+                  decryptedUrl: url,
+                  fileName,
+                  mimeType,
+                };
+              } else {
+                return {
+                  decryptedThumbnail: null,
+                  decryptedUrl: url,
+                  fileName,
+                  mimeType,
+                };
+              }
+            } catch (error) {
+              console.error(
+                `Failed to decrypt thumbnail for ${thumbnailUrl}:`,
+                error,
+              );
+              return {
+                decryptedThumbnail: null,
+                decryptedUrl: url,
+                fileName,
+                mimeType,
+              };
+            }
+          },
+        ),
       );
       setContentData(decryptedContentData);
     };

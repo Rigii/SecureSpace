@@ -4,7 +4,7 @@ export enum EAvailableFilePathNames {
   LIBRARY = 'LIBRARY',
 }
 
-export enum EFileType {
+export enum EFileContentType {
   MEDIA = 'media',
   DOCUMENT = 'document',
 }

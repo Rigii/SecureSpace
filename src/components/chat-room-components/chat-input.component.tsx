@@ -26,7 +26,7 @@ import {
 import {PhotoIcon} from '../../assets/icons/photoContentIcon';
 import {DocumentIcon} from '../../assets/icons/documentContentIcon';
 import {Title3} from '../text-titles/title';
-import {EFileType} from '../../services/file-content/types';
+import {EFileContentType} from '../../services/file-content/types';
 import {DocumentPickerResponse} from 'react-native-document-picker';
 
 interface IChatInput {
@@ -81,7 +81,7 @@ export const ChatInput: React.FC<IChatInput> = ({
           passphrase: '',
           token,
           generateThumbnailUrl: false,
-          type: EFileType.DOCUMENT,
+          type: EFileContentType.DOCUMENT,
           files: selectedDocumentFiles,
         });
 
@@ -105,7 +105,7 @@ export const ChatInput: React.FC<IChatInput> = ({
           passphrase: '',
           token,
           generateThumbnailUrl: true,
-          type: EFileType.MEDIA,
+          type: EFileContentType.MEDIA,
           files: selectedMediaFiles,
         });
         setSelectedMediaFiles([]);
@@ -160,8 +160,6 @@ export const ChatInput: React.FC<IChatInput> = ({
       mimeType: file.mimeType,
       fileName: file.fileName,
     }));
-
-    console.log(888888999999, 'SENT ATTACHMENTS', currentAttachments);
 
     handleSendChatRoomMessage({
       message: encryptedMessage,

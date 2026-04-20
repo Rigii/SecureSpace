@@ -12,7 +12,7 @@ import {
 import {encryptThumbnail} from '../pgp-encryption-service/encrypt-decrypt-thumbnail';
 import {
   EContentFileStatus,
-  EFileType,
+  EFileContentType,
   EUploadContentRecipientType,
 } from './types';
 import {uploadContentWithStream} from './upload-download-stream';
@@ -66,7 +66,7 @@ const uploadContentToMinio = async ({
     presignedUrl: string;
     thumbnailObjectName: string;
     objectName: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
   };
   publicKeys: string[];
   userPrivateKey: string;
@@ -124,7 +124,7 @@ const processContent = async ({
     presignedUrl: string;
     thumbnailObjectName: string;
     objectName: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
   };
   publicKeys: string[];
   token: string;
@@ -191,7 +191,7 @@ const processThumbnail = async ({
     presignedUrl: string;
     thumbnailObjectName: string;
     objectName: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
   };
   publicKeys: string[];
   userPrivateKey: string;
@@ -216,12 +216,12 @@ const processThumbnail = async ({
       thumbnailBuffer,
       publicKeys,
     });
-
-    await uploadThumbnailToMinio({
-      presignedUrl: uploadUrl.thumbnailUrl,
-      encryptedThumbnail,
-    });
-
+    if (uploadUrl.thumbnailUrl) {
+      await uploadThumbnailToMinio({
+        presignedUrl: uploadUrl.thumbnailUrl,
+        encryptedThumbnail,
+      });
+    }
     /* Transaction File Update */
     await updateTransactionFileStatus({
       sessionType: EUploadContentRecipientType.CHAT_ROOM,
@@ -270,7 +270,7 @@ export const uploadFiles = async ({
   userId: string;
   userPrivateKey: string;
   passphrase: string;
-  type: EFileType;
+  type: EFileContentType;
   token: string;
   generateThumbnailUrl: boolean;
   files: DocumentPickerResponse[];
@@ -286,7 +286,7 @@ export const uploadFiles = async ({
   const filesMetadata: {
     fileName: string;
     fileSize: number;
-    fileType: EFileType;
+    fileType: EFileContentType;
     generateThumbnailUrl: boolean;
   }[] = [];
 

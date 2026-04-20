@@ -43,11 +43,12 @@ export const ChatSocketProviderContext = createContext<{
     attachments?:
       | {
           mediaUrl: string;
-          thumbnailUrl?: string;
+          thumbnailUrl?: string | null;
           mimeType?: string | null;
           fileName?: string | null;
         }[]
-      | [];
+      | []
+      | undefined;
   }) => void;
   leaveChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
   deleteChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
@@ -240,11 +241,12 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
     attachments?:
       | {
           mediaUrl: string;
-          thumbnailUrl?: string;
+          thumbnailUrl?: string | null;
           mimeType?: string | null;
           fileName?: string | null;
         }[]
-      | [];
+      | []
+      | undefined;
   }) => {
     const messageData = {
       chatRoomId,
