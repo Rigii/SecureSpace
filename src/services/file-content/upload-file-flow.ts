@@ -12,7 +12,7 @@ import {
 import {encryptThumbnail} from '../pgp-encryption-service/encrypt-decrypt-thumbnail';
 import {
   EContentFileStatus,
-  EFileType,
+  EFileContentType,
   EUploadContentRecipientType,
 } from './types';
 import {uploadContentWithStream} from './upload-download-stream';
@@ -66,7 +66,7 @@ const uploadContentToMinio = async ({
     presignedUrl: string;
     thumbnailObjectName: string;
     objectName: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
   };
   publicKeys: string[];
   userPrivateKey: string;
@@ -75,19 +75,19 @@ const uploadContentToMinio = async ({
   sessionId: string;
   generateThumbnailUrl: boolean;
 }) => {
-  const thumbnailUploadResult = generateThumbnailUrl
-    ? await processThumbnail({
-        file,
-        uploadUrl,
-        publicKeys,
-        userPrivateKey,
-        passphrase,
-        token,
-        sessionId,
-      })
-    : null;
+  if (generateThumbnailUrl) {
+    await processThumbnail({
+      file,
+      uploadUrl,
+      publicKeys,
+      userPrivateKey,
+      passphrase,
+      token,
+      sessionId,
+    });
+  }
 
-  const uploadResult = await processContentTransaction({
+  await processContent({
     file,
     uploadUrl,
     publicKeys,
@@ -105,16 +105,14 @@ const uploadContentToMinio = async ({
   });
 
   return {
-    contentPathName: uploadResult.contentPathName,
-    thumbnailPathName: thumbnailUploadResult
-      ? thumbnailUploadResult.thumbnailPathName
-      : '',
+    contentPathName: uploadUrl?.objectName || '',
+    thumbnailPathName: uploadUrl?.thumbnailObjectName || '',
     mimeType: file.type,
     fileName: file.name,
   };
 };
 
-const processContentTransaction = async ({
+const processContent = async ({
   file,
   uploadUrl,
   publicKeys,
@@ -126,7 +124,7 @@ const processContentTransaction = async ({
     presignedUrl: string;
     thumbnailObjectName: string;
     objectName: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
   };
   publicKeys: string[];
   token: string;
@@ -185,8 +183,6 @@ const processThumbnail = async ({
   file,
   uploadUrl,
   publicKeys,
-  userPrivateKey,
-  passphrase,
   token,
   sessionId,
 }: {
@@ -195,20 +191,14 @@ const processThumbnail = async ({
     presignedUrl: string;
     thumbnailObjectName: string;
     objectName: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
   };
   publicKeys: string[];
   userPrivateKey: string;
   passphrase: string;
   token: string;
   sessionId: string;
-}): Promise<{
-  contentPathName: string;
-  thumbnailLocalPath: string;
-  thumbnailPathName: string;
-  mimeType: string;
-  fileName: string;
-}> => {
+}) => {
   if (!file.fileCopyUri || !file.type || !file.name) {
     throw new Error(strings.fileURLIsNotAvailable);
   }
@@ -222,19 +212,16 @@ const processThumbnail = async ({
     const thumbnailBuffer = await fetch(thumbnailLocalUri).then(r =>
       r.arrayBuffer(),
     );
-
     const encryptedThumbnail = await encryptThumbnail({
       thumbnailBuffer,
       publicKeys,
-      userPrivateKey,
-      passphrase,
     });
-
-    const uploadThumbnailResult = await uploadThumbnailToMinio({
-      presignedUrl: uploadUrl.thumbnailUrl,
-      encryptedThumbnail,
-    });
-
+    if (uploadUrl.thumbnailUrl) {
+      await uploadThumbnailToMinio({
+        presignedUrl: uploadUrl.thumbnailUrl,
+        encryptedThumbnail,
+      });
+    }
     /* Transaction File Update */
     await updateTransactionFileStatus({
       sessionType: EUploadContentRecipientType.CHAT_ROOM,
@@ -246,7 +233,7 @@ const processThumbnail = async ({
 
     return {
       thumbnailLocalPath: thumbnailLocalUri,
-      thumbnailPathName: uploadThumbnailResult.request.responseURL,
+      thumbnailPathName: uploadUrl.thumbnailObjectName,
       contentPathName: uploadUrl.objectName,
       mimeType: file.type,
       fileName: file.name,
@@ -283,7 +270,7 @@ export const uploadFiles = async ({
   userId: string;
   userPrivateKey: string;
   passphrase: string;
-  type: EFileType;
+  type: EFileContentType;
   token: string;
   generateThumbnailUrl: boolean;
   files: DocumentPickerResponse[];
@@ -295,10 +282,11 @@ export const uploadFiles = async ({
     fileName: string | null;
   }[]
 > => {
+  let uploadUrlTransaktionData;
   const filesMetadata: {
     fileName: string;
     fileSize: number;
-    fileType: EFileType;
+    fileType: EFileContentType;
     generateThumbnailUrl: boolean;
   }[] = [];
 
@@ -315,15 +303,19 @@ export const uploadFiles = async ({
     });
   });
 
-  const uploadUrlsResponse = await getFileContentRoomUploadUrl({
-    interlocutorId,
-    userId,
-    roomId,
-    token,
-    filesMetadata,
-  });
-
-  const uploadUrlTransaktionData = uploadUrlsResponse.data;
+  try {
+    const uploadUrlsResponse = await getFileContentRoomUploadUrl({
+      interlocutorId,
+      userId,
+      roomId,
+      token,
+      filesMetadata,
+    });
+    uploadUrlTransaktionData = uploadUrlsResponse.data;
+  } catch (error) {
+    console.error(strings.errorGettingUploadUrls, error);
+    throw error;
+  }
 
   try {
     await updateContentTransaction({

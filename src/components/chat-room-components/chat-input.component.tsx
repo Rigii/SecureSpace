@@ -26,7 +26,7 @@ import {
 import {PhotoIcon} from '../../assets/icons/photoContentIcon';
 import {DocumentIcon} from '../../assets/icons/documentContentIcon';
 import {Title3} from '../text-titles/title';
-import {EFileType} from '../../services/file-content/types';
+import {EFileContentType} from '../../services/file-content/types';
 import {DocumentPickerResponse} from 'react-native-document-picker';
 
 interface IChatInput {
@@ -35,7 +35,7 @@ interface IChatInput {
   inputPlaceholder?: string;
 }
 
-const ChatInput: React.FC<IChatInput> = ({
+export const ChatInput: React.FC<IChatInput> = ({
   chatId,
   inputPlaceholder,
   publicKeys,
@@ -81,7 +81,7 @@ const ChatInput: React.FC<IChatInput> = ({
           passphrase: '',
           token,
           generateThumbnailUrl: false,
-          type: EFileType.DOCUMENT,
+          type: EFileContentType.DOCUMENT,
           files: selectedDocumentFiles,
         });
 
@@ -105,7 +105,7 @@ const ChatInput: React.FC<IChatInput> = ({
           passphrase: '',
           token,
           generateThumbnailUrl: true,
-          type: EFileType.MEDIA,
+          type: EFileContentType.MEDIA,
           files: selectedMediaFiles,
         });
         setSelectedMediaFiles([]);
@@ -127,7 +127,11 @@ const ChatInput: React.FC<IChatInput> = ({
   const onSendMessage = async () => {
     const attachments = await onUploadFiles();
 
-    if (currentMessage.trim() === '') {
+    if (
+      currentMessage.trim() === '' &&
+      !attachments?.uploadDocumentResults?.length &&
+      !attachments?.uploadMediaResults?.length
+    ) {
       return;
     }
 
@@ -146,11 +150,12 @@ const ChatInput: React.FC<IChatInput> = ({
       passphrase: '',
     });
 
+    /* Sending Media and Document Attachments as a single array */
     const currentAttachments = [
       ...(attachments?.uploadDocumentResults || []),
       ...(attachments?.uploadMediaResults || []),
     ].map(file => ({
-      url: file.contentPathName,
+      mediaUrl: file.contentPathName,
       thumbnailUrl: file.thumbnailPathName,
       mimeType: file.mimeType,
       fileName: file.fileName,
@@ -269,5 +274,3 @@ const ChatInput: React.FC<IChatInput> = ({
     </SafeAreaView>
   );
 };
-
-export default ChatInput;

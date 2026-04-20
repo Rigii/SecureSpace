@@ -20,13 +20,26 @@ const createMinioInstance = () => {
 
 export const uploadMemoryContentToMinio = (
   presignedUrl: string,
-  payload: ArrayBuffer | string,
+  payload: Uint8Array<ArrayBufferLike>,
 ) =>
   createMinioInstance().put(presignedUrl, payload, {
     headers: {
       'Content-Type': 'application/octet-stream',
     },
   });
+
+export const downloadContentFromMinio = async (
+  presignedUrl: string,
+): Promise<ArrayBuffer> => {
+  const response = await createMinioInstance().get(presignedUrl, {
+    responseType: 'arraybuffer',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  });
+
+  return response.data;
+};
 
 export const uploadDiskContentInStream = async ({
   presignedUrl,

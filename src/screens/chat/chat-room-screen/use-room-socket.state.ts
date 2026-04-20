@@ -40,6 +40,7 @@ export const useChatRoomSocketState = ({chatId}: IChatRoomSocketState) => {
             currentActiveChatId: chatId,
             message,
             senderPublicKey: message.senderPublicKey,
+            attachments: message.attachments || [],
           },
         }),
       );

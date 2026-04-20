@@ -12,6 +12,14 @@ export interface IChatSocketMessageType {
   [chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER]: IChatMessage;
 }
 
+export interface IRoomAttachment {
+  // id: string;
+  mediaUrl: string;
+  thumbnailUrl?: string | null;
+  mimeType?: string | null;
+  fileName?: string | null;
+}
+
 export interface IChatSocketEvent {
   type: TChatSocketEventType;
   data: {
@@ -21,5 +29,6 @@ export interface IChatSocketEvent {
       | IChatSocketMessageType[typeof chatSocketSagaHandlers.USER_CHAT_INVITATION_WORKER]
       | IChatSocketMessageType[typeof chatSocketSagaHandlers.ROOM_MESSAGE_NOTIFICATION_WORKER]
       | IChatSocketMessageType[typeof chatSocketSagaHandlers.ROOM_MESSAGE_LIST_WORKER];
+    attachments: IRoomAttachment[] | [];
   };
 }

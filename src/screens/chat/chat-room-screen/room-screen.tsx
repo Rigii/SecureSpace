@@ -3,7 +3,7 @@ import {View, FlatList, KeyboardAvoidingView, Platform} from 'react-native';
 import {strings} from '../../../context/chat/chat-provider.strings';
 import ComponentsTopBar from '../../../components/top-bar/components-top-bar/components-top-bar';
 import {ChatMessage} from '../../../components/chat-room-components/chat-message.component';
-import ChatInput from '../../../components/chat-room-components/chat-input.component';
+import {ChatInput} from '../../../components/chat-room-components/chat-input.component';
 import {useChatRoomSocketState} from './use-room-socket.state';
 import {useChatRoomMessagesState} from './use-room-messages.state';
 import {AcceptDecline} from '../../../components/chat-item/accept-decline';
@@ -54,6 +54,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
               senderName={item.senderNickname}
               time={item.created}
               isVerified={item.verifiedOrigin}
+              attachments={item.attachments}
             />
           )}
           showsVerticalScrollIndicator={false}

@@ -42,12 +42,13 @@ export const ChatSocketProviderContext = createContext<{
     chatRoomId: string;
     attachments?:
       | {
-          url: string;
-          thumbnailUrl?: string;
+          mediaUrl: string;
+          thumbnailUrl?: string | null;
           mimeType?: string | null;
           fileName?: string | null;
         }[]
-      | [];
+      | []
+      | undefined;
   }) => void;
   leaveChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
   deleteChatRoom: ({chatRoomId}: {chatRoomId: string}) => void;
@@ -116,6 +117,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
             currentActiveChatId,
             message,
             senderPublicKey: message.senderPublicKey,
+            attachments: message.attachments || [],
           },
         }),
       );
@@ -129,6 +131,7 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
             currentActiveChatId,
             message,
             senderPublicKey: message.senderPublicKey,
+            attachments: message.attachments || [],
           },
         }),
       );
@@ -235,7 +238,15 @@ export const ChatSocketProvider: React.FC<{children: React.ReactNode}> = ({
   }: {
     message: string;
     chatRoomId: string;
-    attachments?: {url: string; thumbnailUrl?: string}[] | [];
+    attachments?:
+      | {
+          mediaUrl: string;
+          thumbnailUrl?: string | null;
+          mimeType?: string | null;
+          fileName?: string | null;
+        }[]
+      | []
+      | undefined;
   }) => {
     const messageData = {
       chatRoomId,

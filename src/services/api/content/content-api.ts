@@ -1,6 +1,6 @@
 import {
   EContentFileStatus,
-  EFileType,
+  EFileContentType,
   EUploadContentRecipientType,
   TFileSessionProceedingStatus,
 } from '../../file-content/types';
@@ -8,6 +8,7 @@ import {uploadMemoryContentToMinio} from '../../xhr-services/api-content-service
 import {postData} from '../../xhr-services/api-service';
 
 const GET_CHAT_MESSAGE_UPLOAD_URL = '/content-storage/content-upload-url';
+const GET_CHAT_MESSAGE_DOWNLOAD_URL = '/content-storage/content-download-url';
 const UPDATE_CONTENT_TRANSACTION = '/content-storage/transaction-update';
 const UPDATE_TRANSACTION_FILE_STATUS =
   '/content-storage/transaction-file-status';
@@ -22,7 +23,7 @@ export const getFileContentRoomUploadUrl = async ({
   filesMetadata: {
     fileName: string;
     fileSize: number;
-    fileType: EFileType;
+    fileType: EFileContentType;
     generateThumbnailUrl: boolean;
   }[];
   roomId: string;
@@ -35,6 +36,18 @@ export const getFileContentRoomUploadUrl = async ({
     roomId,
     interlocutorId,
     userId,
+  });
+
+export const getRoomContentDownloadUrl = async ({
+  contentPathData,
+  token,
+}: {
+  contentPathData: {objectName: string; thumbnailObjectName?: string | null}[];
+
+  token: string;
+}) =>
+  postData(token, GET_CHAT_MESSAGE_DOWNLOAD_URL, {
+    contentPathData,
   });
 
 export const updateContentTransaction = async ({
@@ -79,7 +92,7 @@ export const uploadThumbnailToMinio = async ({
   encryptedThumbnail,
 }: {
   presignedUrl: string;
-  encryptedThumbnail: string;
+  encryptedThumbnail: Uint8Array<ArrayBufferLike>;
 }): Promise<any> =>
   uploadMemoryContentToMinio(presignedUrl, encryptedThumbnail);
 
@@ -88,6 +101,6 @@ export const uploadFileContentToMinio = async ({
   encryptedFileContent,
 }: {
   presignedUrl: string;
-  encryptedFileContent: string;
+  encryptedFileContent: Uint8Array<ArrayBufferLike>;
 }): Promise<any> =>
   uploadMemoryContentToMinio(presignedUrl, encryptedFileContent);
