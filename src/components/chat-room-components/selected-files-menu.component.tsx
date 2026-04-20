@@ -14,7 +14,7 @@ interface ISelectedFilesMenuProps {
   >;
 }
 
-export const SelectedFilesMenu: React.FC<ISelectedFilesMenuProps> = ({
+export const SelectedFilesMenuComponent: React.FC<ISelectedFilesMenuProps> = ({
   selectedMediaFiles,
   setSelectedMediaFiles,
 }) => {
