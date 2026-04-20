@@ -1,11 +1,5 @@
 import React, {useContext} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {SafeAreaView, TouchableOpacity, View} from 'react-native';
 import {EnvelopeIcon} from '../../assets/icons/evenlopeIcon';
 import {ChatSocketProviderContext} from '../../context/chat/chat-provider.context';
 import {Input, KeyboardTypes} from '../input';
@@ -28,6 +22,7 @@ import {DocumentIcon} from '../../assets/icons/documentContentIcon';
 import {Title3} from '../text-titles/title';
 import {EFileContentType} from '../../services/file-content/types';
 import {DocumentPickerResponse} from 'react-native-document-picker';
+import {SelectedFilesMenu} from './selected-files-menu.component';
 
 interface IChatInput {
   chatId: string;
@@ -189,53 +184,53 @@ export const ChatInput: React.FC<IChatInput> = ({
     </View>
   );
 
-  const selectedFilesMenu =
-    selectedMediaFiles.length > 0 || selectedDocumentFiles.length > 0 ? (
-      <ScrollView className="max-h-32 px-3 py-1 bg-white">
-        {selectedMediaFiles.map((file, index) => (
-          <View
-            key={`media-${index}`}
-            className="flex flex-row items-center py-1 space-x-2">
-            <PhotoIcon />
-            <Title3 className="flex-1 text-gray-700">
-              {'...' + (file.name || strings.unsetName).slice(-20)}
-            </Title3>
-            <TouchableOpacity
-              hitSlop={HIT_SLOP}
-              onPress={() =>
-                setSelectedMediaFiles(prev =>
-                  prev.filter((_, i) => i !== index),
-                )
-              }>
-              <Text className="text-red-500 text-lg px-1">
-                {String.fromCharCode(0x2715)}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-        {selectedDocumentFiles.map((file, index) => (
-          <View
-            key={`doc-${index}`}
-            className="flex flex-row items-center py-1 space-x-2">
-            <DocumentIcon />
-            <Title3 className="flex-1 text-gray-700">
-              {'...' + (file.name || strings.unsetName).slice(-20)}
-            </Title3>
-            <TouchableOpacity
-              hitSlop={HIT_SLOP}
-              onPress={() =>
-                setSelectedDocumentFiles(prev =>
-                  prev.filter((_, i) => i !== index),
-                )
-              }>
-              <Text className="text-red-500 text-lg px-1">
-                {String.fromCharCode(0x2715)}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
-    ) : null;
+  // const selectedFilesMenu =
+  //   selectedMediaFiles.length > 0 || selectedDocumentFiles.length > 0 ? (
+  //     <ScrollView className="max-h-32 px-3 py-1 bg-white">
+  //       {selectedMediaFiles.map((file, index) => (
+  //         <View
+  //           key={`media-${index}`}
+  //           className="flex flex-row items-center py-1 space-x-2">
+  //           <PhotoIcon />
+  //           <Title3 className="flex-1 text-gray-700">
+  //             {'...' + (file.name || strings.unsetName).slice(-20)}
+  //           </Title3>
+  //           <TouchableOpacity
+  //             hitSlop={HIT_SLOP}
+  //             onPress={() =>
+  //               setSelectedMediaFiles(prev =>
+  //                 prev.filter((_, i) => i !== index),
+  //               )
+  //             }>
+  //             <Text className="text-red-500 text-lg px-1">
+  //               {String.fromCharCode(0x2715)}
+  //             </Text>
+  //           </TouchableOpacity>
+  //         </View>
+  //       ))}
+  //       {selectedDocumentFiles.map((file, index) => (
+  //         <View
+  //           key={`doc-${index}`}
+  //           className="flex flex-row items-center py-1 space-x-2">
+  //           <DocumentIcon />
+  //           <Title3 className="flex-1 text-gray-700">
+  //             {'...' + (file.name || strings.unsetName).slice(-20)}
+  //           </Title3>
+  //           <TouchableOpacity
+  //             hitSlop={HIT_SLOP}
+  //             onPress={() =>
+  //               setSelectedDocumentFiles(prev =>
+  //                 prev.filter((_, i) => i !== index),
+  //               )
+  //             }>
+  //             <Text className="text-red-500 text-lg px-1">
+  //               {String.fromCharCode(0x2715)}
+  //             </Text>
+  //           </TouchableOpacity>
+  //         </View>
+  //       ))}
+  //     </ScrollView>
+  //   ) : null;
 
   const inputMenu = (
     <View className={'flex flex-row flex-auto self-center space-x-8 top-3'}>
@@ -269,7 +264,10 @@ export const ChatInput: React.FC<IChatInput> = ({
         multiline={true}
         childComponent={actions}
       />
-      {selectedFilesMenu}
+      <SelectedFilesMenu
+        selectedMediaFiles={selectedMediaFiles}
+        setSelectedMediaFiles={setSelectedMediaFiles}
+      />
       {attachMenuVisible && inputMenu}
     </SafeAreaView>
   );
