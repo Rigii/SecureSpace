@@ -16,10 +16,12 @@ import {EFileContentType} from '../../services/file-content/types';
 import {DocumentPickerResponse} from 'react-native-document-picker';
 
 interface IContentActions {
+  message: string;
   chatId: string;
   publicKeys: string[] | [];
   inputPlaceholder?: string;
   selectedDocumentFiles: DocumentPickerResponse[];
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
   setSelectedDocumentFiles: React.Dispatch<
     React.SetStateAction<DocumentPickerResponse[]>
   >;
@@ -32,6 +34,8 @@ interface IContentActions {
 }
 
 export const ContentActionsComponent: React.FC<IContentActions> = ({
+  message,
+  setMessage,
   chatId,
   publicKeys,
   selectedDocumentFiles,
@@ -49,8 +53,6 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
   const {token, id: userId} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
   );
-
-  const [currentMessage, setCurrentMessage] = React.useState<string>('');
 
   const onUploadFiles = async () => {
     let uploadDocumentResults, uploadMediaResults;
@@ -112,7 +114,7 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
     const attachments = await onUploadFiles();
 
     if (
-      currentMessage.trim() === '' &&
+      message.trim() === '' &&
       !attachments?.uploadDocumentResults?.length &&
       !attachments?.uploadMediaResults?.length
     ) {
@@ -128,7 +130,7 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
       return;
     }
     const encryptedMessage = await encryptSignMessageForMultipleRecipients({
-      message: currentMessage,
+      message,
       publicKeys,
       userPrivateKey: privateChatKey,
       passphrase: '',
@@ -150,7 +152,7 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
       chatRoomId: chatId,
       attachments: currentAttachments,
     });
-    setCurrentMessage('');
+    setMessage('');
   };
 
   return (

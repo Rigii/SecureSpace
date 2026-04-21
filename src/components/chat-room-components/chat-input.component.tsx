@@ -77,6 +77,8 @@ export const ChatInput: React.FC<IChatInput> = ({
         multiline={true}
         childComponent={
           <ContentActionsComponent
+            message={currentMessage}
+            setMessage={setCurrentMessage}
             chatId={chatId}
             publicKeys={publicKeys}
             selectedDocumentFiles={selectedDocumentFiles}
