@@ -7,7 +7,11 @@ import {
   uploadDiskContentInStream,
 } from '../xhr-services/api-content-service';
 import {strings} from './file-content.strings';
-import {encryptedSubdir, fileExtensions} from './constants';
+import {
+  encryptedSubdir,
+  fileExtensions,
+  contentLocationsSubdir,
+} from './constants';
 
 const createEncryptedTempPath = (fileName?: string): string => {
   const baseDirectory = (
@@ -23,6 +27,7 @@ const createEncryptedTempPath = (fileName?: string): string => {
   }/${Date.now()}-${safeFileName}${fileExtensions.CONTENT_ENCRYPTED_EXT}`;
 };
 
+/* Temp file path for the encrypted downloaded blob (in temp/cache dir) */
 const createDownloadedEncryptedTempPath = (fileName?: string): string => {
   const baseDirectory = (
     RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath
@@ -32,13 +37,12 @@ const createDownloadedEncryptedTempPath = (fileName?: string): string => {
     '_',
   );
 
-  return `${baseDirectory}/${
-    encryptedSubdir.CONTENT_ENCRYPTED_SUBDIR
-  }/download-${Date.now()}-${safeFileName}${
-    fileExtensions.CONTENT_ENCRYPTED_EXT
-  }`;
+  return `${baseDirectory}/${encryptedSubdir.CONTENT_ENCRYPTED_SUBDIR}/${
+    contentLocationsSubdir.DOWNLOAD
+  }-${Date.now()}-${safeFileName}${fileExtensions.CONTENT_ENCRYPTED_EXT}`;
 };
 
+/* Checks whether the parent directory of a target file path exists */
 const ensureParentDir = async (filePath: string): Promise<void> => {
   const lastSlashIndex = filePath.lastIndexOf('/');
   if (lastSlashIndex === -1) {
@@ -84,6 +88,7 @@ const resolveExistingNativeFilePath = async (
   return existingPath.candidate;
 };
 
+/* final decrypted file destination in app storage */
 const buildLocalContentPath = ({
   contentPathName,
   roomId,
@@ -102,13 +107,12 @@ const buildLocalContentPath = ({
   }
 
   if (roomId) {
-    return `${baseDirectory}/chat-rooms/${roomId}/${name}`;
+    return `${baseDirectory}/${contentLocationsSubdir.CHAT_ROOMS}/${roomId}/${name}`;
   }
 
-  return `${baseDirectory}/user/${folderPath || ''}/${name}`.replace(
-    /\/\/+/,
-    '/',
-  );
+  return `${baseDirectory}/${contentLocationsSubdir.USER}/${
+    folderPath || ''
+  }/${name}`.replace(/\/\/+/, '/');
 };
 
 export const uploadContentWithStream = async ({
@@ -180,13 +184,21 @@ export const downloadContentWithStream = async ({
   folderPath?: string;
   name: string;
 }): Promise<{contentPathName: string}> => {
-  const encryptedDownloadedPath = createDownloadedEncryptedTempPath(name);
   const localContentPath = buildLocalContentPath({
     contentPathName,
     roomId,
     folderPath,
     name,
   });
+
+  if (await RNFS.exists(localContentPath)) {
+    console.warn(
+      `${strings.fileAlreadyExistsAtPath} ${localContentPath}. ${strings.downloadingAndDecryptingWillBeSkipped}`,
+    );
+    return {contentPathName: localContentPath};
+  }
+
+  const encryptedDownloadedPath = createDownloadedEncryptedTempPath(name);
 
   await ensureParentDir(encryptedDownloadedPath);
   await ensureParentDir(localContentPath);

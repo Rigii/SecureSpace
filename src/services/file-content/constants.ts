@@ -15,3 +15,9 @@ export const fileExtensions = {
 export const encryptedSubdir = {
   CONTENT_ENCRYPTED_SUBDIR: 'encrypted',
 };
+
+export const contentLocationsSubdir = {
+  CHAT_ROOMS: 'chat-rooms',
+  USER: 'user',
+  DOWNLOAD: 'download',
+};
