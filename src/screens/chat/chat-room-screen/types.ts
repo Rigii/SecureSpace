@@ -7,3 +7,12 @@ export interface IRoomInterlocutor {
   email: string;
   public_chat_key: string;
 }
+
+export interface IChatRoomContent {
+  messageId: string;
+  contentId: string;
+  contentType: string;
+  contentLocalPath: string;
+  fileName: string;
+  mimeType?: string | null;
+}

@@ -192,9 +192,6 @@ export const downloadContentWithStream = async ({
   });
 
   if (await RNFS.exists(localContentPath)) {
-    console.warn(
-      `${strings.fileAlreadyExistsAtPath} ${localContentPath}. ${strings.downloadingAndDecryptingWillBeSkipped}`,
-    );
     return {contentPathName: localContentPath};
   }
 

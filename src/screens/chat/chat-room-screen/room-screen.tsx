@@ -7,6 +7,8 @@ import {ChatInput} from '../../../components/chat-room-components/chat-input.com
 import {useChatRoomSocketState} from './use-room-socket.state';
 import {useChatRoomMessagesState} from './use-room-messages.state';
 import {AcceptDecline} from '../../../components/chat-item/accept-decline';
+import ContentPreviewModal from '../../../components/modal-popup/content-preview-modal';
+import {useChatRoomContentState} from './use-room-content.state';
 
 interface IChatRoomScreen {
   chatId: string;
@@ -26,6 +28,13 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
     roomInterlocutors,
     chatId,
   });
+
+  const {
+    roomContent,
+    reviewedContentItem,
+    setReviewedContentItem,
+    onSetRoomContent,
+  } = useChatRoomContentState();
 
   return (
     <View className="flex-1">
@@ -50,11 +59,13 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
           renderItem={({item}) => (
             <ChatMessage
               message={item.message}
+              messageId={item.id}
               isOwnMessage={item.participantId === participantId}
               senderName={item.senderNickname}
               time={item.created}
               isVerified={item.verifiedOrigin}
               attachments={item.attachments}
+              onSetRoomContent={onSetRoomContent}
             />
           )}
           showsVerticalScrollIndicator={false}
@@ -69,6 +80,15 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         chatId={chatId}
         inputPlaceholder={strings.enterYourMessage}
         publicKeys={publicKeys}
+      />
+      <ContentPreviewModal
+        isOpen={reviewedContentItem !== null}
+        contentType={reviewedContentItem?.contentType || ''}
+        contentLocalPath={reviewedContentItem?.contentLocalPath || ''}
+        indexNumber={0}
+        contentName={reviewedContentItem?.fileName || ''}
+        contentDate={new Date()}
+        onClose={() => {}}
       />
     </View>
   );

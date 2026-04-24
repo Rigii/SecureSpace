@@ -11,11 +11,13 @@ import {downloadContentWithStream} from '../../services/file-content/upload-down
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   message,
+  messageId,
   isOwnMessage = false,
   senderName,
   time,
   isVerified,
   attachments,
+  onSetRoomContent,
 }) => {
   const {token} = useReduxSelector(
     state => state.anonymousUserReducer.userAccountData,
@@ -25,12 +27,14 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   );
   const [contentData, setContentData] = useState<TDecryptedContentData[]>([]);
 
-  const onContentPress = (attachment: TDecryptedContentData) => {
-    downloadContentWithStream({
+  const onContentPress = async (attachment: TDecryptedContentData) => {
+    const localFilePath = await downloadContentWithStream({
       presignedUrl: attachment.decryptedUrl,
       privateKey: privateChatKey,
       name: attachment.fileName,
     });
+    // ContentPreviewModal
+    console.warn(localFilePath.contentPathName);
   };
 
   useEffect(() => {
@@ -44,6 +48,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         thumbnailObjectName: att.thumbnailUrl,
         fileName: att.fileName,
         mimeType: att.mimeType,
+        id: att.id,
       }));
 
       const responce = await getRoomContentDownloadUrl({
@@ -57,6 +62,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       }
 
       const downloadContentUrlData = responce.data.downloadUrls as {
+        id: string;
         thumbnailUrl: string | null;
         url: string;
         fileName: string;
@@ -65,9 +71,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
       const decryptedContentData = await Promise.all(
         downloadContentUrlData.map(
-          async ({thumbnailUrl, url, fileName, mimeType}) => {
+          async ({id, thumbnailUrl, url, fileName, mimeType}) => {
             if (!thumbnailUrl) {
               return {
+                id,
                 decryptedThumbnail: null,
                 decryptedUrl: url,
                 fileName,
@@ -82,6 +89,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                 );
                 if (!encryptedThumbnail) {
                   return {
+                    id,
                     decryptedThumbnail: null,
                     decryptedUrl: url,
                     fileName,
@@ -94,6 +102,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                 });
 
                 return {
+                  id,
                   decryptedThumbnail,
                   decryptedUrl: url,
                   fileName,
@@ -101,6 +110,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                 };
               } else {
                 return {
+                  id,
                   decryptedThumbnail: null,
                   decryptedUrl: url,
                   fileName,
@@ -113,6 +123,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                 error,
               );
               return {
+                id,
                 decryptedThumbnail: null,
                 decryptedUrl: url,
                 fileName,
@@ -123,10 +134,18 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         ),
       );
       setContentData(decryptedContentData);
+      onSetRoomContent(decryptedContentData, messageId);
     };
 
     decryptThumbnails();
-  }, [attachments, token, privateChatKey, publicChatKey]);
+  }, [
+    attachments,
+    token,
+    privateChatKey,
+    publicChatKey,
+    messageId,
+    onSetRoomContent,
+  ]);
 
   return (
     <View
