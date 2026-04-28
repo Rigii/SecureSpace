@@ -8,11 +8,15 @@ export interface IRoomInterlocutor {
   public_chat_key: string;
 }
 
-export interface IChatRoomContent {
+export interface IChatRoomContentItem {
   messageId: string;
   contentId: string;
   contentType: string;
   contentLocalPath: string;
+  decryptedUrl: string;
   fileName: string;
   mimeType?: string | null;
+  decryptedThumbnail: string | null;
+  created?: Date;
+  updated?: Date;
 }

@@ -3,14 +3,14 @@ import {View, Image, TouchableOpacity} from 'react-native';
 import {DocumentIcon} from '../../assets/icons/documentContentIcon';
 import {Title3} from '../text-titles/title';
 import {strings} from './chat-room.strings';
-import {TDecryptedContentData} from './chat-room.types';
+import {IChatRoomContentItem} from '../../screens/chat/chat-room-screen/types';
 
 export const ContentComponent = ({
   attachments,
   onContentPress,
 }: {
-  attachments: TDecryptedContentData[] | [];
-  onContentPress: (attachment: TDecryptedContentData) => void;
+  attachments: IChatRoomContentItem[] | [];
+  onContentPress: (attachment: IChatRoomContentItem) => void;
 }) => {
   return (
     <View>

@@ -1,4 +1,5 @@
 import {IRoomAttachment} from '../../app/store/saga/chat-account-saga/types';
+import {IChatRoomContentItem} from '../../screens/chat/chat-room-screen/types';
 
 export type ChatMessageProps = {
   message: string;
@@ -8,10 +9,13 @@ export type ChatMessageProps = {
   time?: string;
   isVerified?: boolean;
   attachments?: IRoomAttachment[] | [];
-  onSetRoomContent: (
-    contentItems: TDecryptedContentData[],
-    messageId: string,
-  ) => void;
+  getMessageContentData: ({
+    messageId,
+    contentIds,
+  }: {
+    messageId: string;
+    contentIds: string[];
+  }) => (IChatRoomContentItem | undefined)[];
 };
 
 export type TDecryptedContentData =

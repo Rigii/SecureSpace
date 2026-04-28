@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
-import {decryptThumbnail} from '../../services/pgp-encryption-service/encrypt-decrypt-thumbnail';
-import {getRoomContentDownloadUrl} from '../../services/api/content/content-api';
 import {useReduxSelector} from '../../app/store/store';
-import {downloadContentFromMinio} from '../../services/xhr-services/api-content-service';
 import {strings} from './chat-room.strings';
-import {ChatMessageProps, TDecryptedContentData} from './chat-room.types';
+import {ChatMessageProps} from './chat-room.types';
 import {ContentComponent} from './message-content.component';
 import {downloadContentWithStream} from '../../services/file-content/upload-download-stream';
+import {IChatRoomContentItem} from '../../screens/chat/chat-room-screen/types';
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   message,
@@ -17,17 +15,14 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   time,
   isVerified,
   attachments,
-  onSetRoomContent,
+  getMessageContentData,
 }) => {
-  const {token} = useReduxSelector(
-    state => state.anonymousUserReducer.userAccountData,
-  );
-  const {privateChatKey, publicChatKey} = useReduxSelector(
+  const {privateChatKey} = useReduxSelector(
     state => state.userChatAccountReducer,
   );
-  const [contentData, setContentData] = useState<TDecryptedContentData[]>([]);
+  const [contentData, setContentData] = useState<IChatRoomContentItem[]>([]);
 
-  const onContentPress = async (attachment: TDecryptedContentData) => {
+  const onContentPress = async (attachment: IChatRoomContentItem) => {
     const localFilePath = await downloadContentWithStream({
       presignedUrl: attachment.decryptedUrl,
       privateKey: privateChatKey,
@@ -38,114 +33,17 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   };
 
   useEffect(() => {
-    const decryptThumbnails = async () => {
-      if (!attachments?.length) {
-        return;
-      }
+    if (!attachments || attachments.length === 0) {
+      return;
+    }
 
-      const contentPathData = attachments.map(att => ({
-        objectName: att.mediaUrl,
-        thumbnailObjectName: att.thumbnailUrl,
-        fileName: att.fileName,
-        mimeType: att.mimeType,
-        id: att.id,
-      }));
+    const thisContentData = getMessageContentData({
+      messageId,
+      contentIds: attachments.map(att => att._id),
+    }).filter((item): item is IChatRoomContentItem => item !== undefined);
 
-      const responce = await getRoomContentDownloadUrl({
-        contentPathData,
-        token,
-      });
-
-      if (!responce.data?.downloadUrls) {
-        console.error(strings.noDownloadUrlsReceived);
-        return;
-      }
-
-      const downloadContentUrlData = responce.data.downloadUrls as {
-        id: string;
-        thumbnailUrl: string | null;
-        url: string;
-        fileName: string;
-        mimeType?: string | null;
-      }[];
-
-      const decryptedContentData = await Promise.all(
-        downloadContentUrlData.map(
-          async ({id, thumbnailUrl, url, fileName, mimeType}) => {
-            if (!thumbnailUrl) {
-              return {
-                id,
-                decryptedThumbnail: null,
-                decryptedUrl: url,
-                fileName,
-                mimeType,
-              };
-            }
-
-            try {
-              if (thumbnailUrl) {
-                const encryptedThumbnail = await downloadContentFromMinio(
-                  thumbnailUrl,
-                );
-                if (!encryptedThumbnail) {
-                  return {
-                    id,
-                    decryptedThumbnail: null,
-                    decryptedUrl: url,
-                    fileName,
-                    mimeType,
-                  };
-                }
-                const decryptedThumbnail = await decryptThumbnail({
-                  encryptedThumbnail: encryptedThumbnail,
-                  privateKey: privateChatKey,
-                });
-
-                return {
-                  id,
-                  decryptedThumbnail,
-                  decryptedUrl: url,
-                  fileName,
-                  mimeType,
-                };
-              } else {
-                return {
-                  id,
-                  decryptedThumbnail: null,
-                  decryptedUrl: url,
-                  fileName,
-                  mimeType,
-                };
-              }
-            } catch (error) {
-              console.error(
-                `${strings.failedToDecryptThumbnail} ${thumbnailUrl}:`,
-                error,
-              );
-              return {
-                id,
-                decryptedThumbnail: null,
-                decryptedUrl: url,
-                fileName,
-                mimeType,
-              };
-            }
-          },
-        ),
-      );
-      setContentData(decryptedContentData);
-      onSetRoomContent(decryptedContentData, messageId);
-    };
-
-    decryptThumbnails();
-  }, [
-    attachments,
-    token,
-    privateChatKey,
-    publicChatKey,
-    messageId,
-    onSetRoomContent,
-  ]);
+    setContentData(thisContentData);
+  }, [attachments, getMessageContentData, messageId]);
 
   return (
     <View

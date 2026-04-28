@@ -1,14 +1,14 @@
 import React from 'react';
-import {View, FlatList, KeyboardAvoidingView, Platform} from 'react-native';
+import {View} from 'react-native';
 import {strings} from '../../../context/chat/chat-provider.strings';
 import ComponentsTopBar from '../../../components/top-bar/components-top-bar/components-top-bar';
-import {ChatMessage} from '../../../components/chat-room-components/chat-message.component';
 import {ChatInput} from '../../../components/chat-room-components/chat-input.component';
 import {useChatRoomSocketState} from './use-room-socket.state';
 import {useChatRoomMessagesState} from './use-room-messages.state';
 import {AcceptDecline} from '../../../components/chat-item/accept-decline';
 import ContentPreviewModal from '../../../components/modal-popup/content-preview-modal';
 import {useChatRoomContentState} from './use-room-content.state';
+import MessageList from '../../../components/chat-room-components/message-list';
 
 interface IChatRoomScreen {
   chatId: string;
@@ -23,18 +23,14 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
     chatRoomOptions,
     messages,
     isInvitationNotAccepted,
-    flatListRef,
   } = useChatRoomMessagesState({
     roomInterlocutors,
     chatId,
   });
 
-  const {
-    roomContent,
-    reviewedContentItem,
-    setReviewedContentItem,
-    onSetRoomContent,
-  } = useChatRoomContentState();
+  const {reviewedContentItem, getMessageContentData} = useChatRoomContentState({
+    messages,
+  });
 
   return (
     <View className="flex-1">
@@ -45,37 +41,11 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         roomInterlocutors={roomInterlocutors}
       />
       {isInvitationNotAccepted ? <AcceptDecline chatId={chatId} /> : null}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1 mt-3"
-        keyboardVerticalOffset={100}>
-        <FlatList
-          data={messages}
-          keyExtractor={item => item.id}
-          ref={flatListRef}
-          onContentSizeChange={() =>
-            flatListRef.current?.scrollToEnd({animated: true})
-          }
-          renderItem={({item}) => (
-            <ChatMessage
-              message={item.message}
-              messageId={item.id}
-              isOwnMessage={item.participantId === participantId}
-              senderName={item.senderNickname}
-              time={item.created}
-              isVerified={item.verifiedOrigin}
-              attachments={item.attachments}
-              onSetRoomContent={onSetRoomContent}
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          getItemLayout={(_, index) => ({
-            length: 2000,
-            offset: 80 * index,
-            index,
-          })}
-        />
-      </KeyboardAvoidingView>
+      <MessageList
+        messages={messages}
+        participantId={participantId}
+        getMessageContentData={getMessageContentData}
+      />
       <ChatInput
         chatId={chatId}
         inputPlaceholder={strings.enterYourMessage}
