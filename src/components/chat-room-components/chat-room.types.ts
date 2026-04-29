@@ -16,6 +16,7 @@ export type ChatMessageProps = {
     messageId: string;
     contentIds: string[];
   }) => (IChatRoomContentItem | undefined)[];
+  onContentPress: (attachment: IChatRoomContentItem) => Promise<void>;
 };
 
 export type TDecryptedContentData =

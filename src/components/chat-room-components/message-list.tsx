@@ -14,12 +14,14 @@ interface IMessageListProps {
     messageId: string;
     contentIds: string[];
   }) => (IChatRoomContentItem | undefined)[];
+  onContentPress: (attachment: IChatRoomContentItem) => Promise<void>;
 }
 
 const MessageList: React.FC<IMessageListProps> = ({
   messages,
   participantId,
   getMessageContentData,
+  onContentPress,
 }) => {
   const flatListRef = useRef<FlatList>(null);
 
@@ -53,6 +55,7 @@ const MessageList: React.FC<IMessageListProps> = ({
             isVerified={item.verifiedOrigin}
             attachments={item.attachments}
             getMessageContentData={getMessageContentData}
+            onContentPress={onContentPress}
           />
         )}
         showsVerticalScrollIndicator={false}

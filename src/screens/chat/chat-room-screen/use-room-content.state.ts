@@ -8,6 +8,7 @@ import {downloadContentFromMinio} from '../../../services/xhr-services/api-conte
 import {decryptThumbnail} from '../../../services/pgp-encryption-service/encrypt-decrypt-thumbnail';
 import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {useReduxSelector} from '../../../app/store/store';
+import {downloadContentWithStream} from '../../../services/file-content/upload-download-stream';
 
 export const useChatRoomContentState = ({
   messages,
@@ -24,7 +25,7 @@ export const useChatRoomContentState = ({
     Map<string, IChatRoomContentItem>
   >(new Map());
 
-  const [reviewedContentItem, setReviewedContentItem] =
+  const [activeContentItem, setActiveContentItem] =
     useState<IChatRoomContentItem | null>(null);
 
   const getContentUniqueKey = ({
@@ -78,6 +79,44 @@ export const useChatRoomContentState = ({
     },
     [],
   );
+
+  const onContentPress = async (attachment: IChatRoomContentItem) => {
+    const contentItemKey = getContentUniqueKey({
+      messageId: attachment.messageId,
+      contentId: attachment.contentId,
+    });
+
+    /* TODO:// Set correct content path name */
+    const localFilePath = await downloadContentWithStream({
+      presignedUrl: attachment.decryptedUrl,
+      privateKey: privateChatKey,
+      name: attachment.fileName,
+      //   contentPathName: attachment.contentLocalPath,
+      folderPath: attachment.messageId,
+      roomId: messages[0]?.chatRoomId,
+    });
+    console.log(9999999, localFilePath);
+    // Set Active content Item to review content in preview modal
+    setActiveContentItem({
+      ...attachment,
+      contentLocalPath: localFilePath.contentPathName,
+    });
+
+    // Update content item with local file path
+    setRoomContent(prev => {
+      const updatedContent = new Map(prev);
+      const existingItem = updatedContent.get(contentItemKey);
+      if (existingItem) {
+        updatedContent.set(contentItemKey, {
+          ...existingItem,
+          contentLocalPath: localFilePath.contentPathName,
+        });
+      }
+      return updatedContent;
+    });
+    // Open content with appropriate app
+    console.warn(localFilePath.contentPathName);
+  };
 
   const decryptMessageThumbnails = useCallback(
     async ({
@@ -187,6 +226,10 @@ export const useChatRoomContentState = ({
     [onSetRoomContent, privateChatKey, token],
   );
 
+  const purgeActiveContentItem = () => {
+    setActiveContentItem(null);
+  };
+
   useEffect(() => {
     if (messages.length === 0 || !privateChatKey || !token) {
       return;
@@ -203,12 +246,14 @@ export const useChatRoomContentState = ({
   }, [decryptMessageThumbnails, messages, privateChatKey, token]);
 
   console.log(111111, [...roomContent.values()]);
+  console.log(222222, activeContentItem);
 
   return {
     roomContent,
-    reviewedContentItem,
-    setReviewedContentItem,
+    activeContentItem,
+    purgeActiveContentItem,
     onSetRoomContent,
     getMessageContentData,
+    onContentPress,
   };
 };

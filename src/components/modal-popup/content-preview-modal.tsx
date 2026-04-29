@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  Image,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {Image, Modal, Pressable, Text, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import ReactNativeVideo from 'react-native-video';
 
 export interface ContentPreviewModalProps {
@@ -20,6 +13,12 @@ export interface ContentPreviewModalProps {
 
   onClose?: () => void;
 }
+
+const strings = {
+  videoPreviewUnavailable: 'Video preview is not available.',
+  unsupportedContentType: 'Unsupported content type.',
+  closeButton: 'Close',
+};
 
 const normalizeLocalPath = (path: string): string =>
   path.startsWith('file://') ? path : `file://${path}`;
@@ -63,32 +62,35 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
     }
   }
 
-  const handleOutsidePress = () => {
-    if (onClose) {
-      onClose();
-    }
-  };
-
   return (
     <Modal
       animationType="fade"
-      transparent
+      transparent={false}
+      presentationStyle="pageSheet"
+      statusBarTranslucent={true}
       visible={isOpen}
-      onRequestClose={onClose}>
-      <TouchableWithoutFeedback onPress={handleOutsidePress}>
-        <View style={styles.header}>
-          <Text style={styles.indexText}>#{indexNumber + 1}</Text>
-          <Pressable style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>Close</Text>
+      onRequestClose={onClose}
+      className="flex-1 bg-black">
+      <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-black">
+        <View className="flex-row items-center justify-between px-4 pt-2">
+          <Text className="text-white text-sm opacity-80">
+            #{indexNumber + 1}
+          </Text>
+          <Pressable
+            className="border border-white px-3.5 py-2 rounded-lg"
+            onPress={onClose}>
+            <Text className="text-white text-sm font-semibold">
+              {strings.closeButton}
+            </Text>
           </Pressable>
         </View>
 
-        <View style={styles.mediaCenter}>
-          <View style={styles.mediaBlock}>
+        <View className="flex-1 items-center justify-center px-3">
+          <View className="w-full h-3/4 items-center justify-center">
             {imageContent && (
               <Image
                 source={{uri: localUri}}
-                style={styles.media}
+                className="w-full h-full"
                 resizeMode="contain"
               />
             )}
@@ -96,7 +98,7 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
             {videoContent && VideoComponent && (
               <VideoComponent
                 source={{uri: localUri}}
-                style={styles.media}
+                // style={styles.media}
                 controls
                 resizeMode="contain"
                 paused={false}
@@ -104,104 +106,30 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
             )}
 
             {videoContent && !VideoComponent && (
-              <View style={styles.unsupportedBlock}>
-                <Text style={styles.unsupportedText}>
-                  Video preview is not available.
+              <View className="w-full h-full items-center justify-center border border-[#2E2E2E] rounded-xl">
+                <Text className="text-gray-300 text-base">
+                  {strings.videoPreviewUnavailable}
                 </Text>
               </View>
             )}
 
             {!imageContent && !videoContent && (
-              <View style={styles.unsupportedBlock}>
-                <Text style={styles.unsupportedText}>
-                  Unsupported content type.
+              <View className="w-full h-full items-center justify-center border border-[#2E2E2E] rounded-xl">
+                <Text className="text-gray-300 text-base">
+                  {strings.unsupportedContentType}
                 </Text>
               </View>
             )}
           </View>
         </View>
 
-        <View style={styles.metaBlock}>
-          <Text style={styles.contentName}>{contentName}</Text>
-          <Text style={styles.contentDate}>{formattedDate}</Text>
+        <View className="px-4 pb-6 space-y-1.5">
+          <Text className="text-white text-lg font-bold">{contentName}</Text>
+          <Text className="text-[#BDBDBD] text-[13px]">{formattedDate}</Text>
         </View>
-      </TouchableWithoutFeedback>
+      </SafeAreaView>
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  indexText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    opacity: 0.8,
-  },
-  closeButton: {
-    borderWidth: 1,
-    borderColor: '#FFFFFF',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  mediaCenter: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  mediaBlock: {
-    width: '100%',
-    height: '74%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  media: {
-    width: '100%',
-    height: '100%',
-  },
-  unsupportedBlock: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#2E2E2E',
-    borderRadius: 12,
-  },
-  unsupportedText: {
-    color: '#D1D5DB',
-    fontSize: 16,
-  },
-  metaBlock: {
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-    gap: 6,
-  },
-  contentName: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  contentDate: {
-    color: '#BDBDBD',
-    fontSize: 13,
-  },
-});
 
 export default ContentPreviewModal;

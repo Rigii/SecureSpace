@@ -28,7 +28,12 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
     chatId,
   });
 
-  const {reviewedContentItem, getMessageContentData} = useChatRoomContentState({
+  const {
+    activeContentItem,
+    purgeActiveContentItem,
+    getMessageContentData,
+    onContentPress,
+  } = useChatRoomContentState({
     messages,
   });
 
@@ -45,6 +50,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         messages={messages}
         participantId={participantId}
         getMessageContentData={getMessageContentData}
+        onContentPress={onContentPress}
       />
       <ChatInput
         chatId={chatId}
@@ -52,13 +58,13 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         publicKeys={publicKeys}
       />
       <ContentPreviewModal
-        isOpen={reviewedContentItem !== null}
-        contentType={reviewedContentItem?.contentType || ''}
-        contentLocalPath={reviewedContentItem?.contentLocalPath || ''}
+        isOpen={activeContentItem !== null}
+        contentType={activeContentItem?.contentType || ''}
+        contentLocalPath={activeContentItem?.contentLocalPath || ''}
         indexNumber={0}
-        contentName={reviewedContentItem?.fileName || ''}
+        contentName={activeContentItem?.fileName || ''}
         contentDate={new Date()}
-        onClose={() => {}}
+        onClose={purgeActiveContentItem}
       />
     </View>
   );

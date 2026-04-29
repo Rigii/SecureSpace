@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
-import {useReduxSelector} from '../../app/store/store';
 import {strings} from './chat-room.strings';
 import {ChatMessageProps} from './chat-room.types';
 import {ContentComponent} from './message-content.component';
-import {downloadContentWithStream} from '../../services/file-content/upload-download-stream';
 import {IChatRoomContentItem} from '../../screens/chat/chat-room-screen/types';
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
@@ -16,21 +14,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   isVerified,
   attachments,
   getMessageContentData,
+  onContentPress,
 }) => {
-  const {privateChatKey} = useReduxSelector(
-    state => state.userChatAccountReducer,
-  );
   const [contentData, setContentData] = useState<IChatRoomContentItem[]>([]);
-
-  const onContentPress = async (attachment: IChatRoomContentItem) => {
-    const localFilePath = await downloadContentWithStream({
-      presignedUrl: attachment.decryptedUrl,
-      privateKey: privateChatKey,
-      name: attachment.fileName,
-    });
-    // ContentPreviewModal
-    console.warn(localFilePath.contentPathName);
-  };
 
   useEffect(() => {
     if (!attachments || attachments.length === 0) {
