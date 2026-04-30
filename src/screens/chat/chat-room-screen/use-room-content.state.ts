@@ -91,10 +91,12 @@ export const useChatRoomContentState = ({
       presignedUrl: attachment.decryptedUrl,
       privateKey: privateChatKey,
       name: attachment.fileName,
-      //   contentPathName: attachment.contentLocalPath,
+      contentPathName: attachment.contentLocalPath,
       folderPath: attachment.messageId,
       roomId: messages[0]?.chatRoomId,
     });
+
+    console.log(8888888, attachment.contentLocalPath);
     console.log(9999999, localFilePath);
     // Set Active content Item to review content in preview modal
     setActiveContentItem({
@@ -245,8 +247,8 @@ export const useChatRoomContentState = ({
     });
   }, [decryptMessageThumbnails, messages, privateChatKey, token]);
 
-  console.log(111111, [...roomContent.values()]);
-  console.log(222222, activeContentItem);
+  //   console.log(111111, [...roomContent.values()]);
+  //   console.log(222222, activeContentItem);
 
   return {
     roomContent,

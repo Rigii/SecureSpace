@@ -11,9 +11,10 @@ import {
   encryptedSubdir,
   fileExtensions,
   contentLocationsSubdir,
+  contentPathDir,
 } from './constants';
 
-const createEncryptedTempPath = (fileName?: string): string => {
+const createUploadEncryptedTempPath = (fileName?: string): string => {
   const baseDirectory = (
     RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath
   ).replace(/\/+$/, '');
@@ -38,7 +39,7 @@ const createDownloadedEncryptedTempPath = (fileName?: string): string => {
   );
 
   return `${baseDirectory}/${encryptedSubdir.CONTENT_ENCRYPTED_SUBDIR}/${
-    contentLocationsSubdir.DOWNLOAD
+    contentLocationsSubdir.TEMP_DOWNLOADS
   }-${Date.now()}-${safeFileName}${fileExtensions.CONTENT_ENCRYPTED_EXT}`;
 };
 
@@ -89,7 +90,7 @@ const resolveExistingNativeFilePath = async (
 };
 
 /* final decrypted file destination in app storage */
-const buildLocalContentPath = ({
+const buildLocalDownloadContentPath = ({
   contentPathName,
   roomId,
   folderPath,
@@ -100,17 +101,31 @@ const buildLocalContentPath = ({
   folderPath?: string;
   name: string;
 }): string => {
-  const baseDirectory = RNFS.DocumentDirectoryPath;
+  console.log(10000000, contentPathName);
 
   if (contentPathName && contentPathName.length > 0) {
-    return `${baseDirectory}/${contentPathName}`;
+    console.log(1111, contentPathName);
+    return contentPathName;
   }
 
   if (roomId) {
-    return `${baseDirectory}/${contentLocationsSubdir.CHAT_ROOMS}/${roomId}/${name}`;
-  }
+    console.log(
+      22211111,
+      `${contentPathDir.userContentDirectory}/${
+        folderPath || ''
+      }/${name}`.replace(/\/\/+/, '/'),
+    );
 
-  return `${baseDirectory}/${contentLocationsSubdir.USER}/${
+    return `${contentPathDir.roomsContentDirectory}/${roomId}/${name}`;
+  }
+  console.log(
+    2222222,
+    `${contentPathDir.userContentDirectory}/${
+      folderPath || ''
+    }/${name}`.replace(/\/\/+/, '/'),
+  );
+
+  return `${contentPathDir.userContentDirectory}/${
     folderPath || ''
   }/${name}`.replace(/\/\/+/, '/');
 };
@@ -130,7 +145,7 @@ export const uploadContentWithStream = async ({
 
   const rawSourcePath = file.fileCopyUri || file.uri;
   const sourceFilePath = await resolveExistingNativeFilePath(rawSourcePath);
-  const encryptedFilePath = createEncryptedTempPath(file.name);
+  const encryptedFilePath = createUploadEncryptedTempPath(file.name);
 
   await ensureParentDir(encryptedFilePath);
 
@@ -184,7 +199,7 @@ export const downloadContentWithStream = async ({
   folderPath?: string;
   name: string;
 }): Promise<{contentPathName: string}> => {
-  const localContentPath = buildLocalContentPath({
+  const localContentPath = buildLocalDownloadContentPath({
     contentPathName,
     roomId,
     folderPath,
@@ -192,9 +207,14 @@ export const downloadContentWithStream = async ({
   });
 
   if (await RNFS.exists(localContentPath)) {
+    console.log(22222, 'FILE EXISTS', localContentPath);
     return {contentPathName: localContentPath};
   }
-
+  console.log(
+    3333333,
+    'DOWNLOADED FILE NOT EXISTS, STARTING DOWNLOAD',
+    localContentPath,
+  );
   const encryptedDownloadedPath = createDownloadedEncryptedTempPath(name);
 
   await ensureParentDir(encryptedDownloadedPath);
