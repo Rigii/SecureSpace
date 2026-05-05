@@ -37,11 +37,13 @@ export const ChatInput: React.FC<IChatInput> = ({
 
   const onAttachMedia = async () => {
     const files = await pickMediaFiles();
+
     setSelectedMediaFiles(files);
   };
 
   const onAttachDocument = async () => {
     const files = await pickDocumentFiles();
+
     setSelectedDocumentFiles(files);
   };
 
@@ -92,7 +94,9 @@ export const ChatInput: React.FC<IChatInput> = ({
       />
       <SelectedFilesMenuComponent
         selectedMediaFiles={selectedMediaFiles}
+        selectedDocumentFiles={selectedDocumentFiles}
         setSelectedMediaFiles={setSelectedMediaFiles}
+        setSelectedDocumentFiles={setSelectedDocumentFiles}
       />
       {attachMenuVisible && inputMenu}
     </SafeAreaView>

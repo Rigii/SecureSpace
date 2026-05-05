@@ -104,7 +104,6 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
     } catch (error) {
       ErrorNotificationHandler({
         text1: strings.mediaUploadFailed,
-        // text2: error instanceof Error ? error.message : undefined,
         type: EPopupType.ERROR,
       });
     }
@@ -155,6 +154,8 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
     setMessage('');
   };
 
+  const toggleAttachmentMenu = () => setAttachMenuVisible(!attachMenuVisible);
+
   return (
     <View
       className={
@@ -163,7 +164,7 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
       <TouchableOpacity
         hitSlop={HIT_SLOP}
         className={'w-5'}
-        onPress={() => setAttachMenuVisible(!attachMenuVisible)}>
+        onPress={toggleAttachmentMenu}>
         <View className="m-0 p-0 z-50">{<AttachIcon />}</View>
       </TouchableOpacity>
       <TouchableOpacity

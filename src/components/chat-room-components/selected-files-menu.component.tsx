@@ -9,6 +9,10 @@ import {DocumentPickerResponse} from 'react-native-document-picker';
 
 interface ISelectedFilesMenuProps {
   selectedMediaFiles: DocumentPickerResponse[];
+  selectedDocumentFiles: DocumentPickerResponse[];
+  setSelectedDocumentFiles: React.Dispatch<
+    React.SetStateAction<DocumentPickerResponse[]>
+  >;
   setSelectedMediaFiles: React.Dispatch<
     React.SetStateAction<DocumentPickerResponse[]>
   >;
@@ -16,15 +20,17 @@ interface ISelectedFilesMenuProps {
 
 export const SelectedFilesMenuComponent: React.FC<ISelectedFilesMenuProps> = ({
   selectedMediaFiles,
+  selectedDocumentFiles,
   setSelectedMediaFiles,
+  setSelectedDocumentFiles,
 }) => {
-  const [selectedDocumentFiles, setSelectedDocumentFiles] = React.useState<
-    DocumentPickerResponse[]
-  >([]);
-
   if (selectedMediaFiles.length === 0 && selectedDocumentFiles.length === 0) {
     return null;
   }
+
+  const onSelectFiles = (index: number) => {
+    setSelectedMediaFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <ScrollView className="max-h-32 px-3 py-1 bg-white">
@@ -38,9 +44,7 @@ export const SelectedFilesMenuComponent: React.FC<ISelectedFilesMenuProps> = ({
           </Title3>
           <TouchableOpacity
             hitSlop={HIT_SLOP}
-            onPress={() =>
-              setSelectedMediaFiles(prev => prev.filter((_, i) => i !== index))
-            }>
+            onPress={() => onSelectFiles(index)}>
             <Text className="text-red-500 text-lg px-1">
               {String.fromCharCode(0x2715)}
             </Text>
