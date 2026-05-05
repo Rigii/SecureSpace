@@ -4,9 +4,16 @@ export enum EAvailableFilePathNames {
   LIBRARY = 'LIBRARY',
 }
 
-export enum EFileContentType {
+export enum EContentCategory {
   MEDIA = 'media',
   DOCUMENT = 'document',
+}
+
+export enum EContentFileType {
+  IMAGE = 'image',
+  VIDEO = 'video',
+  AUDIO = 'audio',
+  OTHER = 'other',
 }
 
 export type TFileSessionProceedingStatus =

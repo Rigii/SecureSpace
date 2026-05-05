@@ -1,6 +1,6 @@
 import {
   EContentFileStatus,
-  EFileContentType,
+  EContentCategory,
   EUploadContentRecipientType,
   TFileSessionProceedingStatus,
 } from '../../file-content/types';
@@ -23,7 +23,7 @@ export const getFileContentRoomUploadUrl = async ({
   filesMetadata: {
     fileName: string;
     fileSize: number;
-    fileType: EFileContentType;
+    fileType: EContentCategory;
     generateThumbnailUrl: boolean;
   }[];
   roomId: string;

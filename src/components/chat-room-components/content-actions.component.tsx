@@ -12,7 +12,7 @@ import {useReduxSelector} from '../../app/store/store';
 import {HIT_SLOP} from '../../constants/themes';
 import {AttachIcon} from '../../assets/icons/attachIcon';
 import {uploadFiles} from '../../services/file-content/upload-file-flow';
-import {EFileContentType} from '../../services/file-content/types';
+import {EContentCategory} from '../../services/file-content/types';
 import {DocumentPickerResponse} from 'react-native-document-picker';
 
 interface IContentActions {
@@ -67,7 +67,7 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
           passphrase: '',
           token,
           generateThumbnailUrl: false,
-          type: EFileContentType.DOCUMENT,
+          type: EContentCategory.DOCUMENT,
           files: selectedDocumentFiles,
         });
 
@@ -91,7 +91,7 @@ export const ContentActionsComponent: React.FC<IContentActions> = ({
           passphrase: '',
           token,
           generateThumbnailUrl: true,
-          type: EFileContentType.MEDIA,
+          type: EContentCategory.MEDIA,
           files: selectedMediaFiles,
         });
         setSelectedMediaFiles([]);

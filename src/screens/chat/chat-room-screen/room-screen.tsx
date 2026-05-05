@@ -59,7 +59,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
       />
       <ContentPreviewModal
         isOpen={activeContentItem !== null}
-        contentType={activeContentItem?.contentType || ''}
+        mimeType={activeContentItem?.mimeType || ''}
         contentLocalPath={activeContentItem?.contentLocalPath || ''}
         indexNumber={0}
         contentName={activeContentItem?.fileName || ''}

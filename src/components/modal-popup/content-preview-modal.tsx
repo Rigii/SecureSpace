@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Image, Modal, Pressable, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ReactNativeVideo from 'react-native-video';
+import {getFileTypeCategory} from '../../services/file-content/helpers';
+import {EContentFileType} from '../../services/file-content/types';
 
 export interface ContentPreviewModalProps {
-  contentType: string;
+  mimeType: string;
   contentLocalPath: string;
   indexNumber: number;
   contentName: string;
@@ -16,18 +18,12 @@ export interface ContentPreviewModalProps {
 
 const strings = {
   videoPreviewUnavailable: 'Video preview is not available.',
-  unsupportedContentType: 'Unsupported content type.',
+  unsupportedMimeType: 'Unsupported content type.',
   closeButton: 'Close',
 };
 
 const normalizeLocalPath = (path: string): string =>
   path.startsWith('file://') ? path : `file://${path}`;
-
-const isImageType = (contentType: string): boolean =>
-  contentType === 'image' || contentType.startsWith('image/');
-
-const isVideoType = (contentType: string): boolean =>
-  contentType === 'video' || contentType.startsWith('video/');
 
 const getFormattedDate = (value: string | Date): string => {
   if (value instanceof Date) {
@@ -39,7 +35,7 @@ const getFormattedDate = (value: string | Date): string => {
 };
 
 const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
-  contentType,
+  mimeType,
   contentLocalPath,
   indexNumber,
   contentName,
@@ -47,15 +43,18 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const currentContentType = useMemo(
+    () => getFileTypeCategory(mimeType),
+    [mimeType],
+  );
+
   const localUri = normalizeLocalPath(contentLocalPath);
-  const imageContent = isImageType(contentType);
-  const videoContent = isVideoType(contentType);
   const formattedDate = getFormattedDate(contentDate);
 
   let VideoComponent: React.ComponentType<any> | null = null;
-  if (videoContent) {
+  if (currentContentType === EContentFileType.VIDEO) {
     try {
-      // Optional dependency: render fallback text if react-native-video is not installed.
+      // Optional: render fallback text if react-native-video is not installed.
       VideoComponent = ReactNativeVideo;
     } catch {
       VideoComponent = null;
@@ -87,7 +86,7 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
 
         <View className="flex-1 items-center justify-center px-3">
           <View className="w-full h-3/4 items-center justify-center">
-            {imageContent && (
+            {currentContentType === EContentFileType.IMAGE && (
               <Image
                 source={{uri: localUri}}
                 className="w-full h-full"
@@ -95,28 +94,29 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
               />
             )}
 
-            {videoContent && VideoComponent && (
-              <VideoComponent
-                source={{uri: localUri}}
-                // style={styles.media}
-                controls
-                resizeMode="contain"
-                paused={false}
-              />
-            )}
+            {currentContentType === EContentFileType.VIDEO &&
+              VideoComponent && (
+                <VideoComponent
+                  source={{uri: localUri}}
+                  controls
+                  resizeMode="contain"
+                  paused={false}
+                />
+              )}
 
-            {videoContent && !VideoComponent && (
+            {currentContentType === EContentFileType.VIDEO &&
+              !VideoComponent && (
+                <View className="w-full h-full items-center justify-center border border-[#2E2E2E] rounded-xl">
+                  <Text className="text-gray-300 text-base">
+                    {strings.videoPreviewUnavailable}
+                  </Text>
+                </View>
+              )}
+
+            {currentContentType === EContentFileType.OTHER && (
               <View className="w-full h-full items-center justify-center border border-[#2E2E2E] rounded-xl">
                 <Text className="text-gray-300 text-base">
-                  {strings.videoPreviewUnavailable}
-                </Text>
-              </View>
-            )}
-
-            {!imageContent && !videoContent && (
-              <View className="w-full h-full items-center justify-center border border-[#2E2E2E] rounded-xl">
-                <Text className="text-gray-300 text-base">
-                  {strings.unsupportedContentType}
+                  {strings.unsupportedMimeType}
                 </Text>
               </View>
             )}

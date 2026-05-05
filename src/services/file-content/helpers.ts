@@ -1,7 +1,7 @@
 import RNFS from 'react-native-fs';
 import {ROOT_DIRECTORY} from '@env';
 import {pathConstants} from './constants';
-import {EAvailableFilePathNames} from './types';
+import {EAvailableFilePathNames, EContentFileType} from './types';
 
 export const getUserKeysDir = (uuid: string) =>
   `${RNFS.DocumentDirectoryPath}/${ROOT_DIRECTORY}/${pathConstants.KEYS_USERS_SUBDIR}/${uuid}`;
@@ -30,4 +30,24 @@ export const ensureDir = async (dirPath: string) => {
   if (!exists) {
     await RNFS.mkdir(dirPath);
   }
+};
+
+export const getFileTypeCategory = (mimeType: string): EContentFileType => {
+  // Images
+  if (mimeType.startsWith('image/')) {
+    return EContentFileType.IMAGE;
+  }
+
+  // Videos
+  if (mimeType.startsWith('video/')) {
+    return EContentFileType.VIDEO;
+  }
+
+  // Audio
+  if (mimeType.startsWith('audio/')) {
+    return EContentFileType.AUDIO;
+  }
+
+  // Documents (including your Word, PDF, Excel, etc.)
+  return EContentFileType.OTHER;
 };

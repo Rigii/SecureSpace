@@ -101,29 +101,13 @@ const buildLocalDownloadContentPath = ({
   folderPath?: string;
   name: string;
 }): string => {
-  console.log(10000000, contentPathName);
-
   if (contentPathName && contentPathName.length > 0) {
-    console.log(1111, contentPathName);
     return contentPathName;
   }
 
   if (roomId) {
-    console.log(
-      22211111,
-      `${contentPathDir.userContentDirectory}/${
-        folderPath || ''
-      }/${name}`.replace(/\/\/+/, '/'),
-    );
-
     return `${contentPathDir.roomsContentDirectory}/${roomId}/${name}`;
   }
-  console.log(
-    2222222,
-    `${contentPathDir.userContentDirectory}/${
-      folderPath || ''
-    }/${name}`.replace(/\/\/+/, '/'),
-  );
 
   return `${contentPathDir.userContentDirectory}/${
     folderPath || ''
@@ -207,14 +191,9 @@ export const downloadContentWithStream = async ({
   });
 
   if (await RNFS.exists(localContentPath)) {
-    console.log(22222, 'FILE EXISTS', localContentPath);
     return {contentPathName: localContentPath};
   }
-  console.log(
-    3333333,
-    'DOWNLOADED FILE NOT EXISTS, STARTING DOWNLOAD',
-    localContentPath,
-  );
+
   const encryptedDownloadedPath = createDownloadedEncryptedTempPath(name);
 
   await ensureParentDir(encryptedDownloadedPath);
