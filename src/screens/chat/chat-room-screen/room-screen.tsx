@@ -17,6 +17,7 @@ interface IChatRoomScreen {
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
   const {publicKeys, activeConnections, roomInterlocutors} =
     useChatRoomSocketState({chatId});
+
   const {
     roomName,
     participantId,

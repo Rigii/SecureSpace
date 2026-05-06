@@ -311,6 +311,7 @@ export const uploadFiles = async ({
       token,
       filesMetadata,
     });
+
     uploadUrlTransaktionData = uploadUrlsResponse.data;
   } catch (error) {
     console.error(strings.errorGettingUploadUrls, error);
