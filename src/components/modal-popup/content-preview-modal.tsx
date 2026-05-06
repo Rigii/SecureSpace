@@ -70,7 +70,9 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
       visible={isOpen}
       onRequestClose={onClose}
       className="flex-1 bg-black">
-      <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-black">
+      <SafeAreaView
+        edges={['top', 'bottom']}
+        className="flex-1 bg-black relative">
         <View className="flex-row items-center justify-between px-4 pt-2">
           <Text className="text-white text-sm opacity-80">
             #{indexNumber + 1}
@@ -96,12 +98,20 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
 
             {currentContentType === EContentFileType.VIDEO &&
               VideoComponent && (
-                <VideoComponent
-                  source={{uri: localUri}}
-                  controls
-                  resizeMode="contain"
-                  paused={false}
-                />
+                <View className="w-full h-3/4 items-center justify-center">
+                  <VideoComponent
+                    source={{uri: localUri}}
+                    controls={true}
+                    controlsStyles={{
+                      controlBar: {
+                        container: {backgroundColor: 'rgba(0,0,0,0.5)'},
+                      },
+                    }}
+                    className="w-full h-full"
+                    resizeMode="contain"
+                    paused={false}
+                  />
+                </View>
               )}
 
             {currentContentType === EContentFileType.VIDEO &&
@@ -123,7 +133,7 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
           </View>
         </View>
 
-        <View className="px-4 pb-6 space-y-1.5">
+        <View className="px-4 pb-6 space-y-1.5 absolute top-16 left-0 right-0">
           <Text className="text-white text-lg font-bold">{contentName}</Text>
           <Text className="text-[#BDBDBD] text-[13px]">{formattedDate}</Text>
         </View>
