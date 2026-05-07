@@ -9,6 +9,9 @@ import {decryptThumbnail} from '../../../services/pgp-encryption-service/encrypt
 import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {useReduxSelector} from '../../../app/store/store';
 import {downloadContentWithStream} from '../../../services/file-content/upload-download-stream';
+import {Linking, Platform, Share} from 'react-native';
+import {getFileTypeCategory} from '../../../services/file-content/helpers';
+import {EContentFileType} from '../../../services/file-content/types';
 
 export const useChatRoomContentState = ({
   messages,
@@ -86,7 +89,6 @@ export const useChatRoomContentState = ({
       contentId: attachment.contentId,
     });
 
-    /* TODO:// Set correct content path name */
     const localFilePath = await downloadContentWithStream({
       presignedUrl: attachment.decryptedUrl,
       privateKey: privateChatKey,
@@ -95,6 +97,16 @@ export const useChatRoomContentState = ({
       folderPath: attachment.messageId,
       roomId: messages[0]?.chatRoomId,
     });
+
+    /* Open document file in default app if the content type is OTHER */
+    const currentFileType = getFileTypeCategory(attachment.mimeType || '');
+    if (currentFileType === EContentFileType.OTHER) {
+      await handleOpenDocumentFile({
+        localUri: localFilePath.contentPathName,
+        contentName: attachment.fileName,
+      });
+      return;
+    }
 
     // Set Active content Item to review content in preview modal
     setActiveContentItem({
@@ -116,6 +128,29 @@ export const useChatRoomContentState = ({
     });
     // Open content with appropriate app
     console.warn(localFilePath.contentPathName);
+  };
+
+  const handleOpenDocumentFile = async ({
+    localUri,
+    contentName,
+  }: {
+    localUri: string;
+    contentName: string;
+  }) => {
+    try {
+      if (Platform.OS === 'ios') {
+        // On iOS, use Share API to show the open menu
+        await Share.share({
+          url: localUri,
+          title: contentName,
+        });
+      } else {
+        // On Android, use Linking to open with default app
+        await Linking.openURL(localUri);
+      }
+    } catch (error) {
+      console.warn('Error opening file:', error);
+    }
   };
 
   const decryptMessageThumbnails = useCallback(
@@ -205,10 +240,6 @@ export const useChatRoomContentState = ({
                 };
               }
             } catch (error) {
-              console.error(
-                `${strings.failedToDecryptThumbnail} ${thumbnailUrl}:`,
-                error,
-              );
               return {
                 id,
                 decryptedThumbnail: null,
