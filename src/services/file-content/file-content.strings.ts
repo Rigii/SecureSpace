@@ -6,4 +6,7 @@ export const strings = {
   fileNameIsNotAvailable: 'File name is not available',
   fileLocalDataIsNotAvailable: 'File local data is not available',
   errorGettingUploadUrls: 'Error getting upload URLs',
+  fileAlreadyExistsAtPath: 'File already exists at path',
+  downloadingAndDecryptingWillBeSkipped:
+    'Downloading and decrypting will be skipped',
 };

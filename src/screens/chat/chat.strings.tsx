@@ -10,4 +10,7 @@ export const strings = {
   chatRoomCreated: 'Chat room created',
   failChatCreation: 'Failed to create chat',
   enterYourMessage: 'Enter your message',
+  noDownloadUrlsReceived: 'No download urls received',
+  noPrivateChatKeyFound: 'No private chat key found',
+  failedToDecryptThumbnail: 'Failed to decrypt thumbnail',
 };

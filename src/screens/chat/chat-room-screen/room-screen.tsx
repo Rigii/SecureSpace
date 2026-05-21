@@ -1,12 +1,14 @@
 import React from 'react';
-import {View, FlatList, KeyboardAvoidingView, Platform} from 'react-native';
+import {View} from 'react-native';
 import {strings} from '../../../context/chat/chat-provider.strings';
 import ComponentsTopBar from '../../../components/top-bar/components-top-bar/components-top-bar';
-import {ChatMessage} from '../../../components/chat-room-components/chat-message.component';
 import {ChatInput} from '../../../components/chat-room-components/chat-input.component';
 import {useChatRoomSocketState} from './use-room-socket.state';
 import {useChatRoomMessagesState} from './use-room-messages.state';
 import {AcceptDecline} from '../../../components/chat-item/accept-decline';
+import ContentPreviewModal from '../../../components/modal-popup/content-preview-modal';
+import {useChatRoomContentState} from './use-room-content.state';
+import MessageList from '../../../components/chat-room-components/message-list';
 
 interface IChatRoomScreen {
   chatId: string;
@@ -15,16 +17,25 @@ interface IChatRoomScreen {
 const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
   const {publicKeys, activeConnections, roomInterlocutors} =
     useChatRoomSocketState({chatId});
+
   const {
     roomName,
     participantId,
     chatRoomOptions,
     messages,
     isInvitationNotAccepted,
-    flatListRef,
   } = useChatRoomMessagesState({
     roomInterlocutors,
     chatId,
+  });
+
+  const {
+    activeContentItem,
+    purgeActiveContentItem,
+    getMessageContentData,
+    onContentPress,
+  } = useChatRoomContentState({
+    messages,
   });
 
   return (
@@ -36,39 +47,25 @@ const ChatRoomScreen: React.FC<IChatRoomScreen> = ({chatId}) => {
         roomInterlocutors={roomInterlocutors}
       />
       {isInvitationNotAccepted ? <AcceptDecline chatId={chatId} /> : null}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1 mt-3"
-        keyboardVerticalOffset={100}>
-        <FlatList
-          data={messages}
-          keyExtractor={item => item.id}
-          ref={flatListRef}
-          onContentSizeChange={() =>
-            flatListRef.current?.scrollToEnd({animated: true})
-          }
-          renderItem={({item}) => (
-            <ChatMessage
-              message={item.message}
-              isOwnMessage={item.participantId === participantId}
-              senderName={item.senderNickname}
-              time={item.created}
-              isVerified={item.verifiedOrigin}
-              attachments={item.attachments}
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          getItemLayout={(_, index) => ({
-            length: 2000,
-            offset: 80 * index,
-            index,
-          })}
-        />
-      </KeyboardAvoidingView>
+      <MessageList
+        messages={messages}
+        participantId={participantId}
+        getMessageContentData={getMessageContentData}
+        onContentPress={onContentPress}
+      />
       <ChatInput
         chatId={chatId}
         inputPlaceholder={strings.enterYourMessage}
         publicKeys={publicKeys}
+      />
+      <ContentPreviewModal
+        isOpen={activeContentItem !== null}
+        mimeType={activeContentItem?.mimeType || ''}
+        contentLocalPath={activeContentItem?.contentLocalPath || ''}
+        indexNumber={0}
+        contentName={activeContentItem?.fileName || ''}
+        contentDate={new Date()}
+        onClose={purgeActiveContentItem}
       />
     </View>
   );

@@ -1,3 +1,4 @@
+import {IRoomAttachment} from '../../../app/store/saga/chat-account-saga/types';
 import {IChatRoom} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {ISecurePlaceData} from '../../../app/types/encrypt.types';
 
@@ -72,6 +73,7 @@ export interface IChatMessage {
   senderId: string;
   senderName: string;
   verifiedOrigin?: boolean;
+  attachments?: IRoomAttachment[] | [];
 }
 
 export interface IDeleteChatRoom {

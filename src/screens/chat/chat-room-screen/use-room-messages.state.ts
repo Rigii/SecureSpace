@@ -1,4 +1,4 @@
-import {useContext, useEffect, useRef} from 'react';
+import {useContext, useEffect} from 'react';
 import {useReduxSelector} from '../../../app/store/store';
 import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {strings} from '../../../context/chat/chat-provider.strings';
@@ -8,7 +8,6 @@ import {addMessagesToChatRoom} from '../../../app/store/state/chat-rooms-content
 import {getChatRoomMessages} from '../../../services/api/chat/chat-api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../../app/navigator/screens';
-import {FlatList} from 'react-native';
 import {
   decryptMessage,
   isEncryptedMessage,
@@ -29,7 +28,6 @@ export const useChatRoomMessagesState = ({
   chatId,
   roomInterlocutors,
 }: IChatRoomMessagesState) => {
-  const flatListRef = useRef<FlatList>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
 
@@ -49,14 +47,10 @@ export const useChatRoomMessagesState = ({
     userChatRooms[chatId]?.invitedUserIds?.includes(interlocutorId);
 
   useEffect(() => {
-    if (!flatListRef.current || storedMessages.length < 1) {
+    if (roomInterlocutors.length === 0) {
       return;
     }
 
-    flatListRef.current.scrollToEnd({animated: true});
-  }, [storedMessages]);
-
-  useEffect(() => {
     // TODO: moove flow to the saga
     const getMessages = async () => {
       try {
@@ -224,6 +218,5 @@ export const useChatRoomMessagesState = ({
     participantId: interlocutorId,
     chatRoomOptions,
     isInvitationNotAccepted,
-    flatListRef,
   };
 };

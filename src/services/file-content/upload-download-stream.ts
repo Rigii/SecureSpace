@@ -1,3 +1,4 @@
+/* Upload / Download Content Services with OpenPGP Encryption */
 import {DocumentPickerResponse} from 'react-native-document-picker';
 import RNFS, {UploadResult} from 'react-native-fs';
 import OpenPGP from 'react-native-fast-openpgp';
@@ -6,9 +7,14 @@ import {
   uploadDiskContentInStream,
 } from '../xhr-services/api-content-service';
 import {strings} from './file-content.strings';
-import {encryptedSubdir, fileExtensions} from './constants';
+import {
+  encryptedSubdir,
+  fileExtensions,
+  contentLocationsSubdir,
+  contentPathDir,
+} from './constants';
 
-const createEncryptedTempPath = (fileName?: string): string => {
+const createUploadEncryptedTempPath = (fileName?: string): string => {
   const baseDirectory = (
     RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath
   ).replace(/\/+$/, '');
@@ -22,6 +28,7 @@ const createEncryptedTempPath = (fileName?: string): string => {
   }/${Date.now()}-${safeFileName}${fileExtensions.CONTENT_ENCRYPTED_EXT}`;
 };
 
+/* Temp file path for the encrypted downloaded blob (in temp/cache dir) */
 const createDownloadedEncryptedTempPath = (fileName?: string): string => {
   const baseDirectory = (
     RNFS.TemporaryDirectoryPath || RNFS.CachesDirectoryPath
@@ -31,13 +38,12 @@ const createDownloadedEncryptedTempPath = (fileName?: string): string => {
     '_',
   );
 
-  return `${baseDirectory}/${
-    encryptedSubdir.CONTENT_ENCRYPTED_SUBDIR
-  }/download-${Date.now()}-${safeFileName}${
-    fileExtensions.CONTENT_ENCRYPTED_EXT
-  }`;
+  return `${baseDirectory}/${encryptedSubdir.CONTENT_ENCRYPTED_SUBDIR}/${
+    contentLocationsSubdir.TEMP_DOWNLOADS
+  }-${Date.now()}-${safeFileName}${fileExtensions.CONTENT_ENCRYPTED_EXT}`;
 };
 
+/* Checks whether the parent directory of a target file path exists */
 const ensureParentDir = async (filePath: string): Promise<void> => {
   const lastSlashIndex = filePath.lastIndexOf('/');
   if (lastSlashIndex === -1) {
@@ -83,7 +89,8 @@ const resolveExistingNativeFilePath = async (
   return existingPath.candidate;
 };
 
-const buildLocalContentPath = ({
+/* final decrypted file destination in app storage */
+const buildLocalDownloadContentPath = ({
   contentPathName,
   roomId,
   folderPath,
@@ -94,20 +101,17 @@ const buildLocalContentPath = ({
   folderPath?: string;
   name: string;
 }): string => {
-  const baseDirectory = RNFS.DocumentDirectoryPath;
-
   if (contentPathName && contentPathName.length > 0) {
-    return `${baseDirectory}/${contentPathName}`;
+    return contentPathName;
   }
 
   if (roomId) {
-    return `${baseDirectory}/chat-rooms/${roomId}/${name}`;
+    return `${contentPathDir.roomsContentDirectory}/${roomId}/${name}`;
   }
 
-  return `${baseDirectory}/user/${folderPath || ''}/${name}`.replace(
-    /\/\/+/,
-    '/',
-  );
+  return `${contentPathDir.userContentDirectory}/${
+    folderPath || ''
+  }/${name}`.replace(/\/\/+/, '/');
 };
 
 export const uploadContentWithStream = async ({
@@ -125,7 +129,7 @@ export const uploadContentWithStream = async ({
 
   const rawSourcePath = file.fileCopyUri || file.uri;
   const sourceFilePath = await resolveExistingNativeFilePath(rawSourcePath);
-  const encryptedFilePath = createEncryptedTempPath(file.name);
+  const encryptedFilePath = createUploadEncryptedTempPath(file.name);
 
   await ensureParentDir(encryptedFilePath);
 
@@ -179,13 +183,18 @@ export const downloadContentWithStream = async ({
   folderPath?: string;
   name: string;
 }): Promise<{contentPathName: string}> => {
-  const encryptedDownloadedPath = createDownloadedEncryptedTempPath(name);
-  const localContentPath = buildLocalContentPath({
+  const localContentPath = buildLocalDownloadContentPath({
     contentPathName,
     roomId,
     folderPath,
     name,
   });
+
+  if (await RNFS.exists(localContentPath)) {
+    return {contentPathName: localContentPath};
+  }
+
+  const encryptedDownloadedPath = createDownloadedEncryptedTempPath(name);
 
   await ensureParentDir(encryptedDownloadedPath);
   await ensureParentDir(localContentPath);

@@ -1,10 +1,10 @@
 import {
   EContentFileStatus,
-  EFileContentType,
+  EContentCategory,
   EUploadContentRecipientType,
   TFileSessionProceedingStatus,
 } from '../../file-content/types';
-import {uploadMemoryContentToMinio} from '../../xhr-services/api-content-service';
+import {uploadMemoryContentToMinioAxios} from '../../xhr-services/api-content-service';
 import {postData} from '../../xhr-services/api-service';
 
 const GET_CHAT_MESSAGE_UPLOAD_URL = '/content-storage/content-upload-url';
@@ -23,7 +23,7 @@ export const getFileContentRoomUploadUrl = async ({
   filesMetadata: {
     fileName: string;
     fileSize: number;
-    fileType: EFileContentType;
+    fileType: EContentCategory;
     generateThumbnailUrl: boolean;
   }[];
   roomId: string;
@@ -94,13 +94,4 @@ export const uploadThumbnailToMinio = async ({
   presignedUrl: string;
   encryptedThumbnail: Uint8Array<ArrayBufferLike>;
 }): Promise<any> =>
-  uploadMemoryContentToMinio(presignedUrl, encryptedThumbnail);
-
-export const uploadFileContentToMinio = async ({
-  presignedUrl,
-  encryptedFileContent,
-}: {
-  presignedUrl: string;
-  encryptedFileContent: Uint8Array<ArrayBufferLike>;
-}): Promise<any> =>
-  uploadMemoryContentToMinio(presignedUrl, encryptedFileContent);
+  uploadMemoryContentToMinioAxios(presignedUrl, encryptedThumbnail);

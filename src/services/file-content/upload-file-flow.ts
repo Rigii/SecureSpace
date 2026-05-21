@@ -12,7 +12,7 @@ import {
 import {encryptThumbnail} from '../pgp-encryption-service/encrypt-decrypt-thumbnail';
 import {
   EContentFileStatus,
-  EFileContentType,
+  EContentCategory,
   EUploadContentRecipientType,
 } from './types';
 import {uploadContentWithStream} from './upload-download-stream';
@@ -270,7 +270,7 @@ export const uploadFiles = async ({
   userId: string;
   userPrivateKey: string;
   passphrase: string;
-  type: EFileContentType;
+  type: EContentCategory;
   token: string;
   generateThumbnailUrl: boolean;
   files: DocumentPickerResponse[];
@@ -286,7 +286,7 @@ export const uploadFiles = async ({
   const filesMetadata: {
     fileName: string;
     fileSize: number;
-    fileType: EFileContentType;
+    fileType: EContentCategory;
     generateThumbnailUrl: boolean;
   }[] = [];
 
@@ -311,6 +311,7 @@ export const uploadFiles = async ({
       token,
       filesMetadata,
     });
+
     uploadUrlTransaktionData = uploadUrlsResponse.data;
   } catch (error) {
     console.error(strings.errorGettingUploadUrls, error);

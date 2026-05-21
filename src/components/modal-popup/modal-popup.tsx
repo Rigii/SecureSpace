@@ -16,11 +16,7 @@ const ModalPopup: React.FC<IModalPopup> = ({
   isOpen,
   setisModalOpen,
 }) => {
-  const handleOutsidePress = () => {
-    setisModalOpen(false);
-  };
-
-  const handleSidebarPress = () => {
+  const handleClose = () => {
     setisModalOpen(false);
   };
 
@@ -29,8 +25,8 @@ const ModalPopup: React.FC<IModalPopup> = ({
       animationType="fade"
       transparent
       visible={isOpen}
-      onRequestClose={handleSidebarPress}>
-      <TouchableWithoutFeedback onPress={handleOutsidePress}>
+      onRequestClose={handleClose}>
+      <TouchableWithoutFeedback onPress={handleClose}>
         <View className={`flex-1 bg-transparent ${backgroundClass}`}>
           <View className={`absolute p-3 rounded-lg ${wrapperClass}`}>
             {content}
