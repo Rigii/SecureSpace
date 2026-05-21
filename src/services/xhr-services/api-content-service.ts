@@ -18,7 +18,7 @@ const createMinioInstance = () => {
   return instance;
 };
 
-export const uploadMemoryContentToMinio = (
+export const uploadMemoryContentToMinioAxios = (
   presignedUrl: string,
   payload: Uint8Array<ArrayBufferLike>,
 ) =>
@@ -28,7 +28,7 @@ export const uploadMemoryContentToMinio = (
     },
   });
 
-export const downloadContentFromMinio = async (
+export const downloadContentFromMinioAxios = async (
   presignedUrl: string,
 ): Promise<ArrayBuffer> => {
   const response = await createMinioInstance().get(presignedUrl, {

@@ -4,7 +4,7 @@ import {TDecryptedContentData} from '../../../components/chat-room-components/ch
 import {getRoomContentDownloadUrl} from '../../../services/api/content/content-api';
 import {IRoomAttachment} from '../../../app/store/saga/chat-account-saga/types';
 import {strings} from '../chat.strings';
-import {downloadContentFromMinio} from '../../../services/xhr-services/api-content-service';
+import {downloadContentFromMinioAxios} from '../../../services/xhr-services/api-content-service';
 import {decryptThumbnail} from '../../../services/pgp-encryption-service/encrypt-decrypt-thumbnail';
 import {IChatMessage} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
 import {useReduxSelector} from '../../../app/store/store';
@@ -206,7 +206,7 @@ export const useChatRoomContentState = ({
 
             try {
               if (thumbnailUrl) {
-                const encryptedThumbnail = await downloadContentFromMinio(
+                const encryptedThumbnail = await downloadContentFromMinioAxios(
                   thumbnailUrl,
                 );
                 if (!encryptedThumbnail) {

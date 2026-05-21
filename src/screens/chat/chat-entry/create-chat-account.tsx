@@ -1,17 +1,17 @@
 import React from 'react';
 import {View} from 'react-native';
-import {ThemedButton} from '../../components/themed-button';
-import {Title1, Title3} from '../../components/text-titles/title';
-import {strings} from './chat.strings';
-import {useReduxSelector} from '../../app/store/store';
+import {ThemedButton} from '../../../components/themed-button';
+import {Title1, Title3} from '../../../components/text-titles/title';
+import {strings} from '../chat.strings';
+import {useReduxSelector} from '../../../app/store/store';
 import {useDispatch} from 'react-redux';
 
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
   applicationRoutes,
   RootStackParamList,
-} from '../../app/navigator/screens';
-import {createChatAccountSaga} from '../../app/store/saga/chat-account-saga/chat-account.actions';
+} from '../../../app/navigator/screens';
+import {createChatAccountSaga} from '../../../app/store/saga/chat-account-saga/chat-account.actions';
 
 export const CreateChatAccount = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

@@ -1,14 +1,5 @@
 import React, {useMemo} from 'react';
-import {
-  Image,
-  Linking,
-  Modal,
-  Platform,
-  Pressable,
-  Share,
-  Text,
-  View,
-} from 'react-native';
+import {Image, Modal, Pressable, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ReactNativeVideo from 'react-native-video';
 import {getFileTypeCategory} from '../../services/file-content/helpers';
@@ -21,7 +12,6 @@ export interface ContentPreviewModalProps {
   contentName: string;
   contentDate: string | Date;
   isOpen: boolean;
-
   onClose?: () => void;
 }
 
@@ -59,23 +49,6 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
 
   const localUri = normalizeLocalPath(contentLocalPath);
   const formattedDate = getFormattedDate(contentDate);
-
-  const handleOpenFile = async () => {
-    try {
-      if (Platform.OS === 'ios') {
-        // On iOS, use Share API to show the open menu
-        await Share.share({
-          url: localUri,
-          title: contentName,
-        });
-      } else {
-        // On Android, use Linking to open with default app
-        await Linking.openURL(localUri);
-      }
-    } catch (error) {
-      console.warn('Error opening file:', error);
-    }
-  };
 
   let VideoComponent: React.ComponentType<any> | null = null;
   if (currentContentType === EContentFileType.VIDEO) {
@@ -151,18 +124,9 @@ const ContentPreviewModal: React.FC<ContentPreviewModalProps> = ({
 
             {currentContentType === EContentFileType.OTHER && (
               <View className="w-full h-full items-center justify-center border border-[#2E2E2E] rounded-xl">
-                <View className="flex-col items-center gap-3">
-                  <Text className="text-gray-300 text-base">
-                    {strings.unsupportedMimeType}
-                  </Text>
-                  <Pressable
-                    className="border border-white px-4 py-2 rounded-lg"
-                    onPress={handleOpenFile}>
-                    <Text className="text-white text-sm font-semibold">
-                      Open File
-                    </Text>
-                  </Pressable>
-                </View>
+                <Text className="text-gray-300 text-base">
+                  {strings.unsupportedMimeType}
+                </Text>
               </View>
             )}
           </View>
