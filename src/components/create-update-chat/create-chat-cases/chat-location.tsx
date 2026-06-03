@@ -7,7 +7,7 @@ import {FormikErrors, FormikTouched} from 'formik';
 import {strings} from '../create-chat-form.strings';
 import {ICreateRoomFormValues} from '../create-update-chat.types';
 import {AddressInput} from '../../address-input/address-input';
-import {ISecurePlaceData} from '../../../app/types/encrypt.types';
+import {ISecurePlaceData} from '../../../types/encrypt.types';
 import {
   GooglePlaceData,
   GooglePlaceDetail,

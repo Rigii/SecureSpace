@@ -14,7 +14,7 @@ import {validationCreateChatSchema} from './create-update-chat.validation';
 import {ChatLocationRestrictions} from './create-chat-cases/chat-location';
 import {ChatCheckData} from './create-chat-cases/chat-check-data';
 import {useReduxSelector} from '../../app/store/store';
-import {ISecurePlaceData} from '../../app/types/encrypt.types';
+import {ISecurePlaceData} from '../../types/encrypt.types';
 import {ChatSocketProviderContext} from '../../context/chat/chat-provider.context';
 import {strings} from './create-chat-form.strings';
 import {SafeAreaView, TouchableOpacity} from 'react-native';

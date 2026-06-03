@@ -4,7 +4,7 @@ import {
   updateManualEncryptionDataAction,
 } from './manual-encryption.actions';
 import {IManualEncryptionState} from './types';
-import {EExpiry} from '../../../types/encrypt.types';
+import {EExpiry} from '../../../../types/encrypt.types';
 
 const initialState: IManualEncryptionState = {
   textMessage: '',

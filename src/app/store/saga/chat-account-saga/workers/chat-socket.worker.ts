@@ -25,6 +25,7 @@ const strings = {
   newMessageFrom: 'New message from:',
   messageDisplayError: 'Error displaying the message',
   noPrivateChatKeyFound: 'No private chat key found',
+  errorHandlingRoomMessageListSaga: 'Error handling room message list saga:',
 };
 
 function* handleInvitationSaga(message: {
@@ -114,6 +115,7 @@ function* handleRoomMessageListSaga({
     );
   } catch (error) {
     const currentError = error as Error;
+    console.error(strings.errorHandlingRoomMessageListSaga, currentError);
     ErrorNotificationHandler({
       text1: currentError.message || strings.messageDisplayError,
       type: EPopupType.ERROR,

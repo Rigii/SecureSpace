@@ -1,6 +1,6 @@
 import {IRoomAttachment} from '../../../app/store/saga/chat-account-saga/types';
 import {IChatRoom} from '../../../app/store/state/chat-rooms-content/chat-rooms-state.types';
-import {ISecurePlaceData} from '../../../app/types/encrypt.types';
+import {ISecurePlaceData} from '../../../types/encrypt.types';
 
 export interface IResponseChatRoom {
   chat_icon_url: string | null;

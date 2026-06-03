@@ -2,7 +2,7 @@ import {GOOGLE_API_KEY} from '@env';
 import React, {useCallback, useState} from 'react';
 import {ThemedButton} from '../themed-button';
 import {Title3} from '../text-titles/title';
-import {ISecurePlaceData} from '../../app/types/encrypt.types';
+import {ISecurePlaceData} from '../../types/encrypt.types';
 
 import {View} from 'react-native';
 
