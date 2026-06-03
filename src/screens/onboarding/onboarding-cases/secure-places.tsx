@@ -12,7 +12,7 @@ import {
 } from 'react-native-google-places-autocomplete';
 import {AddressInput} from '../../../components/address-input/address-input';
 import {IOnboardingFormValues} from '../../../app/store/state/onboarding-state/onboarding-state.types';
-import {ISecurePlaceData} from '../../../app/types/encrypt.types';
+import {ISecurePlaceData} from '../../../types/encrypt.types';
 
 export const SecurePlaces = ({
   securePlaceNameValue,

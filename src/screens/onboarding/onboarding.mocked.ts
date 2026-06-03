@@ -1,4 +1,4 @@
-import {ETitleForm} from '../../app/types/encrypt.types';
+import {ETitleForm} from '../../types/encrypt.types';
 import {strings} from '../../constants/strings/onboarding.strings';
 
 export const radioButtonsData = [

@@ -1,5 +1,5 @@
 import {IFetchedUserChatAccount} from '../../../../screens/login-signup/login-sign-up.types';
-import {ISecurePlace} from '../../../types/encrypt.types';
+import {ISecurePlace} from '../../../../types/encrypt.types';
 import {IRoomAttachment} from '../../saga/chat-account-saga/types';
 
 export interface IChatRooms {

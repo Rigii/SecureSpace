@@ -1,8 +1,9 @@
+import {ROLES} from '../../../../../types/user.types';
 import {IChatRoom} from '../../../state/chat-rooms-content/chat-rooms-state.types';
 
 export const transformUserData = (apiUser: any, token: string) => ({
   id: apiUser.id,
-  role: apiUser.role,
+  role: apiUser.role || ROLES.user,
   created: apiUser.created,
   isOnboardingDone: apiUser.user_info?.is_onboarding_done as boolean,
   email: apiUser.email,

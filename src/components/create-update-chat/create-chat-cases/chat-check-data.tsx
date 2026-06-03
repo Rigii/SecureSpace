@@ -5,7 +5,7 @@ import {FormikErrors} from 'formik';
 import {ICreateRoomFormValues} from '../create-update-chat.types';
 import {strings} from '../create-chat-form.strings';
 import {FlatList, View} from 'react-native';
-import {ISecurePlaceData} from '../../../app/types/encrypt.types';
+import {ISecurePlaceData} from '../../../types/encrypt.types';
 import {TextNormal} from '../../text-titles/text-styled';
 
 export const ChatCheckData: React.FC<{

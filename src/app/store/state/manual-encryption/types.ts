@@ -1,6 +1,6 @@
 import {TwoFactor} from '../../../../screens/login-signup/login-sign-up.types';
 import {ILocationDistance} from '../../../../services/xhr-services/xhr.types';
-import {EExpiry} from '../../../types/encrypt.types';
+import {EExpiry} from '../../../../types/encrypt.types';
 
 export interface IManualEncryptionState {
   receivers: string;
